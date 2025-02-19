@@ -115,7 +115,7 @@ def integrador(rf, dr, rho0, rho_P, P_central, sistema = 'GR', sol_completa = Fa
     densidad_limite (float, optional): The energy density limit for the star (dimensionless). If None, the limit is set when the pressure reaches zero. Default is None.
 
     Returns:
-    tuple: If sol_completa is False, returns a tuple with the final physical quantities (pressure, mass, metric function, density) in MKS units.
+    tuple: If sol_completa is False, returns a tuple with the final physical quantities (r_fisico, m_fisico, rho_fisico, P_fisico, phi_fisico) in MKS units.
            If sol_completa is True, returns a tuple with the final physical quantities in MKS units, the complete solution array, and the radius array (both dimensionless).
     """
     # Malla de integración para ambos sistemas
@@ -232,7 +232,7 @@ def masa_radio(rf, dr, rhos, rho_P, P_central, sistema='GR', densidad_limite=Non
         ax[1].set_title(r'Relación Masa-Densidad Central', fontsize=18)
         ax[1].tick_params(axis='both', which='both', direction='in', right=True, top=True)
         #Punto en la masa maxima
-        ax[1].plot(rhos[np.argmax(masas)], masas.max()/masasolar, 'o', color='darkorchid')
+        ax[1].plot(densidades_plot[np.argmax(masas)], masas.max()/masasolar, 'o', color='darkorchid')
 
         print("Masa máxima: ", masas.max()/masasolar)
 
@@ -277,6 +277,8 @@ def graficar_solucion(rf, dr, rho0, rho_P, P_central, sistema = 'GR', densidad_l
     ax[1, 1].set_ylabel(r'$\rho$', fontsize=14)
     ax[1, 1].set_title(r'Densidad', fontsize=15)
     ax[1, 1].tick_params(axis='both', which='both', direction='in', right=True, top=True)
+    
+    fig.suptitle(r'Solución de las ecuaciones TOV', fontsize=18)
     
     plt.tight_layout()
     plt.show()
