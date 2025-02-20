@@ -1,5 +1,8 @@
 import numpy as np
 from scipy.integrate import odeint
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+from scipy.interpolate import interp1d
 
 # Definimos las constantes físicas
 c = 299792458 # Velocidad de la luz en m/s
@@ -7,18 +10,25 @@ G = 6.67430e-11 # Constante de gravitación universal en m^3/kg/s^2
 pi = np.pi # Constante pi
 m_nuc_MKS = 1.66053906660e-27 # Masa de un nucleón en kg
 
-# Definimos una función para convertir las cantidades adimensionales a cantidades físicas
-# la adimensionalización es identica en Newton y en GR
 def adimensional_to_fisico(sol_fin, P_central, r_fin, rho0):
     """
     Converts dimensionless quantities to physical quantities IN MKS for the TOV equations.
-    Parameters:
-    sol_fin (list): A list containing the final values of the dimensionless solutions (P, m, phi, rho).
-    P_central (float): The central pressure in dimensionless units.
-    r_fin (float): The final radius in dimensionless units.
-    rho0 (float): The central density in physical units.
-    Returns:
-    list: A list containing the physical quantities:
+
+    Parameters
+    ----------
+    sol_fin : list
+        A list containing the final values of the dimensionless solutions (P, m, phi, rho).
+    P_central : float
+        The central pressure in dimensionless units.
+    r_fin : float
+        The final radius in dimensionless units.
+    rho0 : float
+        The central density in physical units.
+
+    Returns
+    -------
+    list
+        A list containing the physical quantities:
         - r_fisico (float): The physical radius.
         - m_fisico (float): The physical mass.
         - rho_fisico (float): The physical density.
@@ -41,22 +51,24 @@ def adimensional_to_fisico(sol_fin, P_central, r_fin, rho0):
 
     return [r_fisico, m_fisico, rho_fisico, P_fisico, phi_fisico]
 
-# Definimos el sistema de ecuaciones newtonianas
 def newtonianas(sol, r, rho_P):
     """
-    Calculate the derivatives of pressure, mass, and dimensionless potential 
-    using Newtonian equations.
-    Parameters:
-    sol (list or tuple): A list or tuple containing the dimensionless pressure (P), 
-                         mass (m), and dimensionless potential (phi).
-    r (float): The radial coordinate.
-    rho_P (function): A function that takes pressure (P) as input and returns 
-                      the dimensionless energy density (rho).
-    Returns:
-    list: A list containing the derivatives of pressure (dP_dr), mass (dm_dr), 
-          and dimensionless potential (dphi_dr) with respect to the radial coordinate.
+    Calculate the derivatives of pressure, mass, and dimensionless potential using Newtonian equations.
+
+    Parameters
+    ----------
+    sol : list or tuple
+        A list or tuple containing the dimensionless pressure (P), mass (m), and dimensionless potential (phi).
+    r : float
+        The radial coordinate.
+    rho_P : function
+        A function that takes pressure (P) as input and returns the dimensionless energy density (rho).
+
+    Returns
+    -------
+    list
+        A list containing the derivatives of pressure (dP_dr), mass (dm_dr), and dimensionless potential (dphi_dr) with respect to the radial coordinate.
     """
-    # Tomamos las variables
     P, m, phi = sol # Presion, masa y potencial adimensionales
 
     # Usamos la ecuación de estado para la densidad de energía
@@ -70,22 +82,24 @@ def newtonianas(sol, r, rho_P):
     # Devolvemos las derivadas
     return [dP_dr, dm_dr, dphi_dr]
 
-# Definimos el sistema de ecuaciones GR
 def relativistas(sol, r, rho_P):
     """
-    Calculate the derivatives of pressure, mass, and dimensionless potential 
-    for a relativistic star using the Tolman-Oppenheimer-Volkoff (TOV) equations.
-    Parameters:
-    sol (list): A list containing the current values of pressure (P), mass (m), 
-                and dimensionless potential (phi).
-    r (float): The radial coordinate.
-    rho_P (function): A function that takes pressure (P) as input and returns 
-                      the corresponding energy density (rho).
-    Returns:
-    list: A list containing the derivatives of pressure (dP_dr), mass (dm_dr), 
-          and dimensionless potential (dphi_dr) with respect to the radial coordinate.
+    Calculate the derivatives of pressure, mass, and dimensionless potential for a relativistic star using the Tolman-Oppenheimer-Volkoff (TOV) equations.
+
+    Parameters
+    ----------
+    sol : list
+        A list containing the current values of pressure (P), mass (m), and dimensionless potential (phi).
+    r : float
+        The radial coordinate.
+    rho_P : function
+        A function that takes pressure (P) as input and returns the corresponding energy density (rho).
+
+    Returns
+    -------
+    list
+        A list containing the derivatives of pressure (dP_dr), mass (dm_dr), and dimensionless potential (dphi_dr) with respect to the radial coordinate.
     """
-    # Tomamos las variables
     P, m, phi = sol # Presion, masa y potencial adimensionales
 
     # Usamos la ecuación de estado para la densidad de energía
@@ -99,24 +113,34 @@ def relativistas(sol, r, rho_P):
     # Devolvemos las derivadas
     return [dP_dr, dm_dr, dphi_dr]
 
-# Definimos la función que integre y recupere las cantidades fisicas para un valor de rho0 y un sistema de ecuaciones dado
-def integrador(rf, dr, rho0, rho_P, P_central, sistema = 'GR', sol_completa = False, densidad_limite = None):
+def integrador(rf, dr, rho0, rho_P, P_central, sistema='GR', sol_completa=False, densidad_limite=None):
     """
     Integrates the TOV equations to solve for the structure of a neutron star.
 
-    Parameters:
-    rf (float): Final radius for the integration (dimensionless).
-    dr (float): Step size for the integration (dimensionless).
-    rho0 (float): Central energy density (in MKS units).
-    rho_P (function): Equation of state function that relates density to pressure (dimensionless).
-    P_central (float): Central pressure (dimensionless).
-    sistema (str, optional): The system of equations to use ('GR' for General Relativity or 'Newt' for Newtonian). Default is 'GR'.
-    sol_completa (bool, optional): If True, returns the complete solution. If False, returns only the final quantities. Default is False.
-    densidad_limite (float, optional): The energy density limit for the star (dimensionless). If None, the limit is set when the pressure reaches zero. Default is None.
+    Parameters
+    ----------
+    rf : float
+        Final radius for the integration (dimensionless).
+    dr : float
+        Step size for the integration (dimensionless).
+    rho0 : float
+        Central energy density (in MKS units).
+    rho_P : function
+        Equation of state function that relates density to pressure (dimensionless).
+    P_central : float
+        Central pressure (dimensionless).
+    sistema : str, optional
+        The system of equations to use ('GR' for General Relativity or 'Newt' for Newtonian). Default is 'GR'.
+    sol_completa : bool, optional
+        If True, returns the complete solution. If False, returns only the final quantities. Default is False.
+    densidad_limite : float, optional
+        The energy density limit for the star (dimensionless). If None, the limit is set when the pressure reaches zero. Default is None.
 
-    Returns:
-    tuple: If sol_completa is False, returns a tuple with the final physical quantities (r_fisico, m_fisico, rho_fisico, P_fisico, phi_fisico) in MKS units.
-           If sol_completa is True, returns a tuple with the final physical quantities in MKS units, the complete solution array, and the radius array (both dimensionless).
+    Returns
+    -------
+    tuple
+        If sol_completa is False, returns a tuple with the final physical quantities (r_fisico, m_fisico, rho_fisico, P_fisico, phi_fisico) in MKS units.
+        If sol_completa is True, returns a tuple with the final physical quantities in MKS units, the complete solution array, and the radius array (both dimensionless).
     """
     # Malla de integración para ambos sistemas
     N = int(rf/dr) # Número de puntos
@@ -166,89 +190,89 @@ def integrador(rf, dr, rho0, rho_P, P_central, sistema = 'GR', sol_completa = Fa
         # Convertimos las cantidades adimensionales a cantidades físicas
         return adimensional_to_fisico(sol_fin, P_central, r[lim], rho0)
     
-# Definimos una función para hallar la relación masa-radio de una estrella de neutrones para una EoS dada
-def masa_radio(rf, dr, rhos, rho_P, P_central, sistema='GR', densidad_limite=None, densidades_plot=None):
+def grafica_masa_radio(radios, masas, densidades_masa):
     """
-    Calculate the mass-radius relationship for a given set of central densities.
-    Parameters:
-    -----------
+    Plots the mass-radius and mass-central density relations for neutron stars.
+
+    Parameters
+    ----------
+    radios : list
+        List of radii of neutron stars.
+    masas : list
+        List of masses of neutron stars.
+    densidades_masa : list
+        List of central densities of neutron stars.
+
+    Returns
+    -------
+    None
+    """
+
+    # Graficamos las relaciones masa radio y masa densidad en masas solares
+    masasolar = 1.989e30  # Masa solar en kg
+    fig, ax = plt.subplots(1, 2, figsize=(12, 6))
+
+    # Creamos un colormap personalizado para los puntos
+    cmap = mcolors.LinearSegmentedColormap.from_list("custom_cmap", ["cornflowerblue", "darkorchid"])
+    norm = mcolors.Normalize(vmin=0, vmax=len(radios) - 1)
+    colors = [cmap(norm(i)) for i in range(len(radios))]
+
+    # Graficamos la relación masa-radio
+    for i in range(len(radios)):
+        ax[0].plot(radios[i] / 1e3, masas[i] / masasolar, 'o', color=colors[i], linewidth=2)
+    ax[0].set_xlabel(r'$R$ (km)', fontsize=16)
+    ax[0].set_ylabel(r'$M$ ($M_\odot$)', fontsize=16)
+    ax[0].set_title(r'Relación Masa-Radio', fontsize=18)
+    ax[0].tick_params(axis='both', which='both', direction='in', right=True, top=True)
+    # Punto en la masa maxima
+    ax[0].plot(radios[np.argmax(masas)] / 1e3, masas.max() / masasolar, 'o', color='red', markeredgewidth=1, markeredgecolor='black')
+    ax[0].grid()
+
+    # Graficamos la relación masa-densidad central
+    for i in range(len(densidades_masa)):
+        ax[1].semilogx(densidades_masa[i], masas[i] / masasolar, 'o', color=colors[i], linewidth=2)
+    ax[1].set_xlabel(r'$\rho_0^m$ (g/cm$^3$)', fontsize=16)
+    ax[1].set_title(r'Relación Masa-Densidad Central', fontsize=18)
+    ax[1].tick_params(axis='both', which='both', direction='in', right=True, top=True)
+    # Punto en la masa maxima
+    ax[1].plot(densidades_masa[np.argmax(masas)], masas.max() / masasolar, 'o', color='red', markeredgewidth=1, markeredgecolor='black')
+    ax[1].grid()
+
+    print("Masa máxima:", format(masas.max() / masasolar, "2.3f"), "M_sun para rho0_m =", format(densidades_masa[np.argmax(masas)], "2.3e"), "g/cm^3")
+
+    plt.tight_layout()
+    plt.show()
+
+def graficar_solucion(rf, dr, rho0, rho_P, P_central, sistema='GR', densidad_limite=None):
+    """
+    Plots the solution of the TOV equations.
+
+    Parameters
+    ----------
     rf : float
         Final radius for the integration (dimensionless).
     dr : float
-        Step size for the radius (dimensionless).
-    rhos : array-like
-        Array of central densities to iterate over (MKS units).
+        Step size for the integration (dimensionless).
+    rho0 : float
+        Central energy density (in MKS units).
     rho_P : function
         Equation of state function that relates density to pressure (dimensionless).
     P_central : float
         Central pressure (dimensionless).
     sistema : str, optional
-        System of equations to solve ('Newt' for Newtonian or 'GR' for General Relativity by default).
+        The system of equations to use ('GR' for General Relativity or 'Newt' for Newtonian). Default is 'GR'.
     densidad_limite : float, optional
-        Density limit for the integration (dimensionless). If None, the limit is set when the pressure reaches zero. Default is None.
-    densidades_plot : array-like, optional
-        Array of densities for plotting the mass-density relationship (physical units). Default is None.
-    Returns:
-    --------
-    radios : numpy.ndarray
-        Array of radii corresponding to the central densities (physical units).
-    masas : numpy.ndarray
-        Array of masses corresponding to the central densities (physical units).
-    Notes:
-    ------
-    If `densidades_plot` is provided, the function will also generate plots for
-    the mass-radius and mass-density relationships.
+        The energy density limit for the star (dimensionless). If None, the limit is set when the pressure reaches zero. Default is None.
+
+    Returns
+    -------
+    None
     """
-    # Inicializamos los vectores de masa y radio
-    masas = np.array([])
-    radios = np.array([])
-    
-    # Iteramos sobre las densidades centrales
-    for rho0 in rhos:
-        # Resolvemos el sistema de ecuaciones
-        sol = integrador(rf, dr, rho0, rho_P, P_central, sistema, densidad_limite=densidad_limite)
-        # Guardamos la masa y el radio
-        masas = np.append(masas, sol[1])
-        radios = np.append(radios, sol[0])
-    
-    if densidades_plot is not None:
-        # Graficamos la relación masa-radio
-        import matplotlib.pyplot as plt
-        # Graficamos las relaciones masa radio y masa densidad en masas solares
-        masasolar=1.989e30 # Masa solar en kg
-        color = "cornflowerblue"
-        fig, ax = plt.subplots(1, 2, figsize=(12, 6))
-        ax[0].plot(radios/1e3, masas/masasolar, 'o', color=color, linewidth=2)
-        ax[0].set_xlabel(r'$R$ (km)', fontsize=16)
-        ax[0].set_ylabel(r'$M$ ($M_\odot$)', fontsize=16)
-        ax[0].set_title(r'Relación Masa-Radio', fontsize=18)
-        ax[0].tick_params(axis='both', which='both', direction='in', right=True, top=True)
-        #Punto en la masa maxima
-        ax[0].plot(radios[np.argmax(masas)]/1e3, masas.max()/masasolar, 'o', color='darkorchid')
-        
-        # Graficamos la relación masa-densidad central 
-        ax[1].semilogx(densidades_plot, masas/masasolar, 'o', color=color, linewidth=2)
-        ax[1].set_xlabel(r'$\rho_0^m$ (g/cm$^3$)', fontsize=16)
-        ax[1].set_title(r'Relación Masa-Densidad Central', fontsize=18)
-        ax[1].tick_params(axis='both', which='both', direction='in', right=True, top=True)
-        #Punto en la masa maxima
-        ax[1].plot(densidades_plot[np.argmax(masas)], masas.max()/masasolar, 'o', color='darkorchid')
-
-        print("Masa máxima: ", masas.max()/masasolar)
-
-        plt.tight_layout()
-        plt.show()
-        
-    return radios, masas
-
-# Definimos una función para graficar una solución de las ecuaciones TOV
-def graficar_solucion(rf, dr, rho0, rho_P, P_central, sistema = 'GR', densidad_limite = None):
     # Resolvemos el sistema de ecuaciones
     sol, sol_completa, r = integrador(rf, dr, rho0, rho_P, P_central, sistema, sol_completa=True, densidad_limite=densidad_limite)
     
     # Graficamos la solución
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots(2, 2, figsize=(12, 12))
+    fig, ax = plt.subplots(2, 2, figsize=(10, 8))
     
     # Graficamos la presión
     ax[0, 0].plot(r, sol_completa[0], 'o-', color='cornflowerblue', linewidth=2)
@@ -283,8 +307,24 @@ def graficar_solucion(rf, dr, rho0, rho_P, P_central, sistema = 'GR', densidad_l
     plt.tight_layout()
     plt.show()
     
-# Definimos una ecuación de estado de neutrones, protones y electrones como ejemplo
-def gas_neutrones(rho0_m, rho0_m_max = 1e17, extrapolate=False):
+def gas_neutrones(rho0_m, rho0_m_max=1e17, extrapolate=False):
+    """
+    Defines an equation of state for neutrons, protons, and electrons as an example.
+
+    Parameters
+    ----------
+    rho0_m : float
+        Central mass density in g/cm^3.
+    rho0_m_max : float, optional
+        Maximum mass density in g/cm^3. Default is 1e17.
+    extrapolate : bool, optional
+        If True, allows extrapolation beyond the provided data. Default is False.
+
+    Returns
+    -------
+    tuple
+        A tuple containing the interpolation function for pressure and density, the central energy density, and the central pressure.
+    """
     m_n = 1.674927471e-27 # Masa del neutrón en kg
     h = 6.62607015e-34 # Constante de Planck en J s
     
@@ -311,8 +351,6 @@ def gas_neutrones(rho0_m, rho0_m_max = 1e17, extrapolate=False):
     # Hallamos la densidad de energía adimensional
     densidades = ( c**2*B*x**3 + A*(8*x**3*(np.sqrt(1+x**2)-1)-fs) )/rho0
     
-    from scipy.interpolate import interp1d
-    
     # Hallamos la presión central
     P_central = interp1d(densidades, Ps)(1)
 
@@ -321,4 +359,3 @@ def gas_neutrones(rho0_m, rho0_m_max = 1e17, extrapolate=False):
         return interp1d(Ps, densidades, fill_value='extrapolate'), rho0, P_central
     else:
         return interp1d(Ps, densidades), rho0, P_central
-        
