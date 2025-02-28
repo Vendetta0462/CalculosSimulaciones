@@ -43,10 +43,10 @@ def adimensional_to_fisico(sol_fin, P_central, r_fin, rho0):
     M = 4*pi*R**3*rho0/c**2
 
     # Convertimos las cantidades adimensionales a cantidades físicas
-    P_fisico = P0*P_central # Presión central en Pa
+    P_fisico = P0*P # Presión final en Pa
     m_fisico = M*m # Masa en kg
     phi_fisico = phi # Potencial adimensional
-    rho_fisico = rho0 # Densidad central de energía en J/m^3
+    rho_fisico = rho*rho0 # Densidad final de energía en J/m^3
     r_fisico = R*r_fin # Radio en m
 
     return [r_fisico, m_fisico, rho_fisico, P_fisico, phi_fisico]
