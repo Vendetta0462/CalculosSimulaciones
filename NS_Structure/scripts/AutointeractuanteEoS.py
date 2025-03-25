@@ -15,7 +15,13 @@ m_nuc_MKS = 1.6726219e-27 # kg
 hbar = hbar_MKS * (G_MKS/c_MKS**3) # m^2
 m_nuc = m_nuc_MKS * (G_MKS/c_MKS**2) # m
 
-def autoconsistencia(x_sigma, n_barion, params=[330.263, 249.547, 1, 1]):
+# Damos valores a las constantes (fijadas con n_sat y (B/A)_sat) (constantes tilde cuadradas)
+A_sigma = 330.263 # Walecka: 266.9, 357.4
+A_omega = 249.547 # Walecka: 195.7, 273.8
+b_ = 5e-3
+c_ = 5e-3
+
+def autoconsistencia(x_sigma, n_barion, params=[A_sigma, A_omega, b_, c_]):
     """
     Calcula la ecuación de autoconsistencia para el modelo sigma-omega con autointeracciones del campo escalar.
 
@@ -33,7 +39,7 @@ def autoconsistencia(x_sigma, n_barion, params=[330.263, 249.547, 1, 1]):
     integral = x_sigma*(x_f*raiz-x_sigma**2*np.arctanh(x_f/raiz))
     return (1.0 - x_sigma) - A_sigma*(integral/(pi**2)-b_*(1-x_sigma)**2-c_*(1-x_sigma)**3)
 
-def sol_x_sigma(n_barion, params=[330.263, 249.547, 1, 1]):
+def sol_x_sigma(n_barion, params=[A_sigma, A_omega, b_, c_]):
     """
     Resuelve la ecuación de autoconsistencia para un valor dado de densidad bariónica, encontrando raíces.
 
@@ -51,7 +57,7 @@ def sol_x_sigma(n_barion, params=[330.263, 249.547, 1, 1]):
     else:
         return solution[0][0]
 
-def energia_presion(n_barion, params=[330.263, 249.547, 1, 1]):
+def energia_presion(n_barion, params=[A_sigma, A_omega, b_, c_]):
     """
     Calcula la energía y la presión para una densidad bariónica dada.
 
@@ -76,7 +82,7 @@ def energia_presion(n_barion, params=[330.263, 249.547, 1, 1]):
     presion = (-termino_sigma + termino_omega + 4.0/(3.0*pi**2)*integral_presion)
     return energia, presion
 
-def EoS(n_barions, params=[330.263, 249.547, 1, 1]):
+def EoS(n_barions, params=[A_sigma, A_omega, b_, c_]):
     """
     Calcula la ecuación de estado (EoS) para un rango de densidades bariónicas.
 
@@ -104,3 +110,136 @@ def EoS(n_barions, params=[330.263, 249.547, 1, 1]):
             break
         
     return CubicSpline(presiones[presion_cambio:], energias[presion_cambio:]), presiones, energias, n_sirve, presion_cambio
+
+def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, b_, c_]):
+    """
+    Grafica la función de autoconsistencia para un rango de densidades bariónicas.
+    
+    Args:
+        n_prove (array-like): Array de densidades bariónicas.
+        params (list): Lista de parámetros [A_sigma, A_omega, b_, c_] que definen el modelo.
+        
+    Returns:
+        None
+    """
+    
+    # Calculamos los valores de x_sigma para las densidades bariónicas dadas
+    x_sigma_prove_tilde = np.zeros(len(n_prove))
+    x_sigma_prove = np.zeros(len(n_prove))
+    for i in range(len(n_prove)):
+        x_sigma_prove_tilde[i] = sol_x_sigma(n_prove[i], params)
+        x_sigma_prove[i] = (1-x_sigma_prove_tilde[i])*m_nuc
+
+    # Mostramos los resultados para x_sigma y x_sigma en función de n_barion
+    fig, ax = plt.subplots(1,2, figsize=(12,4))
+    ax[0].semilogx(n_prove*m_nuc_MKS*1e-3, x_sigma_prove_tilde)
+    ax[0].set_xlabel(r'$\rho_m$ $[g/cm^3]$')
+    ax[0].set_ylabel(r'$\tilde x_{\sigma}$')
+    ax[0].set_title(r'$\tilde x_{\sigma}$ en función de $\rho_m$')
+    ax[0].grid()
+    ax[1].semilogx(n_prove*1e-45, x_sigma_prove)
+    ax[1].set_xlabel(r'$n_{barion}$ $[fm^{-3}]$')
+    ax[1].set_ylabel(r'$x_{\sigma}$')
+    ax[1].set_title(r'$x_{\sigma}$ en función de $n_{barion}$')
+    ax[1].grid()
+    plt.show()
+    return None
+    
+def plot_EoS(rho_P, presiones, energias, n_sirve, rho_0_lambda=m_nuc**4/hbar**3/2, titulo = r'Ecuación de estado'):
+    """
+    Grafica la ecuación de estado (EoS) y la energía y presión en función de la densidad de masa.
+    
+    Args:
+        rho_P (CubicSpline): Interpolación cúbica de la EoS.
+        presiones (array-like): Array de presiones.
+        energias (array-like): Array de energías.
+        n_sirve (array-like): Array de densidades bariónicas.
+        rho_0_lambda (float): Densidad de masa en unidades geométricas.
+        
+    Returns:
+        None
+    """
+    
+    # Parámetros de conversión
+    rho_geoToMKS = c_MKS**4 / G_MKS   # Conversion de unidades geométricas a MKS
+    rho_MKSTocgs = 10                  # Conversion de MKS a cgs
+    conv = rho_0_lambda * rho_geoToMKS * rho_MKSTocgs
+
+    # Creamos la figura con dos subfiguras (side by side)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+
+    # ----- Subfigura 1: Ecuación de estado con ejes secundarios -----
+    ax1.loglog(presiones, energias, "o", label='Puntos de la EoS')
+    ax1.loglog(presiones, rho_P(presiones), label='Interpolación')
+    ax1.set_xlabel(r'$P/\rho_0$')
+    ax1.set_ylabel(r'$\rho/\rho_0$')
+
+    # Agregamos ejes secundarios: eje X superior y eje Y derecho (cgs)
+    secax_x = ax1.secondary_xaxis('top', functions=(lambda x: x * conv, lambda x: x / conv))
+    secax_x.set_xlabel(r'$P$ [Ba]')
+    secax_y = ax1.secondary_yaxis('right', functions=(lambda x: x * conv, lambda x: x / conv))
+    secax_y.set_ylabel(r'$\rho$ [erg/cm$^3$]')
+
+    ax1.legend()
+    ax1.grid()
+
+    # ----- Subfigura 2: P y energía vs densidad de masa -----
+    # Aquí se convierten las unidades de P y energía a cgs usando el mismo factor 'conv'
+    x_data = n_sirve * m_nuc_MKS * 1e-3   # Conversión a la densidad de masa (en g/cm^3)
+
+    p_data = presiones * conv  
+    e_data = energias   * conv
+
+    ax2.loglog(x_data, p_data, "o", label='Presión [Ba]')
+    ax2.loglog(x_data, e_data, "o", label='Energía [erg/cm$^3$]')
+    ax2.set_xlabel(r'$\rho_m$ [g/cm$^3$]')
+    ax2.set_ylabel(r'$P$ y $\rho$')
+    ax2.legend()
+    ax2.grid()
+
+    fig.suptitle(titulo)
+    plt.tight_layout()
+    plt.show()
+    return None
+
+def plot_saturacion(n_prove, params=[A_sigma, A_omega, b_, c_], rho_0_lambda=m_nuc**4/hbar**3/2):
+    """
+    Grafica la energía de enlace por nucleón en función de la densidad bariónica y halla la densidad de saturación.
+    
+    Args:
+        n_prove (array-like): Array de densidades bariónicas.
+        params (list): Lista de parámetros [A_sigma, A_omega, b_, c_] que definen el modelo.
+        rho_0_lambda (float): Densidad de masa en unidades geométricas.
+        
+    Returns:
+        None
+    """
+    
+    energias_prove = np.zeros(len(n_prove)) # Energías de enlace por nucleón en m^-2 (geometrizadas)
+    for i in range(len(n_prove)):
+        energias_prove[i], _ = energia_presion(n_prove[i], params)
+        energias_prove[i] *= rho_0_lambda # Energías de enlace por nucleón en m^-2 (geometrizadas)
+        
+    # Hallamos la densidad de saturación en fm^-3 donde es minima la energía de enlace por nucleón
+    e_MKS = 1.6021766e-19 # J
+    minimo = np.argmin(energias_prove/n_prove - m_nuc)
+    n_saturacion = n_prove[minimo] # Densidad de saturación en m^-3
+    _, presion_sat = energia_presion(n_saturacion, params)
+    presion_sat *= rho_0_lambda
+    print(f"La masa efectiva en saturación es: {sol_x_sigma(n_saturacion,params):.3f}", "m_nuc")
+    n_saturacion *= (1e-15)**3 # Densidad de saturación en fm^-3
+    print("Densidad de saturación n_saturacion =", format(n_saturacion,".3f"), "1/fm^3 y energia de enlace por nucleon en saturación =", format((np.min(energias_prove/n_prove - m_nuc))*c_MKS**4/G_MKS/e_MKS*1e-6, ".3f"), "MeV y densidad de energia en saturación =", format(energias_prove[minimo]*c_MKS**4/G_MKS/e_MKS*1e-6*(1e-15)**3, ".3f"), "MeV/fm^3")
+    print("Presion en la densidad de saturación:", presion_sat*c_MKS**4/G_MKS, "Pa")
+        
+    # Graficamos la energía de enlace por nucleón en función de x_f
+    plt.figure(figsize=(8,6))
+    plt.plot(n_prove*(1e-15)**3, (energias_prove/n_prove - m_nuc)*c_MKS**4/G_MKS/e_MKS*1e-6, "-o")
+    plt.xlabel(r'$n_{barion}$ [fm$^{-3}$]')
+    plt.ylabel(r'$\frac{\epsilon}{n}-m_{nuc}$ [MeV]')
+    # plt.ylim(-20, 20)
+    # Anotamos el mínimo y su energia con un punto, una flecha y los valores de B/A y n_saturacion con ofset vertical de +2, centrado
+    plt.annotate(r'$\left(\frac{B}{A}\right)_{min}=$'+format((np.min(energias_prove/n_prove - m_nuc))*c_MKS**4/G_MKS/e_MKS*1e-6, ".3f")+' MeV'+'\n'+'$n_{sat}$ = '+format(n_saturacion, '.3f')+'$fm^{-3}$', xy=(n_saturacion, np.min(energias_prove/n_prove - m_nuc)*c_MKS**4/G_MKS/e_MKS*1e-6), xytext=(n_saturacion, np.min(energias_prove/n_prove - m_nuc)*c_MKS**4/G_MKS/e_MKS*1e-6+2), arrowprops=dict(arrowstyle='->'), horizontalalignment='center')
+    plt.title(r'Energía de enlace por nucleón en función de $n_{barion}$')
+    plt.grid()
+    plt.show()
+    return None
