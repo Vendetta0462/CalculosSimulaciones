@@ -14,6 +14,7 @@ c_MKS = 299792458 # m/s
 G_MKS = 6.67430e-11 # m^3/kg/s^2
 pi = np.pi
 m_nuc_MKS = 1.6726219e-27 # kg
+e_MKS = 1.6021766e-19 # J
 
 # Definimos las constantes necesarias en unidades geometrizadas
 hbar = hbar_MKS * (G_MKS/c_MKS**3) # m^2
@@ -161,6 +162,31 @@ def coeficiente_simetria(n_sat, params=[A_sigma, A_omega, b_, c_]):
     raiz = np.sqrt(x_f**2+x_sigma**2)
     return m_nuc*x_f**2/(6.0*raiz)
 
+def calculate_properties(n_prove,params):
+    """
+    Calcula las propiedades de saturación del modelo dado un conjunto de parámetros.
+    
+    Args:
+        n_prove (array-like): Array de densidades bariónicas en m^-3.
+        params (list): Lista de parámetros [A_sigma, A_omega, b, c] que definen el modelo.
+        
+    Returns:
+        props (array): Array con las propiedades de saturación [densidad de saturación, energía de enlace, módulo de compresión, coeficiente de simetría] en fm^-3 y MeV.        
+    """
+    # Extraemos las propiedades de saturación (m^-3 y m^-2 geometrizado)
+    saturacion = plot_saturacion(n_prove, params, plot=False)
+    saturation_density = saturacion[0]
+    binding_energy = saturacion[1]
+    compression_modulus = modulo_compresion(saturation_density, params)
+    energy_symmetry_coefficient = coeficiente_simetria(saturation_density, params)
+    
+    # Convertimos las propiedades a unidades fm^-3 y MeV
+    saturation_density = saturation_density*1e-45
+    binding_energy = binding_energy*c_MKS**4/G_MKS/e_MKS*1e-6
+    compression_modulus = compression_modulus*c_MKS**4/G_MKS/e_MKS*1e-6
+    energy_symmetry_coefficient = energy_symmetry_coefficient*c_MKS**4/G_MKS/e_MKS*1e-6
+    return np.array([saturation_density, binding_energy, compression_modulus, energy_symmetry_coefficient])
+
 #-----------------------------------------------------------------------
 # GRAFICAS DE RESULTADOS DE LA ECUACIÓN DE ESTADO
 #-----------------------------------------------------------------------
@@ -256,18 +282,18 @@ def plot_EoS(rho_P, presiones, energias, n_sirve, rho_0_lambda=m_nuc**4/hbar**3/
     plt.show()
     return None
 
-def plot_saturacion(n_prove, params=[A_sigma, A_omega, b_, c_], rho_0_lambda=m_nuc**4/hbar**3/2):
+def plot_saturacion(n_prove, params=[A_sigma, A_omega, b_, c_], rho_0_lambda=m_nuc**4/hbar**3/2, plot=True):
     """
     Grafica la energía de enlace por nucleón en función de la densidad bariónica y halla la densidad de saturación.
     
     Args:
         n_prove (array-like): Array de densidades bariónicas en m^-3.
-        params (list): Lista de parámetros [A_sigma, A_omega, b_, c_] que definen el modelo.
+        params (list): Lista de parámetros [A_sigma, A_omega, b, c] que definen el modelo.
         rho_0_lambda (float): Unidades de energía empleadas para adimensionalizar, en geometrizadas.
+        plot (bool): Si True, grafica la energía de enlace por nucleón en función de la densidad bariónica.
         
     Returns:
-        n_saturacion (float): Densidad de saturación en m^-3.  
-        b_a_min (float): Energía de enlace por nucleón en saturación en geométricas.
+        saturacion (list): Lista con la densidad de saturación en m^-3 y la energía de enlace por nucleón en m^-2 (geometrizadas).
     """
     
     energias_prove = np.zeros(len(n_prove)) # Energías de enlace por nucleón en m^-2 (geometrizadas)
@@ -276,25 +302,26 @@ def plot_saturacion(n_prove, params=[A_sigma, A_omega, b_, c_], rho_0_lambda=m_n
         energias_prove[i] *= rho_0_lambda # Energías de enlace por nucleón en m^-2 (geometrizadas)
         
     # Hallamos la densidad de saturación en fm^-3 donde es minima la energía de enlace por nucleón
-    e_MKS = 1.6021766e-19 # J
     minimo = np.argmin(energias_prove/n_prove - m_nuc)
     n_saturacion = n_prove[minimo] # Densidad de saturación en m^-3
     _, presion_sat = energia_presion(n_saturacion, params)
     presion_sat *= rho_0_lambda
-    print(f"La masa efectiva en saturación es: {sol_x_sigma(n_saturacion,params):.3f}", "m_nuc")
     n_saturacion *= 1e-45 # Densidad de saturación en fm^-3
-    print("Densidad de saturación n_saturacion =", format(n_saturacion,".3f"), "1/fm^3 y energia de enlace por nucleon en saturación =", format((np.min(energias_prove/n_prove - m_nuc))*c_MKS**4/G_MKS/e_MKS*1e-6, ".3f"), "MeV y densidad de energia en saturación =", format(energias_prove[minimo]*c_MKS**4/G_MKS/e_MKS*1e-6*(1e-15)**3, ".3f"), "MeV/fm^3")
-    print("Presion en la densidad de saturación:", presion_sat*c_MKS**4/G_MKS, "Pa")
-        
-    # Graficamos la energía de enlace por nucleón en función de x_f
-    plt.figure(figsize=(8,6))
-    plt.plot(n_prove*(1e-15)**3, (energias_prove/n_prove - m_nuc)*c_MKS**4/G_MKS/e_MKS*1e-6, "-o")
-    plt.xlabel(r'$n_{barion}$ [fm$^{-3}$]')
-    plt.ylabel(r'$\frac{\epsilon}{n}-m_{nuc}$ [MeV]')
-    # plt.ylim(-20, 20)
-    # Anotamos el mínimo y su energia con un punto, una flecha y los valores de B/A y n_saturacion con ofset vertical de +2, centrado
-    plt.annotate(r'$\left(\frac{B}{A}\right)_{min}=$'+format((np.min(energias_prove/n_prove - m_nuc))*c_MKS**4/G_MKS/e_MKS*1e-6, ".3f")+' MeV'+'\n'+'$n_{sat}$ = '+format(n_saturacion, '.3f')+'$fm^{-3}$', xy=(n_saturacion, np.min(energias_prove/n_prove - m_nuc)*c_MKS**4/G_MKS/e_MKS*1e-6), xytext=(n_saturacion, np.min(energias_prove/n_prove - m_nuc)*c_MKS**4/G_MKS/e_MKS*1e-6+2), arrowprops=dict(arrowstyle='->'), horizontalalignment='center')
-    plt.title(r'Energía de enlace por nucleón en función de $n_{barion}$')
-    plt.grid()
-    plt.show()
+
+    if plot:
+        print(f"La masa efectiva en saturación es: {sol_x_sigma(n_saturacion*1e45,params):.3f}", "m_nuc")
+        print("Densidad de saturación n_saturacion =", format(n_saturacion,".3f"), "1/fm^3 y energia de enlace por nucleon en saturación =", format((np.min(energias_prove/n_prove - m_nuc))*c_MKS**4/G_MKS/e_MKS*1e-6, ".3f"), "MeV y densidad de energia en saturación =", format(energias_prove[minimo]*c_MKS**4/G_MKS/e_MKS*1e-6*(1e-15)**3, ".3f"), "MeV/fm^3")
+        print("Presion en la densidad de saturación:", presion_sat*c_MKS**4/G_MKS, "Pa")
+            
+        # Graficamos la energía de enlace por nucleón en función de x_f
+        plt.figure(figsize=(8,6))
+        plt.plot(n_prove*(1e-15)**3, (energias_prove/n_prove - m_nuc)*c_MKS**4/G_MKS/e_MKS*1e-6, "-o")
+        plt.xlabel(r'$n_{barion}$ [fm$^{-3}$]')
+        plt.ylabel(r'$\frac{\epsilon}{n}-m_{nuc}$ [MeV]')
+        # plt.ylim(-20, 20)
+        # Anotamos el mínimo y su energia con un punto, una flecha y los valores de B/A y n_saturacion con ofset vertical de +2, centrado
+        plt.annotate(r'$\left(\frac{B}{A}\right)_{min}=$'+format((np.min(energias_prove/n_prove - m_nuc))*c_MKS**4/G_MKS/e_MKS*1e-6, ".3f")+' MeV'+'\n'+'$n_{sat}$ = '+format(n_saturacion, '.3f')+'$fm^{-3}$', xy=(n_saturacion, np.min(energias_prove/n_prove - m_nuc)*c_MKS**4/G_MKS/e_MKS*1e-6), xytext=(n_saturacion, np.min(energias_prove/n_prove - m_nuc)*c_MKS**4/G_MKS/e_MKS*1e-6+2), arrowprops=dict(arrowstyle='->'), horizontalalignment='center')
+        plt.title(r'Energía de enlace por nucleón en función de $n_{barion}$')
+        plt.grid()
+        plt.show()
     return [n_saturacion*1e45, (energias_prove/n_prove - m_nuc)[minimo]]
