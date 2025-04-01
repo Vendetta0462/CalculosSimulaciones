@@ -62,7 +62,7 @@ def sol_x_sigma(n_barion, params=[A_sigma, A_omega, b_, c_]):
     solution = fsolve(autoconsistencia, 0.5, args=(n_barion, params), full_output=True)
     if solution[2] != 1:
         print("No se encontró solución para n_barion = ", n_barion)
-        return 0
+        return np.nan
     else:
         return solution[0][0]
 
@@ -80,7 +80,6 @@ def energia_presion(n_barion, params=[A_sigma, A_omega, b_, c_]):
     A_sigma, A_omega, b_, c_ = params
     x_sigma = sol_x_sigma(n_barion, params)
     x_f = (1.0/m_nuc)*hbar*(3.0*pi**2*n_barion/2.0)**(1/3)
-    lambda_ = m_nuc**4/hbar**3
     raiz = np.sqrt(x_f**2+x_sigma**2)
     termino_arctanh = x_sigma**4*np.arctanh(x_f/raiz)
     integral_energia = (x_f*raiz*(2.0*x_f**2+x_sigma**2)-termino_arctanh)/8.0
@@ -162,7 +161,7 @@ def coeficiente_simetria(n_sat, params=[A_sigma, A_omega, b_, c_]):
     raiz = np.sqrt(x_f**2+x_sigma**2)
     return m_nuc*x_f**2/(6.0*raiz)
 
-def calculate_properties(n_prove,params):
+def calculate_properties(n_prove, params):
     """
     Calcula las propiedades de saturación del modelo dado un conjunto de parámetros.
     
