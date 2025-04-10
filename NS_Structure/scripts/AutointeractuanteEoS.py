@@ -62,7 +62,7 @@ def sol_x_sigma(n_barion, params=[A_sigma, A_omega, b_, c_]):
     solution = fsolve(autoconsistencia, 0.5, args=(n_barion, params), full_output=True)
     if solution[2] != 1:
         print("No se encontró solución para n_barion = ", n_barion)
-        return np.nan
+        return 1
     else:
         return solution[0][0]
 
