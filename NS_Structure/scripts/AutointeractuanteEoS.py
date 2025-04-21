@@ -148,7 +148,7 @@ def modulo_compresion(n_sat, params=[A_sigma, A_omega, b, c]):
     integral_compresion = 0.5*((x_f**3+3.0*x_f*x_sigma**2)/raiz -3.0*x_sigma**2*np.arctanh(x_f/raiz))
     F = 1.0 + A_sigma*(2.0/pi**2*integral_compresion+2.0*b*(1-x_sigma)+3.0*c*(1-x_sigma)**2)
     
-    K = 3.0*m_nuc*(2.0*A_omega*x_f**3/pi**2 + (x_f**2-2.0*A_sigma*x_f**3*x_sigma**2/(pi**2*raiz*F)/raiz))
+    K = 3.0*m_nuc*(2.0*A_omega*x_f**3/pi**2 + (x_f**2-2.0*A_sigma*x_f**3*x_sigma**2/(pi**2*raiz*F))/raiz)
     
     return K/MeV_to_fm11 # Módulo de compresión en MeV
 
