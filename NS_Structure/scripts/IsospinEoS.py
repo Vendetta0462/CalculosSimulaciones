@@ -175,9 +175,11 @@ def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c, t]):
 # CALCULO DE PROPIEDADES
 #-----------------------------------------------------------------------
 
+# Calculado recientemente
 def modulo_compresion(n_sat, params=[A_sigma, A_omega, A_rho, b, c, t]):
     """
-    Calcula el módulo de compresión para una densidad de saturación dada.
+    Calcula el módulo de compresión para una densidad de saturación dada 
+    en el modelo sigma-omega-rho con isospin.
 
     Args:
         n_sat (float): Densidad de saturación en fm^-3.
@@ -191,43 +193,52 @@ def modulo_compresion(n_sat, params=[A_sigma, A_omega, A_rho, b, c, t]):
     x_f = (1.0/m_nuc)*(3.0*pi**2*n_sat/2.0)**(1/3)
     
     # Momentos de Fermi para neutrones y protones
-    x_nF = x_f * (1.0 - t)**(1/3)
-    x_pF = x_f * (1.0 + t)**(1/3)
+    x_nF = x_f * (1.0 - t)**(1/3)  # neutrones
+    x_pF = x_f * (1.0 + t)**(1/3)  # protones
     
-    # Integral de compresión para neutrones
+    # Integrales y términos separados para neutrones y protones
     if x_nF > 0:
         raiz_n = np.sqrt(x_nF**2 + x_sigma**2)
-        integral_compresion_n = 0.5*((x_nF**3 + 3.0*x_nF*x_sigma**2)/raiz_n - 3.0*x_sigma**2*np.arctanh(x_nF/raiz_n))
+        integral_n = 0.5*((x_nF**3 + 3.0*x_nF*x_sigma**2)/raiz_n - 3.0*x_sigma**2*np.arctanh(x_nF/raiz_n))
+        factor_interno_n = x_sigma**2*x_nF**3/raiz_n
     else:
-        integral_compresion_n = 0
-        
-    # Integral de compresión para protones
-    if x_pF > 0:
-        raiz_p = np.sqrt(x_pF**2 + x_sigma**2)
-        integral_compresion_p = 0.5*((x_pF**3 + 3.0*x_pF*x_sigma**2)/raiz_p - 3.0*x_sigma**2*np.arctanh(x_pF/raiz_p))
-    else:
-        integral_compresion_p = 0
-    
-    F = 1.0 + A_sigma*(2.0/pi**2*(integral_compresion_n + integral_compresion_p) + 2.0*b*(1-x_sigma) + 3.0*c*(1-x_sigma)**2)
-    
-    # Términos individuales para el cálculo del módulo
-    termino_omega_rho = 2.0*(A_omega + 0.25*A_rho*t**2)*x_f**3/pi**2
-    
-    if x_nF > 0:
-        raiz_n = np.sqrt(x_nF**2 + x_sigma**2)
-        termino_fermi_n = (x_nF**2 - 2.0*A_sigma*x_nF**3*x_sigma**2/(pi**2*raiz_n*F))/raiz_n
-    else:
-        termino_fermi_n = 0
+        integral_n = 0
+        factor_interno_n = 0
         
     if x_pF > 0:
         raiz_p = np.sqrt(x_pF**2 + x_sigma**2)
-        termino_fermi_p = (x_pF**2 - 2.0*A_sigma*x_pF**3*x_sigma**2/(pi**2*raiz_p*F))/raiz_p
+        integral_p = 0.5*((x_pF**3 + 3.0*x_pF*x_sigma**2)/raiz_p - 3.0*x_sigma**2*np.arctanh(x_pF/raiz_p))
+        factor_interno_p = x_sigma**2*x_pF**3/raiz_p
     else:
-        termino_fermi_p = 0
+        integral_p = 0
+        factor_interno_p = 0
     
-    K = 3.0*m_nuc*(termino_omega_rho + termino_fermi_n + termino_fermi_p)
+    integral_total = integral_n + integral_p
+    factor_interno_total = factor_interno_n + factor_interno_p
+    
+    # Factor F con las autointeracciones del campo escalar
+    F = 1.0 + A_sigma*(1.0/pi**2*integral_total + 2.0*b*(1-x_sigma) + 3.0*c*(1-x_sigma)**2)
+    
+    # Término vectorial con contribuciones de omega y rho
+    termino_vectorial = (2.0*A_omega + 0.5*A_rho*t**2)*x_f**3/pi**2
+    
+    # Término escalar con derivadas respecto a la densidad
+    if x_nF > 0:
+        termino_escalar_n = (x_nF/x_f)**3 * (x_nF**2 - A_sigma/(pi**2*F) * factor_interno_total)/raiz_n
+    else:
+        termino_escalar_n = 0
+        
+    if x_pF > 0:
+        termino_escalar_p = (x_pF/x_f)**3 * (x_pF**2 - A_sigma/(pi**2*F) * factor_interno_total)/raiz_p
+    else:
+        termino_escalar_p = 0
+    
+    termino_escalar = termino_escalar_n + termino_escalar_p
+    
+    K = 3.0*m_nuc*(termino_vectorial + 0.5*termino_escalar)
     
     return K/MeV_to_fm11 # Módulo de compresión en MeV
+
 
 def coeficiente_simetria(n_sat, params=[A_sigma, A_omega, A_rho, b, c, t]):
     """
