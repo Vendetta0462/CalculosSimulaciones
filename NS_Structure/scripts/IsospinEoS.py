@@ -27,12 +27,13 @@ MeVfm_to_Jm  = 1e51*e_MKS # MeV/fm to J/m
 m_nuc = m_nuc_MKS * Kg_to_fm11 # fm^-1
 
 # Damos valores a las constantes (Glendenning) (constantes tilde cuadradas)
-A_sigma = 12.230*m_nuc**2 # Walecka: 266.9, 357.4
+A_sigma = 12.684*m_nuc**2 # Walecka: 266.9, 357.4
 A_omega =  7.148*m_nuc**2 # Walecka: 195.7, 273.8
 A_rho   =  4.410*m_nuc**2 # Nuevo parámetro para el campo rho
-b       =  4.312e-3
-c       = -4.103e-3
-t       = 0.5             # Parámetro de asimetría de isospin (t=0 simétrica, t=+-1 asimétrica)
+b       =  5.610e-3
+c       = -6.986e-3
+t       = 0.0      
+
 
 #-------------------------------------------------------------------------
 # ECUACIÓN DE ESTADO
@@ -60,20 +61,20 @@ def autoconsistencia(x_sigma, n_barion, params=[A_sigma, A_omega, A_rho, b, c, t
     # Integrales separadas para neutrones y protones
     if x_nF > 0:
         raiz_n = np.sqrt(x_nF**2 + x_sigma**2)
-        integral_n = x_sigma/2 * (x_nF * raiz_n - x_sigma**2 * np.arctanh(x_nF / raiz_n))
+        integral_n = 0.5 * x_sigma* (x_nF * raiz_n - x_sigma**2 * np.arctanh(x_nF / raiz_n))
     else:
         integral_n = 0
         
     if x_pF > 0:
         raiz_p = np.sqrt(x_pF**2 + x_sigma**2)
-        integral_p = x_sigma/2 * (x_pF * raiz_p - x_sigma**2 * np.arctanh(x_pF / raiz_p))
+        integral_p = 0.5 * x_sigma * (x_pF * raiz_p - x_sigma**2 * np.arctanh(x_pF / raiz_p))
     else:
         integral_p = 0
     
     integral_total = integral_n + integral_p
     
     # Ecuación de autoconsistencia (=0)
-    return (1.0 - x_sigma) - A_sigma*(integral_total/(pi**2) - (1-x_sigma)*(b*(1-x_sigma) - c*(1-x_sigma)**2))
+    return (1.0 - x_sigma) - A_sigma * ( integral_total/(pi**2) - b*(1-x_sigma)**2 - c*(1-x_sigma)**3 )
 
 def sol_x_sigma(n_barion, params=[A_sigma, A_omega, A_rho, b, c, t]):
     """
@@ -86,6 +87,8 @@ def sol_x_sigma(n_barion, params=[A_sigma, A_omega, A_rho, b, c, t]):
     Returns:
         float: Solución para el campo escalar sigma.
     """
+
+
     solution = fsolve(autoconsistencia, 0.5, args=(n_barion, params), full_output=True)
     if solution[2] != 1:
         print("No se encontró solución para n_barion = ", n_barion)
@@ -111,7 +114,7 @@ def energia_presion(n_barion, params=[A_sigma, A_omega, A_rho, b, c, t]):
     # Momentos de Fermi para neutrones y protones
     x_nF = x_f * (1.0 - t)**(1/3)  # neutrones
     x_pF = x_f * (1.0 + t)**(1/3)  # protones
-    
+   
     # Integrales para neutrones
     if x_nF > 0:
         raiz_n = np.sqrt(x_nF**2 + x_sigma**2)
@@ -135,6 +138,7 @@ def energia_presion(n_barion, params=[A_sigma, A_omega, A_rho, b, c, t]):
     # Términos de los campos
     termino_sigma = (1.0-x_sigma)**2 * (1.0/A_sigma + 2.0/3.0*b*(1.0-x_sigma) + 0.5*c*(1-x_sigma)**2)
     termino_omega_rho = (A_omega + 0.25*A_rho*t**2) * (4.0*x_f**6/(9.0*pi**4))
+   
     
     # Energía y presión totales
     energia = (termino_sigma + termino_omega_rho + 2.0/(pi**2)*(integral_energia_n + integral_energia_p))
@@ -296,7 +300,7 @@ def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c, t]):
     Returns:
         None
     """
-    
+   
     # Calculamos los valores de x_sigma para las densidades bariónicas dadas
     x_sigma_prove_tilde = np.zeros(len(n_prove))
     x_sigma_prove = np.zeros(len(n_prove))
