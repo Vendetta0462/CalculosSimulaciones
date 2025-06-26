@@ -52,7 +52,7 @@ def autoconsistencia(x_sigma, n_barion, params=[A_sigma, A_omega, b, c]):
     x_f = (1.0/m_nuc)*(3.0*pi**2*n_barion/2.0)**(1/3)
     raiz = np.sqrt(x_f**2+x_sigma**2)
     integral = x_sigma*(x_f*raiz-x_sigma**2*np.arctanh(x_f/raiz))
-    return (1.0 - x_sigma) - A_sigma*(integral/(pi**2)-(1-x_sigma)*(b*(1-x_sigma)-c*(1-x_sigma)**2))
+    return (1.0 - x_sigma) - A_sigma*(integral/(pi**2)-(1-x_sigma)*(b*(1-x_sigma)+c*(1-x_sigma)**2))
 
 def sol_x_sigma(n_barion, params=[A_sigma, A_omega, b, c]):
     """
