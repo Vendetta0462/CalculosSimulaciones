@@ -59,26 +59,28 @@ def ecuaciones_autoconsistencia(variables, n_barion, params=[A_sigma, A_omega, A
     # Momento de Fermi del proton (y electron, x_pF=x_eF)
     # m_charge = (proton_mass+electron_mass)*Kg_to_fm11
     # x_pF = 3.0*pi**2/2.0 * (n_barion/(m_nuc**3*m_charge) + 2.0/(3.0*pi**2)*(neutron_mass*Kg_to_fm11)/m_charge*x_nF**3)**(1/3) # Momento de Fermi del protón (y electrón)
-    x_pF = (3.0*pi**2/2.0*n_barion/m_nuc**3 - x_nF**3)**(1/3) # Momento de Fermi del protón (y electrón)
+    x_pF = ( (3.0*pi**2)*n_barion/m_nuc**3 - x_nF**3)**(1/3) # Momento de Fermi del protón (y electrón)
     
     # Integrales separadas para neutrones y protones
     if x_nF > 0:
         raiz_n = np.sqrt(x_nF**2 + x_sigma**2)
         integral_n = 0.5 * x_sigma* (x_nF * raiz_n - x_sigma**2 * np.arctanh(x_nF / raiz_n))
     else:
+        raiz_n = 0.0
         integral_n = 0
         
     if x_pF > 0:
         raiz_p = np.sqrt(x_pF**2 + x_sigma**2)
         integral_p = 0.5 * x_sigma * (x_pF * raiz_p - x_sigma**2 * np.arctanh(x_pF / raiz_p))
     else:
+        raiz_p = 0.0
         integral_p = 0
     
     integral_total = integral_n + integral_p
     
         # Ecuación de equilibrio beta (=0)
     if x_pF > 0 and x_nF > 0:
-        equilibrio_beta = raiz_n - raiz_p - np.sqrt(x_pF**2 + (electron_mass*Kg_to_fm11)**2/m_nuc**2) - 1/(3*pi**2)*A_rho*(x_pF**3 - x_nF**3)
+        equilibrio_beta = raiz_n - raiz_p - np.sqrt(x_pF**2 + (m_e/m_nuc)**2 ) - 0.5*(A_rho/(3*pi**2) ) *(x_pF**3 - x_nF**3)
     else:
         equilibrio_beta = 100 
     # Ecuación de campo del meson escalar (=0)
@@ -104,7 +106,7 @@ def sol_x_sigma_x_nF(n_barion, params=[A_sigma, A_omega, A_rho, b, c], x0=[0.5, 
     # Graficamos la superficie de ecuaciones_autoconsistencia para n_barion
     if print_solution:
         x_sigma_plot = np.linspace(1e-3, 1, 100)
-        x_nF_plot = np.linspace(1e-3, 1, 100)
+        x_nF_plot = np.linspace(1e-3, 0.5, 100)
         X_sigma, X_nF = np.meshgrid(x_sigma_plot, x_nF_plot)
         Z1 = np.zeros_like(X_sigma)
         Z2 = np.zeros_like(X_sigma)
