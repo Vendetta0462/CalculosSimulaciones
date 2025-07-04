@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import CubicSpline
-from scipy.optimize import fsolve
+from scipy.optimize import root
 
 #-----------------------------------------------------------------------
 # DEFINICIONES
@@ -53,43 +53,38 @@ def ecuaciones_autoconsistencia(variables, n_barion, params=[A_sigma, A_omega, A
     Returns:
         array: Valores de la función de autoconsistencia y equilibrio beta que deben ser cero para encontrar la solución.
     """
-    A_sigma, _, _, b, c = params
+    A_sigma, _, A_rho, b, c = params
     x_sigma, x_nF = variables # Masa efectiva relativa del nucleón y momento de Fermi del neutron
     
     # Momento de Fermi del proton (y electron, x_pF=x_eF)
-    # m_charge = (proton_mass+electron_mass)*Kg_to_fm11
-    # x_pF = 3.0*pi**2/2.0 * (n_barion/(m_nuc**3*m_charge) + 2.0/(3.0*pi**2)*(neutron_mass*Kg_to_fm11)/m_charge*x_nF**3)**(1/3) # Momento de Fermi del protón (y electrón)
     x_pF = ( (3.0*pi**2)*n_barion/m_nuc**3 - x_nF**3)**(1/3) # Momento de Fermi del protón (y electrón)
     
     # Integrales separadas para neutrones y protones
-    if x_nF > 0:
+    if x_nF > 0 and x_pF > 0 and x_sigma >= 0:
+        # Energias libres para n, p y e con masa efectiva
         raiz_n = np.sqrt(x_nF**2 + x_sigma**2)
-        integral_n = 0.5 * x_sigma* (x_nF * raiz_n - x_sigma**2 * np.arctanh(x_nF / raiz_n))
-    else:
-        raiz_n = 0.0
-        integral_n = 0
-        
-    if x_pF > 0:
         raiz_p = np.sqrt(x_pF**2 + x_sigma**2)
+        raiz_e = np.sqrt(x_pF**2 + (m_e/m_nuc)**2)
+        
+        # Ecuación de campo escalar (=0)
+        equilibrio_beta = raiz_n - raiz_p - raiz_e - (A_rho/(6*pi**2)) * (x_pF**3 - x_nF**3)
+        
+        # Integrales para neutrones y protones de la densidad escalar
+        integral_n = 0.5 * x_sigma* (x_nF * raiz_n - x_sigma**2 * np.arctanh(x_nF / raiz_n))
         integral_p = 0.5 * x_sigma * (x_pF * raiz_p - x_sigma**2 * np.arctanh(x_pF / raiz_p))
+        integral_total = integral_n + integral_p
+        
+        # Ecuación de autoconsistencia (=0)
+        campo_sigma = (1.0 - x_sigma) - A_sigma * ( integral_total/(pi**2) - b*(1-x_sigma)**2 - c*(1-x_sigma)**3 )
     else:
-        raiz_p = 0.0
-        integral_p = 0
-    
-    integral_total = integral_n + integral_p
-    
-        # Ecuación de equilibrio beta (=0)
-    if x_pF > 0 and x_nF > 0:
-        equilibrio_beta = raiz_n - raiz_p - np.sqrt(x_pF**2 + (m_e/m_nuc)**2 ) - 0.5*(A_rho/(3*pi**2) ) *(x_pF**3 - x_nF**3)
-    else:
-        equilibrio_beta = 100 
-    # Ecuación de campo del meson escalar (=0)
-    campo_sigma = (1.0 - x_sigma) - A_sigma * ( integral_total/(pi**2) - b*(1-x_sigma)**2 - c*(1-x_sigma)**3 )
+        # Si los valores son no válidos, devolvemos valores lejos de cero
+        campo_sigma = 1e4
+        equilibrio_beta = 1e4
     
     # Retornamos las ecuaciones de autoconsistencia y equilibrio beta
     return np.array([campo_sigma, equilibrio_beta])
 
-def sol_x_sigma_x_nF(n_barion, params=[A_sigma, A_omega, A_rho, b, c], x0=[0.5, 0.2], print_solution=False):
+def sol_x_sigma_x_nF(n_barion, params=[A_sigma, A_omega, A_rho, b, c], x0=[0.5, 0.01], print_solution=False, method='lm'):
     """
     Resuelve las ecuaciones de autoconsistencia para un valor dado de densidad bariónica, encontrando raíces.
 
@@ -98,6 +93,7 @@ def sol_x_sigma_x_nF(n_barion, params=[A_sigma, A_omega, A_rho, b, c], x0=[0.5, 
         params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c] que definen el modelo.
         x0 (list): Valor inicial para la solución [x_sigma, x_nF].
         print_solution (bool): Si es True, imprime detalles de la solución encontrada.
+        method (str): Método de optimización para scipy.optimize.root.
 
     Returns:
         float: Solución para el campo escalar sigma.
@@ -106,7 +102,7 @@ def sol_x_sigma_x_nF(n_barion, params=[A_sigma, A_omega, A_rho, b, c], x0=[0.5, 
     # Graficamos la superficie de ecuaciones_autoconsistencia para n_barion
     if print_solution:
         x_sigma_plot = np.linspace(1e-3, 1, 100)
-        x_nF_plot = np.linspace(1e-3, 0.5, 100)
+        x_nF_plot = np.linspace(1e-3, 1, 100)
         X_sigma, X_nF = np.meshgrid(x_sigma_plot, x_nF_plot)
         Z1 = np.zeros_like(X_sigma)
         Z2 = np.zeros_like(X_sigma)
@@ -116,42 +112,53 @@ def sol_x_sigma_x_nF(n_barion, params=[A_sigma, A_omega, A_rho, b, c], x0=[0.5, 
                 Z1[i, j] = sol_[0]  # Ecuación de campo del meson escalar
                 Z2[i, j] = sol_[1]  # Ecuación de equilibrio beta
 
+        import matplotlib.patches as mpatches
+        from matplotlib.lines import Line2D
         fig, axs = plt.subplots(1, 2, figsize=(14, 6))
 
+        levels = np.linspace(-1, 1, 21)
+        cmap_extended = plt.get_cmap('coolwarm').copy()
+        cmap_extended.set_under("#00003F", alpha=0.7)  # Dark Blue for < -1
+        cmap_extended.set_over("#510000", alpha=0.7)   # Dark Red for > 1
+
         # Primer subplot: ecuación de campo del mesón escalar
-        c1 = axs[0].contourf(X_sigma, X_nF, Z1, levels=np.linspace(-1, 1, 21), cmap='coolwarm', alpha=0.7)
+        c1 = axs[0].contourf(X_sigma, X_nF, Z1, levels=levels, cmap=cmap_extended, extend='both')
+        axs[0].contour(X_sigma, X_nF, Z1, levels=[0], colors='#32CD32', linewidths=2)  # Lime Green for Z=0
         fig.colorbar(c1, ax=axs[0], label='Ecuación de autoconsistencia')
         axs[0].set_xlabel('x_sigma')
         axs[0].set_ylabel('x_nF')
         axs[0].set_title(f'Ecuación de campo escalar\nn_barion = {n_barion}')
-        axs[0].axhline(y=x0[1], color='k', linestyle='--', label='x_nF inicial')
-        axs[0].axvline(x=x0[0], color='k', linestyle='--', label='x_sigma inicial')
-        axs[0].legend()
+        line1 = axs[0].axhline(y=x0[1], color='k', linestyle='--', label='Valores Iniciales')
+        line2 = axs[0].axvline(x=x0[0], color='k', linestyle='--', label='x_sigma inicial')
+        patch_over = mpatches.Patch(color='#510000', alpha=0.7, label='Fuera de rango (>1)')
+        patch_under = mpatches.Patch(color='#00003F', alpha=0.7, label='Fuera de rango (<-1)')
+        zero_line = Line2D([0], [0], color='#32CD32', lw=2, label='Nivel Z=0')
+        axs[0].legend(handles=[line1, zero_line, patch_under, patch_over], fontsize='small')
 
         # Segundo subplot: ecuación de equilibrio beta
-        c2 = axs[1].contourf(X_sigma, X_nF, Z2, levels=np.linspace(np.min(Z2), np.max(Z2), 21), cmap='coolwarm', alpha=0.7)
+        c2 = axs[1].contourf(X_sigma, X_nF, Z2, levels=levels, cmap=cmap_extended, extend='both')
+        axs[1].contour(X_sigma, X_nF, Z2, levels=[0], colors='#32CD32', linewidths=2)  # Lime Green for Z=0
         fig.colorbar(c2, ax=axs[1], label='Ecuación de equilibrio beta')
         axs[1].set_xlabel('x_sigma')
         axs[1].set_ylabel('x_nF')
         axs[1].set_title(f'Ecuación de equilibrio beta\nn_barion = {n_barion}')
-        axs[1].axhline(y=x0[1], color='k', linestyle='--', label='x_nF inicial')
-        axs[1].axvline(x=x0[0], color='k', linestyle='--', label='x_sigma inicial')
-        axs[1].legend()
+        line3 = axs[1].axhline(y=x0[1], color='k', linestyle='--', label='Valores Iniciales')
+        line4 = axs[1].axvline(x=x0[0], color='k', linestyle='--', label='x_sigma inicial')
+        axs[1].legend(handles=[line3, zero_line, patch_over, patch_under], fontsize='small')
 
         plt.tight_layout()
         plt.show()
 
-    solution = fsolve(ecuaciones_autoconsistencia, x0, args=(n_barion, params), full_output=True)
-    if solution[2] != 1:
+    solution = root(ecuaciones_autoconsistencia, x0, args=(n_barion, params), method=method)
+    if not solution.success:
         print("No se encontró solución para n_barion = ", n_barion)
         if print_solution:
-            print("Error:", solution[3])
-            print("Detalles de la solución:", solution[1])
+            print("Error:", solution.message)
         return [1, 1]
     else:
         if print_solution:
-            print("Solución encontrada para n_barion =", n_barion, ":", solution[0])
-        return solution[0]
+            print("Solución encontrada para n_barion =", n_barion, ":", solution.x)
+        return solution.x
 
 def energia_presion(n_barion, params=[A_sigma, A_omega, A_rho, b, c]):
     """
@@ -166,10 +173,9 @@ def energia_presion(n_barion, params=[A_sigma, A_omega, A_rho, b, c]):
     """
     A_sigma, A_omega, A_rho, b, c = params
     x_sigma, x_nF = sol_x_sigma_x_nF(n_barion, params)
-    # x_f = (1.0/m_nuc)*(3.0*pi**2*n_barion/2.0)**(1/3)
     
     # Momento de Fermi para protón
-    x_pF = (3.0*pi**2/2.0*n_barion/m_nuc**3 - x_nF**3)**(1/3)  # Momento de Fermi del protón (y electrón)
+    x_pF = (3.0*pi**2*n_barion/m_nuc**3 - x_nF**3)**(1/3)  # Momento de Fermi del protón (y electrón)
    
     # Integrales para neutrones
     if x_nF > 0:
@@ -178,21 +184,22 @@ def energia_presion(n_barion, params=[A_sigma, A_omega, A_rho, b, c]):
         integral_energia_n = (x_nF * raiz_n * (2.0 * x_nF**2 + x_sigma**2) - termino_arctanh_n) / 8.0
         integral_presion_n = (x_nF * raiz_n * (2.0 * x_nF**2 - 3.0 * x_sigma**2) + 3.0 * termino_arctanh_n) / 8.0
     else:
+        print("Momento de Fermi del neutrón no positivo para n_barion =", n_barion)
         integral_energia_n = 0
         integral_presion_n = 0
     
-    # Integrales para protones
-    m_e_adim = electron_mass*Kg_to_fm11 / m_nuc
+    # Integrales para protones y electrones
     if x_pF > 0:
         raiz_p = np.sqrt(x_pF**2 + x_sigma**2)
-        raiz_e = np.sqrt(x_pF**2 + m_e_adim**2)
+        raiz_e = np.sqrt(x_pF**2 + (m_e/m_nuc)**2)
         termino_arctanh_p = x_sigma**4 * np.arctanh(x_pF / raiz_p)
-        termino_arctanh_e = m_e_adim**4 * np.arctanh(x_pF / raiz_e)
+        termino_arctanh_e = (m_e/m_nuc)**4 * np.arctanh(x_pF / raiz_e)
         integral_energia_p = (x_pF * raiz_p * (2.0 * x_pF**2 + x_sigma**2) - termino_arctanh_p) / 8.0
+        integral_energia_e = (x_pF * raiz_e * (2.0 * x_pF**2 + (m_e/m_nuc)**2) - termino_arctanh_e) / 8.0
         integral_presion_p = (x_pF * raiz_p * (2.0 * x_pF**2 - 3.0 * x_sigma**2) + 3.0 * termino_arctanh_p) / 8.0
-        integral_energia_e = (x_pF * raiz_e * (2.0 * x_pF**2 + m_e_adim**2) - termino_arctanh_e) / 8.0
-        integral_presion_e = (x_pF * raiz_e * (2.0 * x_pF**2 - 3.0 * m_e_adim**2) + 3.0 * termino_arctanh_e) / 8.0
+        integral_presion_e = (x_pF * raiz_e * (2.0 * x_pF**2 - 3.0 * (m_e/m_nuc)**2) + 3.0 * termino_arctanh_e) / 8.0
     else:
+        print("Momento de Fermi del protón no positivo para n_barion =", n_barion)
         integral_energia_p = 0
         integral_presion_p = 0
         integral_energia_e = 0
@@ -200,7 +207,7 @@ def energia_presion(n_barion, params=[A_sigma, A_omega, A_rho, b, c]):
     
     # Términos de los campos
     termino_sigma = (1.0-x_sigma)**2 * (1.0/A_sigma + 2.0/3.0*b*(1.0-x_sigma) + 0.5*c*(1-x_sigma)**2)
-    termino_omega_rho = A_omega*n_barion**2/m_nuc**6 + 1/(9*pi**4)*A_rho*(x_pF**3 - x_nF**3)**2
+    termino_omega_rho = A_omega*(n_barion/m_nuc**3)**2 + 1/(36*pi**4)*A_rho*(x_pF**3 - x_nF**3)**2
    
     
     # Energía y presión totales
@@ -318,8 +325,8 @@ def coeficiente_simetria(n_sat, params=[A_sigma, A_omega, A_rho, b, c]):
     Returns:
         float: Coeficiente de energía de simetría en MeV.
     """
-    _, _, A_rho, _, _, _ = params
-    x_sigma = sol_x_sigma_x_nF(n_sat, params)
+    _, _, A_rho, _, _ = params
+    x_sigma = sol_x_sigma_x_nF(n_sat, params)[0]
     x_f = (1.0/m_nuc)*(3.0*pi**2*n_sat/2.0)**(1/3)
     
     # Para materia simétrica (t=0), ambas especies tienen el mismo momento de Fermi
@@ -354,35 +361,69 @@ def calculate_properties(n_prove, params):
 
 def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c]):
     """
-    Grafica la función de autoconsistencia para un rango de densidades bariónicas.
+    Grafica las funciones de autoconsistencia x_sigma y x_nF para un rango de densidades bariónicas.
+    
+    Se generan dos subplots, uno para x_sigma y otro para x_nF, en donde el eje x principal
+    muestra las densidades en fm^-3 y el eje secundario superior muestra las densidades en g/cm^3.
+    Se utiliza la relación:
+       (g/cm^3) * (1e3/m_nuc_MKS*1e-45) = fm^-3
+    Es decir, para convertir de fm^-3 a g/cm^3 se utiliza la función:
+        rho_gcm3 = rho_fm3 / (1e3/m_nuc_MKS*1e-45)
     
     Args:
         n_prove (array-like): Array de densidades bariónicas en fm^-3.
-        params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c] que definen el modelo.
-        
+        params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c] para el modelo.
+    
     Returns:
         None
     """
-   
-    # Calculamos los valores de x_sigma para las densidades bariónicas dadas
-    x_sigma_prove_tilde = np.zeros(len(n_prove))
-    x_sigma_prove = np.zeros(len(n_prove))
-    for i in range(len(n_prove)):
-        x_sigma_prove_tilde[i] = sol_x_sigma_x_nF(n_prove[i], params)
-        x_sigma_prove[i] = (1-x_sigma_prove_tilde[i])*m_nuc
+    # Factor de conversión: fm^-3 a g/cm^3
+    conv_factor = 1e3 / m_nuc_MKS * 1e-45  # n_fm3 = (g/cm^3)*conv_factor  ==> (g/cm^3) = n_fm3/conv_factor
 
-    # Mostramos los resultados para x_sigma y x_sigma_tilde en función de n_barion
-    fig, ax = plt.subplots(1,2, figsize=(12,4))
-    ax[0].semilogx(n_prove*1e45*m_nuc_MKS*1e-3, x_sigma_prove_tilde) # x_sigma_tilde en función de densidad g/cm^3
-    ax[0].set_xlabel(r'$\rho_m$ $[g/cm^3]$')
-    ax[0].set_ylabel(r'$\tilde \tilde x_{\sigma}$')
-    ax[0].set_title(r'$\tilde x_{\sigma}$ en función de $\rho_m$')
-    ax[0].grid()
-    ax[1].semilogx(n_prove, x_sigma_prove)
-    ax[1].set_xlabel(r'$n_{barion}$ $[fm^{-3}]$')
-    ax[1].set_ylabel(r'$x_{\sigma}$')
-    ax[1].set_title(r'$x_{\sigma}$ en función de $n_{barion}$')
-    ax[1].grid()
+    # Inicializamos arreglos para las soluciones
+    x_sigma_vals = np.zeros(len(n_prove))
+    x_nF_vals = np.zeros(len(n_prove))
+    
+    # Recorremos las densidades de prueba y resolvemos la función de autoconsistencia
+    for i, n in enumerate(n_prove):
+        sol = sol_x_sigma_x_nF(n, params)
+        x_sigma_vals[i] = sol[0]
+        x_nF_vals[i] = sol[1]
+    
+    # Creamos la figura con dos subplots lado a lado
+    fig, axs = plt.subplots(1, 2, figsize=(12, 6))
+    color = "#914098" 
+
+    # Ponemos escala logarítmica en x y añadimos rejilla
+    for ax in axs:
+        ax.set_xscale('log')
+        ax.grid(True, which='major', linestyle='--', alpha=0.8)
+
+    # Primer subplot: x_sigma
+    axs[0].plot(n_prove, x_sigma_vals, "o-", color=color)
+    axs[0].set_xlabel(r'Densidad bariónica [fm$^{-3}$]')
+    axs[0].set_ylabel(r'$x_{\sigma}$')
+    axs[0].set_title(r'$x_{\sigma}$ vs densidad (log)')
+
+    secax0 = axs[0].secondary_xaxis(
+        'top',
+        functions=(lambda x: x/conv_factor, lambda x: x*conv_factor)
+    )
+    secax0.set_xlabel(r'Densidad [g/cm$^3$]')
+
+    # Segundo subplot: x_nF
+    axs[1].plot(n_prove, x_nF_vals, "o-", color=color)
+    axs[1].set_xlabel(r'Densidad bariónica [fm$^{-3}$]')
+    axs[1].set_ylabel(r'$x_{nF}$')
+    axs[1].set_title(r'$x_{nF}$ vs densidad (log)')
+
+    secax1 = axs[1].secondary_xaxis(
+        'top',
+        functions=(lambda x: x/conv_factor, lambda x: x*conv_factor)
+    )
+    secax1.set_xlabel(r'Densidad [g/cm$^3$]')
+
+    plt.tight_layout()
     plt.show()
     return None
     
@@ -469,7 +510,7 @@ def plot_saturacion(n_prove, params=[A_sigma, A_omega, A_rho, b, c], rho_0_lambd
     presion_sat *= rho_0_lambda
 
     if plot:
-        print(f"La masa efectiva en saturación es: {sol_x_sigma_x_nF(n_saturacion,params):.3f}", "m_nuc")
+        print(f"La masa efectiva en saturación es: {sol_x_sigma_x_nF(n_saturacion,params)[0]:.3f}", "m_nuc")
         print("Densidad de saturación n_saturacion =", format(n_saturacion,".3f"), "1/fm^3 (", format(n_saturacion*1e45*m_nuc_MKS*1e-3,".3e"),"g/cm^3 ) y energia de enlace por nucleon en saturación =", format(energia_saturacion, ".3f"), "MeV y densidad de energia en saturación =", format(energias_prove[minimo]/MeV_to_fm11, ".3f"), "MeV/fm^3")
         print("Presion en la densidad de saturación:", presion_sat/MeV_to_fm11*MeVfm_to_Jm, "Pa")
             
