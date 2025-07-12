@@ -1,44 +1,44 @@
-# Importamos las librerías necesarias
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.interpolate import CubicSpline
+from scipy.interpolate import PchipInterpolator
 from scipy.optimize import root
 
-#-----------------------------------------------------------------------
+#######################################################################
 # DEFINICIONES
-#-----------------------------------------------------------------------
+#######################################################################
 
-# Definimos las constantes necesarias en MKS
-hbar_MKS = 1.0545718e-34 # J s
+# Constantes en unidades MKS
+hbar_MKS = 1.0545718e-34 # J·s
 c_MKS = 299792458 # m/s
-G_MKS = 6.67430e-11 # m^3/kg/s^2
+G_MKS = 6.67430e-11 # m³/kg/s²
 pi = np.pi
 proton_mass = 1.6726219e-27 # kg
 neutron_mass = 1.6749275e-27 # kg
 electron_mass = 9.1093837e-31 # kg
 m_nuc_MKS = (proton_mass + neutron_mass)/2.0 # kg
-e_MKS = 1.6021766e-19 # J
+e_MKS = 1.6021766e-19 # C (coulomb)
 
-# Algunas converciones útiles (multiplicar al primero para obtener el segundo)
-Kg_to_fm11 = c_MKS/hbar_MKS*1e-15 # kg to fm^-1
-MeV_to_fm11 = e_MKS/(hbar_MKS*c_MKS*1e9) # MeV to fm^-1
-MeVfm_to_Jm  = 1e51*e_MKS # MeV/fm to J/m
+# Conversiones útiles (multiplicar al primero para obtener el segundo)
+Kg_to_fm11 = c_MKS/hbar_MKS*1e-15 # kg a fm^-1
+MeV_to_fm11 = e_MKS/(hbar_MKS*c_MKS*1e9) # MeV a fm^-1
+MeVfm_to_Jm  = 1e51*e_MKS # MeV/fm a J/m
 
-# Definimos las constantes necesarias en unidades naturales
+# Constantes en unidades naturales
 m_nuc = m_nuc_MKS * Kg_to_fm11 # fm^-1
 m_e = electron_mass * Kg_to_fm11 # fm^-1
 
-# Damos valores a las constantes (Glendenning) (constantes tilde cuadradas)
-A_sigma = 12.684*m_nuc**2 # Walecka: 266.9, 357.4
-A_omega =  7.148*m_nuc**2 # Walecka: 195.7, 273.8
-A_rho   =  4.410*m_nuc**2 # Nuevo parámetro para el campo rho
+#######################################################################
+# Parámetros del modelo (Glendenning)
+#######################################################################
+A_sigma = 12.684*m_nuc**2
+A_omega =  7.148*m_nuc**2
+A_rho   =  4.410*m_nuc**2
 b       =  5.610e-3
-c       = -6.986e-3  
+c       = -6.986e-3
 
-
-#-------------------------------------------------------------------------
+#######################################################################
 # ECUACIÓN DE ESTADO
-#-------------------------------------------------------------------------
+#######################################################################
 
 def ecuaciones_autoconsistencia(variables, n_barion, params=[A_sigma, A_omega, A_rho, b, c]):
     """
@@ -51,17 +51,17 @@ def ecuaciones_autoconsistencia(variables, n_barion, params=[A_sigma, A_omega, A
         params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c] que definen el modelo.
 
     Returns:
-        array: Valores de la función de autoconsistencia y equilibrio beta que deben ser cero para encontrar la solución.
+        array: [campo_sigma, equilibrio_beta] (deben ser cero para la solución).
     """
     A_sigma, _, A_rho, b, c = params
     x_sigma, x_nF = variables # Masa efectiva relativa del nucleón y momento de Fermi del neutron
     
-    # Momento de Fermi del proton (y electron, x_pF=x_eF)
+    # Momento de Fermi del protón (y electrón, x_pF=x_eF)
     x_pF = ( (3.0*pi**2)*n_barion/m_nuc**3 - x_nF**3)**(1/3) # Momento de Fermi del protón (y electrón)
     
     # Integrales separadas para neutrones y protones
     if x_nF > 0 and x_pF > 0 and x_sigma >= 0:
-        # Energias libres para n, p y e con masa efectiva
+        # Energías libres para n, p y e con masa efectiva
         raiz_n = np.sqrt(x_nF**2 + x_sigma**2)
         raiz_p = np.sqrt(x_pF**2 + x_sigma**2)
         raiz_e = np.sqrt(x_pF**2 + (m_e/m_nuc)**2)
@@ -99,7 +99,7 @@ def sol_x_sigma_x_nF(n_barion, params=[A_sigma, A_omega, A_rho, b, c], x0=[0.5, 
         float: Solución para el campo escalar sigma.
     """
     
-    # Graficamos la superficie de ecuaciones_autoconsistencia para n_barion
+    # Graficar la superficie de ecuaciones_autoconsistencia para n_barion
     if print_solution:
         x_sigma_plot = np.linspace(1e-3, 1, 100)
         x_nF_plot = np.linspace(1e-3, 1, 100)
@@ -174,7 +174,7 @@ def energia_presion(n_barion, params=[A_sigma, A_omega, A_rho, b, c]):
     A_sigma, A_omega, A_rho, b, c = params
     x_sigma, x_nF = sol_x_sigma_x_nF(n_barion, params)
     
-    # Momento de Fermi para protón
+    # Momento de Fermi para protón (y electrón)
     x_pF = (3.0*pi**2*n_barion/m_nuc**3 - x_nF**3)**(1/3)  # Momento de Fermi del protón (y electrón)
    
     # Integrales para neutrones
@@ -216,16 +216,18 @@ def energia_presion(n_barion, params=[A_sigma, A_omega, A_rho, b, c]):
     
     return energia, presion
 
-def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c]):
+def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c], add_crust=False, crust_file_path=None):
     """
     Calcula la ecuación de estado (EoS) para un rango de densidades bariónicas.
 
     Args:
         n_barions (array-like): Array de densidades bariónicas en fm^-3.
         params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c] que definen el modelo.
+        add_crust (bool): Si es True, carga los datos de la corteza y los combina con la EoS del núcleo.
+        crust_file_path (str): Ruta al archivo de datos de la corteza (si add_crust es True).
 
     Returns:
-        tuple: Interpolación cúbica de la presión y energía, arrays de presiones, energías, densidades y el índice de cambio de signo en la presión.
+        tuple: CubicSpline de la EoS (P->E), arrays de presiones, energías, densidades y el índice de cambio de signo en la presión.
     """
     energias = np.array([])
     presiones = np.array([])
@@ -239,15 +241,86 @@ def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c]):
         
     presion_cambio = 0
     for i in range(len(presiones)-1):
-        if presiones[i]<0 and presiones[i+1]>0:
+        if presiones[i] < 0 and presiones[i+1] > 0:
             presion_cambio = i+1
             break
-        
-    return CubicSpline(presiones[presion_cambio:], energias[presion_cambio:]), presiones, energias, n_sirve, presion_cambio
 
-#-----------------------------------------------------------------------
-# GRAFICAS DE RESULTADOS DE LA ECUACIÓN DE ESTADO
-#-----------------------------------------------------------------------
+    # Core EoS arrays
+    rho_0_lambda = m_nuc**4 / 2.0
+    ps_core = presiones[presion_cambio:]
+    es_core = energias[presion_cambio:]
+    ns_core = n_sirve[presion_cambio:]
+    # Unir corteza si se solicita
+    if add_crust and crust_file_path:
+        # Cargar corteza: columnas [ignore, n_crust (fm^-3), rho_mass (g/cm^3), P_cgs (Ba)]
+        data = np.loadtxt(crust_file_path)
+        n_crust = data[:,1]
+        rho_mass = data[:,2]
+        P_cgs = data[:,3]
+        # Densidad de energía en cgs: E_cgs = rho_mass * c^2
+        c_cm = c_MKS * 100  # cm/s
+        E_cgs = rho_mass * c_cm**2
+        # Conversión natural->cgs para P y E
+        rho_MKSTocgs = 10
+        conv = rho_0_lambda / MeV_to_fm11 * MeVfm_to_Jm * rho_MKSTocgs
+        # Arreglos adimensionales de la corteza
+        E_crust = E_cgs / conv
+        P_crust = P_cgs / conv
+        # Corte en densidad de saturación
+        n_sat = 0.161
+        mask_cr = n_crust <= n_sat
+        mask_co = ns_core >= n_sat
+        # Concatenar corteza y núcleo
+        n_all = np.concatenate([n_crust[mask_cr], ns_core[mask_co]])
+        P_all = np.concatenate([P_crust[mask_cr], ps_core[mask_co]])
+        E_all = np.concatenate([E_crust[mask_cr], es_core[mask_co]])
+        # Filtrar por el rango de densidades de entrada
+        n_min = np.min(n_barions)
+        n_max = np.max(n_barions)
+        mask_range = (n_all >= n_min) & (n_all <= n_max)
+        P_all = P_all[mask_range]
+        E_all = E_all[mask_range]
+        n_all = n_all[mask_range]
+        # Interpolación PchipInterpolator
+        try:
+            spline = PchipInterpolator(P_all, E_all)
+        except Exception as e:
+            print("[EoS] Error al crear PchipInterpolator (core+crust):", e)
+            mask_unique = np.diff(P_all) > 0
+            mask_unique = np.insert(mask_unique, 0, True)
+            P_all_f = P_all[mask_unique]
+            E_all_f = E_all[mask_unique]
+            n_all_f = n_all[mask_unique]
+            try:
+                spline = PchipInterpolator(P_all_f, E_all_f)
+                print("[EoS] PchipInterpolator creado tras filtrar puntos no monótonos/repetidos.")
+                return spline, P_all_f, E_all_f, n_all_f, False
+            except Exception as e2:
+                print("[EoS] Error persistente al crear PchipInterpolator:", e2)
+                return None, P_all_f, E_all_f, n_all_f, False
+        return spline, P_all, E_all, n_all, False
+    # Solo núcleo por defecto
+    try:
+        spline = PchipInterpolator(ps_core, es_core)
+    except Exception as e:
+        print("[EoS] Error al crear PchipInterpolator (solo core):", e)
+        mask_unique = np.diff(ps_core) > 0
+        mask_unique = np.insert(mask_unique, 0, True)
+        ps_core_f = ps_core[mask_unique]
+        es_core_f = es_core[mask_unique]
+        n_core_f = ns_core[mask_unique]
+        try:
+            spline = PchipInterpolator(ps_core_f, es_core_f)
+            print("[EoS] PchipInterpolator creado tras filtrar puntos no monótonos/repetidos.")
+            return spline, ps_core_f, es_core_f, n_core_f, presion_cambio
+        except Exception as e2:
+            print("[EoS] Error persistente al crear PchipInterpolator:", e2)
+            return None, ps_core_f, es_core_f, n_core_f, presion_cambio
+    return spline, presiones, energias, n_sirve, presion_cambio
+
+#######################################################################
+# GRÁFICAS DE RESULTADOS DE LA ECUACIÓN DE ESTADO
+#######################################################################
 
 def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c]):
     """
@@ -317,7 +390,7 @@ def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c]):
     plt.show()
     return None
     
-def plot_EoS(rho_P, presiones, energias, n_sirve, rho_0_lambda=m_nuc**4/2, titulo = r'Ecuación de estado'):
+def plot_EoS(rho_P, presiones, energias, n_sirve, rho_0_lambda=m_nuc**4/2, titulo = r'ecuación de estado'):
     """
     Grafica la ecuación de estado (EoS) y la energía y presión en función de la densidad de masa.
     
@@ -336,7 +409,7 @@ def plot_EoS(rho_P, presiones, energias, n_sirve, rho_0_lambda=m_nuc**4/2, titul
     rho_MKSTocgs = 10
     conv = rho_0_lambda / MeV_to_fm11 * MeVfm_to_Jm * rho_MKSTocgs # Conversión de unidades de presión y energía a cgs (erg/cm^3 y Ba)
 
-    # Creamos la figura con dos subfiguras (side by side)
+    # Creamos la figura con dos subfiguras (lado a lado)
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
 
     # ----- Subfigura 1: Ecuación de estado con ejes secundarios -----
