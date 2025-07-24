@@ -76,13 +76,14 @@ def autoconsistencia(x_sigma, n_barion, params=[A_sigma, A_omega, A_rho, b, c, t
     # Ecuación de autoconsistencia (=0)
     return (1.0 - x_sigma) - A_sigma * ( integral_total/(pi**2) - b*(1-x_sigma)**2 - c*(1-x_sigma)**3 )
 
-def sol_x_sigma(n_barion, params=[A_sigma, A_omega, A_rho, b, c, t]):
+def sol_x_sigma(n_barion, params=[A_sigma, A_omega, A_rho, b, c, t], verbose=True):
     """
     Resuelve la ecuación de autoconsistencia para un valor dado de densidad bariónica, encontrando raíces.
 
     Args:
         n_barion (float): Densidad bariónica en fm^-3.
         params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c, t] que definen el modelo.
+        verbose (bool): Si True, imprime mensajes de error si no se encuentra solución.
 
     Returns:
         float: Solución para el campo escalar sigma.
@@ -91,24 +92,26 @@ def sol_x_sigma(n_barion, params=[A_sigma, A_omega, A_rho, b, c, t]):
 
     solution = fsolve(autoconsistencia, 0.5, args=(n_barion, params), full_output=True)
     if solution[2] != 1:
-        print("No se encontró solución para n_barion = ", n_barion)
+        if verbose:
+            print("No se encontró solución para n_barion = ", n_barion)
         return 1
     else:
         return solution[0][0]
 
-def energia_presion(n_barion, params=[A_sigma, A_omega, A_rho, b, c, t]):
+def energia_presion(n_barion, params=[A_sigma, A_omega, A_rho, b, c, t], verbose=True):
     """
     Calcula la energía y la presión para una densidad bariónica dada.
 
     Args:
         n_barion (float): Densidad bariónica en fm^-3.
         params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c, t] que definen el modelo.
+        verbose (bool): Si True, imprime mensajes de error si no se encuentra solución.
 
     Returns:
         tuple: Energía y presión calculadas en unidades de lambda/2 = m_nuc^4/2 (unidades naturales).
     """
     A_sigma, A_omega, A_rho, b, c, t = params
-    x_sigma = sol_x_sigma(n_barion, params)
+    x_sigma = sol_x_sigma(n_barion, params, verbose=verbose)
     x_f = (1.0/m_nuc)*(3.0*pi**2*n_barion/2.0)**(1/3)
     
     # Momentos de Fermi para neutrones y protones
@@ -180,7 +183,7 @@ def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c, t]):
 #-----------------------------------------------------------------------
 
 # Calculado recientemente
-def modulo_compresion(n_sat, params=[A_sigma, A_omega, A_rho, b, c, t]):
+def modulo_compresion(n_sat, params=[A_sigma, A_omega, A_rho, b, c, t], verbose=True):
     """
     Calcula el módulo de compresión para una densidad de saturación dada 
     en el modelo sigma-omega-rho con isospin.
@@ -188,12 +191,13 @@ def modulo_compresion(n_sat, params=[A_sigma, A_omega, A_rho, b, c, t]):
     Args:
         n_sat (float): Densidad de saturación en fm^-3.
         params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c, t] que definen el modelo.
+        verbose (bool): Si True, imprime información detallada sobre el cálculo.
 
     Returns:
         float: Módulo de compresión en MeV.
     """
     A_sigma, A_omega, A_rho, b, c, t = params
-    x_sigma = sol_x_sigma(n_sat, params)
+    x_sigma = sol_x_sigma(n_sat, params, verbose=verbose)
     x_f = (1.0/m_nuc)*(3.0*pi**2*n_sat/2.0)**(1/3)
     
     # Momentos de Fermi para neutrones y protones
@@ -244,19 +248,20 @@ def modulo_compresion(n_sat, params=[A_sigma, A_omega, A_rho, b, c, t]):
     return K/MeV_to_fm11 # Módulo de compresión en MeV
 
 
-def coeficiente_simetria(n_sat, params=[A_sigma, A_omega, A_rho, b, c, t]):
+def coeficiente_simetria(n_sat, params=[A_sigma, A_omega, A_rho, b, c, t], verbose=True):
     """
     Calcula el coeficiente de energía de simetría para una densidad de saturación dada.
     
     Args:
         n_sat (float): Densidad de saturación en fm^-3.
         params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c, t] que definen el modelo.
+        verbose (bool): Si True, imprime información detallada sobre el cálculo.
         
     Returns:
         float: Coeficiente de energía de simetría en MeV.
     """
     _, _, A_rho, _, _, _ = params
-    x_sigma = sol_x_sigma(n_sat, params)
+    x_sigma = sol_x_sigma(n_sat, params, verbose=verbose)
     x_f = (1.0/m_nuc)*(3.0*pi**2*n_sat/2.0)**(1/3)
     
     # Para materia simétrica (t=0), ambas especies tienen el mismo momento de Fermi
@@ -265,37 +270,39 @@ def coeficiente_simetria(n_sat, params=[A_sigma, A_omega, A_rho, b, c, t]):
     
     return a_sym/MeV_to_fm11 # Coeficiente de energía de simetría en MeV
 
-def calculate_properties(n_prove, params):
+def calculate_properties(n_prove, params, verbose=True):
     """
     Calcula las propiedades de saturación del modelo dado un conjunto de parámetros.
     
     Args:
         n_prove (array-like): Array de densidades bariónicas en fm^-3.
         params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c, t] que definen el modelo.
+        verbose (bool): Si True, imprime información detallada sobre el cálculo.
         
     Returns:
         props (array): Array con las propiedades de saturación [densidad de saturación, energía de enlace, módulo de compresión, coeficiente de simetría] en fm^-3 y MeV.        
     """
     # Extraemos las propiedades de saturación en fm^-3 y MeV
-    saturacion = plot_saturacion(n_prove, params, plot=False)
+    saturacion = plot_saturacion(n_prove, params, plot=False, verbose=verbose)
     saturation_density = saturacion[0]
     binding_energy = saturacion[1]
-    compression_modulus = modulo_compresion(saturation_density, params)
-    energy_symmetry_coefficient = coeficiente_simetria(saturation_density, params)
-    
+    compression_modulus = modulo_compresion(saturation_density, params, verbose=verbose)
+    energy_symmetry_coefficient = coeficiente_simetria(saturation_density, params, verbose=verbose)
+
     return np.array([saturation_density, binding_energy, compression_modulus, energy_symmetry_coefficient])
 
 #-----------------------------------------------------------------------
 # GRAFICAS DE RESULTADOS DE LA ECUACIÓN DE ESTADO
 #-----------------------------------------------------------------------
 
-def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c, t]):
+def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c, t], verbose=True):
     """
     Grafica la función de autoconsistencia para un rango de densidades bariónicas.
     
     Args:
         n_prove (array-like): Array de densidades bariónicas en fm^-3.
         params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c, t] que definen el modelo.
+        verbose (bool): Si True, imprime mensajes de error si no se encuentra solución.
         
     Returns:
         None
@@ -305,7 +312,7 @@ def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c, t]):
     x_sigma_prove_tilde = np.zeros(len(n_prove))
     x_sigma_prove = np.zeros(len(n_prove))
     for i in range(len(n_prove)):
-        x_sigma_prove_tilde[i] = sol_x_sigma(n_prove[i], params)
+        x_sigma_prove_tilde[i] = sol_x_sigma(n_prove[i], params, verbose=verbose)
         x_sigma_prove[i] = (1-x_sigma_prove_tilde[i])*m_nuc
 
     # Mostramos los resultados para x_sigma y x_sigma_tilde en función de n_barion
@@ -379,7 +386,7 @@ def plot_EoS(rho_P, presiones, energias, n_sirve, rho_0_lambda=m_nuc**4/2, titul
     plt.show()
     return None
 
-def plot_saturacion(n_prove, params=[A_sigma, A_omega, A_rho, b, c, t], rho_0_lambda=m_nuc**4/2, plot=True):
+def plot_saturacion(n_prove, params=[A_sigma, A_omega, A_rho, b, c, t], rho_0_lambda=m_nuc**4/2, plot=True, verbose=True):
     """
     Grafica la energía de enlace por nucleón en función de la densidad bariónica y halla la densidad de saturación.
     
@@ -388,6 +395,7 @@ def plot_saturacion(n_prove, params=[A_sigma, A_omega, A_rho, b, c, t], rho_0_la
         params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c, t] que definen el modelo.
         rho_0_lambda (float): Unidades de energía empleadas para adimensionalizar, en naturales (fm^-4).
         plot (bool): Si True, grafica la energía de enlace por nucleón en función de la densidad bariónica.
+        verbose (bool): Si True, imprime información detallada sobre la densidad de saturación y energía de enlace por nucleón.
         
     Returns:
         saturacion (list): Lista con la densidad de saturación en fm^-3 y la energía de enlace por nucleón en MeV (naturales).
@@ -395,18 +403,18 @@ def plot_saturacion(n_prove, params=[A_sigma, A_omega, A_rho, b, c, t], rho_0_la
     
     energias_prove = np.zeros(len(n_prove)) # Energías de enlace por nucleón en fm^-4 (naturales)
     for i in range(len(n_prove)):
-        energias_prove[i], _ = energia_presion(n_prove[i], params)
+        energias_prove[i], _ = energia_presion(n_prove[i], params, verbose=verbose)
         energias_prove[i] *= rho_0_lambda # Energías de enlace por nucleón en fm^-4 (naturales)
         
     # Hallamos la densidad de saturación en fm^-3 donde es minima la energía de enlace por nucleón
     minimo = np.argmin(energias_prove/n_prove - m_nuc)
     n_saturacion = n_prove[minimo] # Densidad de saturación en fm^-3
     energia_saturacion = (energias_prove/n_prove - m_nuc)[minimo] / MeV_to_fm11 # Energía de enlace por nucleón en MeV (naturales)
-    _, presion_sat = energia_presion(n_saturacion, params)
+    _, presion_sat = energia_presion(n_saturacion, params, verbose=verbose)
     presion_sat *= rho_0_lambda
 
     if plot:
-        print(f"La masa efectiva en saturación es: {sol_x_sigma(n_saturacion,params):.3f}", "m_nuc")
+        print(f"La masa efectiva en saturación es: {sol_x_sigma(n_saturacion,params, verbose=verbose):.3f}", "m_nuc")
         print("Densidad de saturación n_saturacion =", format(n_saturacion,".3f"), "1/fm^3 (", format(n_saturacion*1e45*m_nuc_MKS*1e-3,".3e"),"g/cm^3 ) y energia de enlace por nucleon en saturación =", format(energia_saturacion, ".3f"), "MeV y densidad de energia en saturación =", format(energias_prove[minimo]/MeV_to_fm11, ".3f"), "MeV/fm^3")
         print("Presion en la densidad de saturación:", presion_sat/MeV_to_fm11*MeVfm_to_Jm, "Pa")
             
