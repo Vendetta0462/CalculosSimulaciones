@@ -47,7 +47,7 @@ def objetivo_residuos(params, propiedades_objetivo, n_range, pesos=None, verbose
     y las propiedades objetivo.
     
     Args:
-        params (array): Parámetros del modelo [A_sigma, A_omega, A_rho, b, c].
+        params (lmfit.Parameters o array): Parámetros del modelo sigma-omega-rho
         propiedades_objetivo (dict): Diccionario con las propiedades objetivo
                                    {'n_sat': valor, 'B_A_sat': valor, 'K_mod': valor, 'a_sym': valor}
         n_range (array): Rango de densidades para calcular las propiedades.
@@ -60,8 +60,7 @@ def objetivo_residuos(params, propiedades_objetivo, n_range, pesos=None, verbose
     # Extraer parámetros de lmfit.Parameters o array
     if isinstance(params, Parameters):
         vals = params.valuesdict()
-        A_sigma, A_omega, A_rho = vals['A_sigma'], vals['A_omega'], vals['A_rho']
-        b, c = vals['b'], vals['c']
+        A_sigma, A_omega, A_rho, b, c = [vals[name] for name in PARAMETER_NAMES]
     else:
         # lista, tuple o ndarray: convertir a float
         A_sigma, A_omega, A_rho, b, c = [float(v) for v in params]
@@ -410,34 +409,6 @@ def crear_propiedades_objetivo(n_sat=None, B_A_sat=None, K_mod=None, a_sym=None)
         propiedades['a_sym'] = a_sym
         
     return propiedades
-
-def validar_parametros(params):
-    """
-    Valida que los parámetros estén dentro de rangos físicos razonables.
-    
-    Args:
-        params (array): Parámetros [A_sigma, A_omega, A_rho, b, c]
-        
-    Returns:
-        bool: True si los parámetros son válidos
-    """
-    
-    A_sigma, A_omega, A_rho, b, c = params
-    
-    # Convertir a unidades adimensionales para comparar con bounds
-    A_sigma_adim = A_sigma / isoEoS.m_nuc**2
-    A_omega_adim = A_omega / isoEoS.m_nuc**2  
-    A_rho_adim = A_rho / isoEoS.m_nuc**2
-    
-    validacion = (
-        PARAMETER_BOUNDS['A_sigma'][0] <= A_sigma_adim <= PARAMETER_BOUNDS['A_sigma'][1] and
-        PARAMETER_BOUNDS['A_omega'][0] <= A_omega_adim <= PARAMETER_BOUNDS['A_omega'][1] and
-        PARAMETER_BOUNDS['A_rho'][0] <= A_rho_adim <= PARAMETER_BOUNDS['A_rho'][1] and
-        PARAMETER_BOUNDS['b'][0] <= b <= PARAMETER_BOUNDS['b'][1] and
-        PARAMETER_BOUNDS['c'][0] <= c <= PARAMETER_BOUNDS['c'][1]
-    )
-    
-    return validacion
 
 def ejemplo_uso(metodo):
     """
