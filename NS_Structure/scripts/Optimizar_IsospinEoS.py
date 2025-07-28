@@ -105,7 +105,7 @@ def objetivo_residuos(params, propiedades_objetivo, n_range, pesos=None, verbose
 
 def optimizar_parametros(propiedades_objetivo, metodo='leastsq', 
                         params_iniciales=None, n_range=None, pesos=None, 
-                        bounds=None, verbose=True, **kwargs):
+                        bounds=None, verbose=True, fixed_params=[], **kwargs):
     """
     Optimiza los parámetros del modelo sigma-omega-rho para ajustar
     las propiedades de saturación especificadas.
@@ -119,6 +119,7 @@ def optimizar_parametros(propiedades_objetivo, metodo='leastsq',
         pesos (array, optional): Pesos para cada propiedad [w_nsat, w_BA, w_K, w_asym]
         bounds (list, optional): Lista de tuplas (min, max) para cada parámetro
         verbose (bool): Si mostrar información del proceso de optimización
+        fixed_params (list, optional): Lista de nombres de parámetros a fijar (no variar)
         **kwargs: Argumentos adicionales para el optimizador lmfit.minimize()
         
     Returns:
@@ -139,7 +140,7 @@ def optimizar_parametros(propiedades_objetivo, metodo='leastsq',
     
     # Configurar rango de densidades
     if n_range is None:
-        n_range = np.logspace(-3, -0.1, 100) # De 0.001 a 0.794 fm^-3
+        n_range = np.logspace(-3, -0.5, 100) # De 0.001 a 0.361 fm^-3
 
     if verbose:
         print(f"Iniciando optimización con método: {metodo}")
@@ -151,7 +152,11 @@ def optimizar_parametros(propiedades_objetivo, metodo='leastsq',
     # Configurar parámetros de lmfit
     params = Parameters()
     for i, name in enumerate(PARAMETER_NAMES):
-        params.add(name, value=params_iniciales[i], min=bounds[i][0], max=bounds[i][1])
+        # vary=True si no está en fixed_params
+        params.add(name,
+                   value=params_iniciales[i],
+                   min=bounds[i][0], max=bounds[i][1],
+                   vary=(name not in fixed_params))
 
     # Realizar optimización con lmfit
     resultado = minimize(
@@ -410,34 +415,40 @@ def crear_propiedades_objetivo(n_sat=None, B_A_sat=None, K_mod=None, a_sym=None)
         
     return propiedades
 
-def ejemplo_uso(metodo):
+def ejemplo_uso():
     """
-    Función de ejemplo que muestra cómo usar las funciones de optimización.
+    Función de ejemplo que solicita método y parámetros a fijar,
+    ejecuta la optimización y grafica resultados.
     """
-    
     print("=== EJEMPLO DE USO DEL OPTIMIZADOR ===")
-    
-    # 1. Crear propiedades objetivo usando valores experimentales
+    # Selección del método
+    metodo = input("Ingrese el método de optimización (leastsq, nelder, differential_evolution, ...): ")
+    if not metodo:
+        metodo = 'leastsq'
+        print("Usando 'leastsq' por defecto.")
+    # Selección de parámetros a fijar
+    fixed_input = input(
+        "Parámetros a fijar (separados por coma), o Enter para ninguno: "
+    )
+    if fixed_input.strip():
+        fixed_params = [p.strip() for p in fixed_input.split(',')]
+    else:
+        fixed_params = []
+    # Crear propiedades objetivo con valores base
     props_objetivo = crear_propiedades_objetivo()
-
-    # 2. Optimizar parámetros
+    # Ejecutar optimización
     print("\n=== OPTIMIZACIÓN ===")
     resultados = optimizar_parametros(
-        props_objetivo, 
+        props_objetivo,
         metodo=metodo,
-        verbose=True
+        verbose=True,
+        fixed_params=fixed_params
     )
-    
-    # 3. Graficar resultados
+    # Mostrar y graficar resultados
     print("\n=== VISUALIZACIÓN ===")
     plot_convergencia_optimizacion(resultados)
-    
     return resultados
 
 if __name__ == "__main__":
     # Ejecutar ejemplo si el script se ejecuta directamente
-    metodo = input("Ingrese el método de optimización (leastsq, nelder, differential_evolution, ...): ")
-    if not metodo:
-        print("Usando 'leastsq' por defecto.")
-        metodo = 'leastsq'
-    ejemplo_uso(metodo)
+    ejemplo_uso()
