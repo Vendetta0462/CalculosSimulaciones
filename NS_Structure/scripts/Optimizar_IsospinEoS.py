@@ -3,6 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from lmfit import minimize, Parameters
 import IsospinEoS as isoEoS
+import ResolverTOV as tov
+import NSMatterEoS as nsEoS
+from NSMatterEoS import m_nuc_MKS, m_nuc, MeVfm_to_Jm, MeV_to_fm11
+from scipy.interpolate import CubicSpline
 
 #-----------------------------------------------------------------------
 # CONSTANTES Y CONFIGURACIÓN
@@ -448,6 +452,90 @@ def ejemplo_uso():
     print("\n=== VISUALIZACIÓN ===")
     plot_convergencia_optimizacion(resultados)
     return resultados
+
+def calcular_masa_radio_optimizado(propiedades_objetivo, metodo='leastsq', fixed_params=[]):
+    """
+    Calcula la relación masa-radio optimizando los parámetros del modelo
+    para ajustar las propiedades de saturación especificadas.
+
+    Args:
+        propiedades_objetivo (dict): Diccionario con las propiedades objetivo,
+            e.g. {'n_sat': valor, 'B_A_sat': valor, 'K_mod': valor, 'a_sym': valor}.
+        metodo (str): Método de optimización a utilizar ('leastsq', 'nelder', 'differential_evolution', etc.).
+        fixed_params (list, optional): Lista de nombres de parámetros a fijar (no variar) durante la optimización.
+
+    Returns:
+        tuple:
+            masas (ndarray): Masas resultantes en unidades de M_sun.
+            radios (ndarray): Radios resultantes en km.
+            rhos_central (ndarray): Densidades centrales utilizadas (g/cm^3).
+        Si la optimización falla, retorna (None, None, None).
+    """
+    resultado_opt = optimizar_parametros(
+        propiedades_objetivo,
+        metodo=metodo,
+        verbose=False,
+        fixed_params=fixed_params
+    )
+    if not resultado_opt['exito']:
+        return None, None, None
+    params_opt = list(resultado_opt['parametros_optimizados'].values())
+    # Construir EoS y función P(rho)
+    dens_max = 1e18*1e3*(1e-45/m_nuc_MKS)
+    dens_min = 1e12*1e3*(1e-45/m_nuc_MKS)
+    n_range = np.logspace(np.log10(dens_min), np.log10(dens_max), 200)
+    rho_P, pres, ener, n_sirv, _ = nsEoS.EoS(n_range, params_opt, add_crust=True, crust_file_path='EoS_tables/EoS_crust.txt')
+    dens_lim = ener[0]
+    P_rho = CubicSpline(ener, pres)
+    rhos_central = np.logspace(np.log10(n_sirv[1]*1e45*m_nuc_MKS*1e-3), 18, 150)
+    masas = np.zeros_like(rhos_central)
+    radios = np.zeros_like(rhos_central)
+    for i, rho_m in enumerate(rhos_central):
+        n_bar = rho_m*1e3/m_nuc_MKS*1e-45
+        rho0_dim, _ = nsEoS.energia_presion(n_bar, params_opt)
+        R = 1.0/rho0_dim
+        rho_P_pr = lambda P: R*rho_P(P/R)
+        P_central_pr = R*P_rho(1/R)
+        dens_lim_pr = R*dens_lim
+        rho_nat_to_MKS = 1.0/MeV_to_fm11*MeVfm_to_Jm
+        sol = tov.integrador(rf=30.0, dr=1e-3,
+                             rho0=rho0_dim*m_nuc**4/2*rho_nat_to_MKS,
+                             rho_P=rho_P_pr, P_central=P_central_pr,
+                             densidad_limite=dens_lim_pr)
+        r_phys, m_phys, *_ = sol
+        radios[i] = r_phys*1e-3
+        masas[i] = m_phys/1.989e30
+    return masas, radios, rhos_central
+
+def plot_masa_radio_para_variaciones(propiedades_base, propiedad, valores, metodo='leastsq', fixed_params=[]):
+    """
+    Grafica curvas de masa-radio para diferentes valores de una propiedad del modelo.
+
+    Args:
+        propiedades_base (dict): Valores base de propiedades para crear el diccionario objetivo.
+        propiedad (str): Nombre de la propiedad a variar ('n_sat', 'B_A_sat', 'K_mod' o 'a_sym').
+        valores (iterable): Secuencia de valores para asignar a la propiedad durante cada curva.
+        metodo (str, optional): Método de optimización a emplear para cada cálculo.
+        fixed_params (list, optional): Lista de parámetros a fijar durante la optimización.
+
+    Returns:
+        None: Muestra un gráfico matplotlib con las curvas M-R y marcadores en la masa máxima.
+    """
+    colores = plt.cm.copper(np.linspace(0,1,len(valores)))
+    for i, val in enumerate(valores):
+        props = propiedades_base.copy()
+        props[propiedad] = val
+        masas, radios, _ = calcular_masa_radio_optimizado(props, metodo, fixed_params)
+        if masas is not None and radios is not None:
+            plt.plot(radios, masas, 'o-', color=colores[i], label=f'{propiedad}={val:.2f}')
+            idx = np.argmax(masas)
+            plt.scatter(radios[idx], masas[idx], color=colores[i], s=50, marker='*')
+    plt.xlabel('Radio (km)')
+    plt.ylabel('Masa (M☉)')
+    plt.title(f'Relación Masa-Radio variando {propiedad}')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
 if __name__ == "__main__":
     # Ejecutar ejemplo si el script se ejecuta directamente
