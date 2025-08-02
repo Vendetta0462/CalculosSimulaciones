@@ -12,12 +12,13 @@ from scipy.interpolate import CubicSpline
 # CONSTANTES Y CONFIGURACIÓN
 #-----------------------------------------------------------------------
 
-# Valores base de las propiedades de saturación nuclear
+# Valores base de las propiedades de saturación nuclear (Kumar et al. 2024)
 BASE_VALUES = {
     'n_sat': 0.161,      # fm^-3, densidad de saturación
     'B_A_sat': -16.24,   # MeV, energía de enlace por nucleón
     'K_mod': 230.0,      # MeV, módulo de compresión
-    'a_sym': 31.6        # MeV, coeficiente de energía de simetría
+    'a_sym': 31.6,       # MeV, coeficiente de energía de simetría
+    'L': 58.9            # MeV, pendiente de la energía de simetría
 }
 
 # Rangos razonables para los parámetros del modelo (basados en literatura)
@@ -53,7 +54,7 @@ def objetivo_residuos(params, propiedades_objetivo, n_range, pesos=None, verbose
     Args:
         params (lmfit.Parameters o array): Parámetros del modelo sigma-omega-rho
         propiedades_objetivo (dict): Diccionario con las propiedades objetivo
-                                   {'n_sat': valor, 'B_A_sat': valor, 'K_mod': valor, 'a_sym': valor}
+                                   {'n_sat': valor, 'B_A_sat': valor, 'K_mod': valor, 'a_sym': valor, 'L': valor}
         n_range (array): Rango de densidades para calcular las propiedades.
         pesos (array, optional): Pesos para cada propiedad en la función objetivo.
         verbose (bool): Si mostrar información del proceso de cálculo.
@@ -79,33 +80,33 @@ def objetivo_residuos(params, propiedades_objetivo, n_range, pesos=None, verbose
         params_modelo = [A_sigma, A_omega, A_rho, b, c, t]
         propiedades_calculadas = isoEoS.calculate_properties(n_range, params_modelo, verbose=verbose)
 
-        n_sat_calc, B_A_sat_calc, K_mod_calc, a_sym_calc = propiedades_calculadas
-        
+        n_sat_calc, B_A_sat_calc, K_mod_calc, a_sym_calc, L_calc = propiedades_calculadas
+
         # Extraer valores objetivo
         n_sat_obj = propiedades_objetivo['n_sat']
         B_A_sat_obj = propiedades_objetivo['B_A_sat']
         K_mod_obj = propiedades_objetivo['K_mod']
         a_sym_obj = propiedades_objetivo['a_sym']
-        
+        L_obj = propiedades_objetivo['L']
+
         # Calcular residuos normalizados
         residuo_n_sat = (n_sat_calc - n_sat_obj) / n_sat_obj
         residuo_B_A = (B_A_sat_calc - B_A_sat_obj) / abs(B_A_sat_obj)
         residuo_K_mod = (K_mod_calc - K_mod_obj) / K_mod_obj
         residuo_a_sym = (a_sym_calc - a_sym_obj) / a_sym_obj
-        
+        residuo_L = (L_calc - L_obj) / L_obj
+
         # Array de residuos principales
-        residuos = np.array([residuo_n_sat, residuo_B_A, residuo_K_mod, residuo_a_sym])
+        residuos = np.array([residuo_n_sat, residuo_B_A, residuo_K_mod, residuo_a_sym, residuo_L])
         # Aplicar pesos si se proporcionan (solo a los 4 primeros)
         if pesos is not None:
-            residuos[:4] *= pesos
-        # Añadir norma Euclidiana como quinto componente
-        norma_res = np.linalg.norm(residuos)
-        residuos = np.append(residuos, norma_res)
+            residuos *= pesos
+            
         return residuos
         
     except Exception as e:
         print(f"Error en el cálculo de propiedades: {e}")
-        return np.array([1e6, 1e6, 1e6, 1e6])  # Penalización alta
+        return np.array([1e6, 1e6, 1e6, 1e6, 1e6])  # Penalización alta
 
 def optimizar_parametros(propiedades_objetivo, metodo='leastsq', 
                         params_iniciales=None, n_range=None, pesos=None, 
@@ -116,7 +117,7 @@ def optimizar_parametros(propiedades_objetivo, metodo='leastsq',
     
     Args:
         propiedades_objetivo (dict): Diccionario con las propiedades objetivo
-                                   {'n_sat': valor, 'B_A_sat': valor, 'K_mod': valor, 'a_sym': valor}
+                                   {'n_sat': valor, 'B_A_sat': valor, 'K_mod': valor, 'a_sym': valor, 'L': valor}
         metodo (str): Método de optimización ('leastsq', 'nelder', 'differential_evolution')
         params_iniciales (array, optional): Parámetros iniciales [A_sigma, A_omega, A_rho, b, c]
         n_range (array, optional): Rango de densidades para calcular las propiedades
@@ -182,13 +183,14 @@ def optimizar_parametros(propiedades_objetivo, metodo='leastsq',
         A_sigma, A_omega, A_rho, b, c = params_optimizados
         params_modelo = [A_sigma, A_omega, A_rho, b, c, 0.0]  # t=0
         propiedades_finales = isoEoS.calculate_properties(n_range, params_modelo, verbose=verbose)
-        n_sat_final, B_A_sat_final, K_mod_final, a_sym_final = propiedades_finales
-        
+        n_sat_final, B_A_sat_final, K_mod_final, a_sym_final, L_final = propiedades_finales
+
         propiedades_calculadas = {
             'n_sat': n_sat_final,
             'B_A_sat': B_A_sat_final,
             'K_mod': K_mod_final,
-            'a_sym': a_sym_final
+            'a_sym': a_sym_final,
+            'L': L_final
         }
         
     except Exception as e:
@@ -217,7 +219,7 @@ def optimizar_parametros(propiedades_objetivo, metodo='leastsq',
         print("\nComparación de propiedades:")
         print(f"{'Propiedad':<10} {'Objetivo':<12} {'Calculado':<12} {'Error rel (%)':<12}")
         print("-" * 50)
-        for prop in ['n_sat', 'B_A_sat', 'K_mod', 'a_sym']:
+        for prop in ['n_sat', 'B_A_sat', 'K_mod', 'a_sym', 'L']:
             obj = propiedades_objetivo[prop]
             calc = propiedades_calculadas[prop]
             error_rel = 100 * abs(calc - obj) / abs(obj)
@@ -302,7 +304,7 @@ def plot_convergencia_optimizacion(resultados, save_fig=False, filename=None):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
     
     # Gráfico 1: Comparación propiedades objetivo vs calculadas
-    propiedades = ['n_sat', 'B_A_sat', 'K_mod', 'a_sym']
+    propiedades = ['n_sat', 'B_A_sat', 'K_mod', 'a_sym', 'L']
     # Aplicar signo invertido para energía de enlace (B_A_sat es negativa)
     valores_obj = [(-resultados['propiedades_objetivo'][prop] if prop=='B_A_sat' else resultados['propiedades_objetivo'][prop]) for prop in propiedades]
     valores_calc = [(-resultados['propiedades_calculadas'][prop] if prop=='B_A_sat' else resultados['propiedades_calculadas'][prop]) for prop in propiedades]
@@ -318,7 +320,7 @@ def plot_convergencia_optimizacion(resultados, save_fig=False, filename=None):
     ax1.set_title('Comparación: Objetivo vs Calculado')
     ax1.set_yscale('log')
     ax1.set_xticks(x_pos)
-    ax1.set_xticklabels(['$n_{sat}$', '$-B/A_{sat}$', '$K_{mod}$', '$a_{sym}$'])
+    ax1.set_xticklabels(['$n_{sat}$', '$-B/A_{sat}$', '$K_{mod}$', '$a_{sym}$', '$L$'])
     ax1.legend()
     ax1.grid(True, alpha=0.3)
     
@@ -335,7 +337,7 @@ def plot_convergencia_optimizacion(resultados, save_fig=False, filename=None):
     ax2.set_ylabel('Error relativo (%)')
     ax2.set_title('Errores relativos de ajuste')
     ax2.set_xticks(x_pos)
-    ax2.set_xticklabels(['$n_{sat}$', '$B/A_{sat}$', '$K_{mod}$', '$a_{sym}$'])
+    ax2.set_xticklabels(['$n_{sat}$', '$B/A_{sat}$', '$K_{mod}$', '$a_{sym}$', '$L$'])
     ax2.grid(True, alpha=0.3)
     
     plt.tight_layout()
@@ -392,7 +394,7 @@ def plot_parametros_vs_propiedad(resultados_estudio, nombre_propiedad, save_fig=
 # FUNCIONES AUXILIARES
 #-----------------------------------------------------------------------
 
-def crear_propiedades_objetivo(n_sat=None, B_A_sat=None, K_mod=None, a_sym=None):
+def crear_propiedades_objetivo(n_sat=None, B_A_sat=None, K_mod=None, a_sym=None, L=None):
     """
     Crea un diccionario de propiedades objetivo, usando valores experimentales por defecto.
     
@@ -401,6 +403,7 @@ def crear_propiedades_objetivo(n_sat=None, B_A_sat=None, K_mod=None, a_sym=None)
         B_A_sat (float, optional): Energía de enlace por nucleón en MeV
         K_mod (float, optional): Módulo de compresión en MeV  
         a_sym (float, optional): Coeficiente de energía de simetría en MeV
+        L (float, optional): Pendiente de la energía de simetría en MeV
         
     Returns:
         dict: Diccionario con las propiedades objetivo
@@ -416,6 +419,8 @@ def crear_propiedades_objetivo(n_sat=None, B_A_sat=None, K_mod=None, a_sym=None)
         propiedades['K_mod'] = K_mod
     if a_sym is not None:
         propiedades['a_sym'] = a_sym
+    if L is not None:
+        propiedades['L'] = L
         
     return propiedades
 
@@ -480,6 +485,8 @@ def calcular_masa_radio_optimizado(propiedades_objetivo, metodo='leastsq', fixed
     if not resultado_opt['exito']:
         return None, None, None
     params_opt = list(resultado_opt['parametros_optimizados'].values())
+    print(f"Parámetros optimizados: {params_opt}")
+    print(f"Propiedades calculadas: {resultado_opt['propiedades_calculadas']}")
     # Construir EoS y función P(rho)
     dens_max = 1e18*1e3*(1e-45/m_nuc_MKS)
     dens_min = 1e12*1e3*(1e-45/m_nuc_MKS)
@@ -487,7 +494,7 @@ def calcular_masa_radio_optimizado(propiedades_objetivo, metodo='leastsq', fixed
     rho_P, pres, ener, n_sirv, _ = nsEoS.EoS(n_range, params_opt, add_crust=True, crust_file_path='EoS_tables/EoS_crust.txt')
     dens_lim = ener[0]
     P_rho = CubicSpline(ener, pres)
-    rhos_central = np.logspace(np.log10(n_sirv[1]*1e45*m_nuc_MKS*1e-3), 18, 150)
+    rhos_central = np.logspace(13.5, 15.3, 150)
     masas = np.zeros_like(rhos_central)
     radios = np.zeros_like(rhos_central)
     for i, rho_m in enumerate(rhos_central):
@@ -527,7 +534,7 @@ def plot_masa_radio_para_variaciones(propiedades_base, propiedad, valores, metod
         props[propiedad] = val
         masas, radios, _ = calcular_masa_radio_optimizado(props, metodo, fixed_params)
         if masas is not None and radios is not None:
-            plt.plot(radios, masas, 'o-', color=colores[i], label=f'{propiedad}={val:.2f}')
+            plt.plot(radios, masas, 'o-', color=colores[i], label=f'{propiedad}={val:.2f}', linewidth=1.5, markersize=3 )
             idx = np.argmax(masas)
             plt.scatter(radios[idx], masas[idx], color=colores[i], s=50, marker='*')
     plt.xlabel('Radio (km)')
