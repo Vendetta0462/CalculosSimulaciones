@@ -270,6 +270,27 @@ def coeficiente_simetria(n_sat, params=[A_sigma, A_omega, A_rho, b, c, t], verbo
     
     return a_sym/MeV_to_fm11 # Coeficiente de energía de simetría en MeV
 
+def pendiente_coeficiente_simetria(n_sat, params=[A_sigma, A_omega, A_rho, b, c, t], verbose=True):
+    """
+    Calcula la pendiente del coeficiente de energía de simetría para una densidad de saturación dada.
+    
+    Args:
+        n_sat (float): Densidad de saturación en fm^-3.
+        params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c, t] que definen el modelo.
+        verbose (bool): Si True, imprime información detallada sobre el cálculo.
+
+    Returns:
+        float: Pendiente del coeficiente de energía de simetría en MeV/fm^-3.
+    """
+    _, _, A_rho, _, _, _ = params
+    x_sigma = sol_x_sigma(n_sat, params, verbose=verbose)
+    x_f = (1.0/m_nuc)*(3.0*pi**2*n_sat/2.0)**(1/3)
+    
+    raiz = np.sqrt(x_f**2 + x_sigma**2)
+    L = m_nuc*(x_f**2*(x_f**2 + 2.0*x_sigma**2)/(6.0*raiz**3) + A_rho*x_f**3/(4.0*pi**2))
+    
+    return L/MeV_to_fm11 # Pendiente del coeficiente de energía de simetría en MeV/fm^-3
+
 def calculate_properties(n_prove, params, verbose=True):
     """
     Calcula las propiedades de saturación del modelo dado un conjunto de parámetros.
@@ -280,7 +301,7 @@ def calculate_properties(n_prove, params, verbose=True):
         verbose (bool): Si True, imprime información detallada sobre el cálculo.
         
     Returns:
-        props (array): Array con las propiedades de saturación [densidad de saturación, energía de enlace, módulo de compresión, coeficiente de simetría] en fm^-3 y MeV.        
+        props (array): Array con las propiedades de saturación [densidad de saturación, energía de enlace, módulo de compresión, coeficiente de simetría, pendiente del coeficiente de simetría] en fm^-3 y MeV.
     """
     # Extraemos las propiedades de saturación en fm^-3 y MeV
     saturacion = plot_saturacion(n_prove, params, plot=False, verbose=verbose)
@@ -288,8 +309,9 @@ def calculate_properties(n_prove, params, verbose=True):
     binding_energy = saturacion[1]
     compression_modulus = modulo_compresion(saturation_density, params, verbose=verbose)
     energy_symmetry_coefficient = coeficiente_simetria(saturation_density, params, verbose=verbose)
+    symmetry_slope = pendiente_coeficiente_simetria(saturation_density, params, verbose=verbose)
 
-    return np.array([saturation_density, binding_energy, compression_modulus, energy_symmetry_coefficient])
+    return np.array([saturation_density, binding_energy, compression_modulus, energy_symmetry_coefficient, symmetry_slope])
 
 #-----------------------------------------------------------------------
 # GRAFICAS DE RESULTADOS DE LA ECUACIÓN DE ESTADO
