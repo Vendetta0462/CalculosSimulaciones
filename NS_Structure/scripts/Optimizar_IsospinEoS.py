@@ -73,8 +73,8 @@ def objetivo_residuos(params, propiedades_objetivo, n_range, pesos=None, verbose
     
     # Verificar que los parámetros están dentro de rangos físicos razonables
     if (A_sigma <= 0 or A_omega <= 0 or A_rho <= 0):
-        return np.array([1e6, 1e6, 1e6, 1e6])  # Penalización alta
-    
+        return np.array([1e6, 1e6, 1e6, 1e6, 1e6])  # Penalización alta
+
     try:
         # Calcular las propiedades del modelo con los parámetros dados
         params_modelo = [A_sigma, A_omega, A_rho, b, c, t]
@@ -347,41 +347,91 @@ def plot_convergencia_optimizacion(resultados, save_fig=False, filename=None):
     
     plt.show()
 
-def plot_parametros_vs_propiedad(resultados_estudio, nombre_propiedad, save_fig=False, filename=None):
+def plot_parametros_vs_propiedad(resultados_estudio, save_fig=False, filename=None):
     """
-    Grafica cómo varían todos los parámetros en función de una propiedad específica.
+    Grafica cómo varían todos los parámetros cuando se varía cada una de las propiedades.
+    Cada subplot muestra un parámetro con 5 líneas (una por cada propiedad variada).
     
     Args:
-        resultados_estudio (dict): Resultados del estudio paramétrico
-        nombre_propiedad (str): Nombre de la propiedad estudiada
+        resultados_estudio (dict): Resultados del estudio paramétrico completo
+                                 Debe contener claves para cada propiedad variada
         save_fig (bool): Si guardar la figura
         filename (str): Nombre del archivo para guardar
     """
     
-    if nombre_propiedad not in resultados_estudio:
-        print(f"No hay datos para la propiedad {nombre_propiedad}")
+    # Verificar que hay datos
+    if not resultados_estudio:
+        print("No hay datos en resultados_estudio")
         return
     
-    datos = resultados_estudio[nombre_propiedad]
+    # Colores y marcadores para cada propiedad
+    colores = ['red', 'blue', 'green', 'orange', 'purple']
+    marcadores = ['o', 's', '^', 'D', 'v']
     
-    # Extraer datos
-    valores_propiedad = [d['valor_propiedad'] for d in datos]
-    
-    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+    # Crear la figura con 2x3 subplots
+    fig, axes = plt.subplots(2, 3, figsize=(18, 12))
     axes = axes.flatten()
     
-    for i, param in enumerate(PARAMETER_NAMES):
-        valores_param = [d['parametros'][param] for d in datos]
-        
-        axes[i].plot(valores_propiedad, valores_param, 'o-', linewidth=2, markersize=6)
-        axes[i].set_xlabel(f'{nombre_propiedad}')
-        axes[i].set_ylabel(f'{param}')
-        axes[i].set_title(f'{param} vs {nombre_propiedad}')
-        axes[i].grid(True, alpha=0.3)
+    # Información sobre rangos de variación para el panel de leyenda
+    info_rangos = {}
     
-    # Ocultar el último subplot si hay un número impar de parámetros
-    if len(PARAMETER_NAMES) % 2 != 0:
-        axes[-1].set_visible(False)
+    # Para cada parámetro, crear un subplot
+    for i, param in enumerate(PARAMETER_NAMES):
+        ax = axes[i]
+        
+        # Para cada propiedad variada, agregar una línea
+        for j, (nombre_prop, datos) in enumerate(resultados_estudio.items()):
+            if not datos:  # Skip si no hay datos para esta propiedad
+                continue
+                
+            # Extraer valores del parámetro para esta variación de propiedad
+            valores_param = [d['parametros'][param] for d in datos]
+            indices = list(range(len(valores_param)))
+            
+            # Graficar
+            ax.plot(indices, valores_param, 
+                   color=colores[j % len(colores)], 
+                   marker=marcadores[j % len(marcadores)],
+                   label=f'{nombre_prop}',
+                   linewidth=2, markersize=6, alpha=0.8)
+            
+            # Guardar información de rangos para la leyenda
+            if nombre_prop not in info_rangos:
+                valores_propiedad = [d['valor_propiedad'] for d in datos]
+                info_rangos[nombre_prop] = {
+                    'min': min(valores_propiedad),
+                    'max': max(valores_propiedad),
+                    'n_puntos': len(valores_propiedad)
+                }
+        
+        ax.set_xlabel('Índice de variación')
+        ax.set_ylabel(f'{param}')
+        ax.set_title(f'Variación de {param}')
+        ax.grid(True, alpha=0.3)
+        ax.legend(fontsize=8)
+    
+    # Panel de información de rangos (sexto subplot)
+    ax_info = axes[5]
+    ax_info.axis('off')  # Quitar ejes
+    
+    # Crear texto informativo
+    texto_info = "Rangos de variación de propiedades:\n\n"
+    
+    for nombre_prop, info in info_rangos.items():
+        texto_info += f"{nombre_prop}:\n"
+        texto_info += f"  Rango: [{info['min']:.3f}, {info['max']:.3f}]\n"
+        texto_info += f"  Puntos: {info['n_puntos']}\n\n"
+    
+    # Agregar el texto al panel
+    ax_info.text(0.5, 0.5, texto_info, 
+                transform=ax_info.transAxes,
+                fontsize=10,
+                horizontalalignment='center',
+                verticalalignment='center',
+                fontfamily='monospace',
+                bbox=dict(boxstyle='round,pad=0.5', facecolor='lightgray', alpha=0.8))
+    
+    ax_info.set_title('Información de Variaciones', fontsize=12, fontweight='bold')
     
     plt.tight_layout()
     
