@@ -1,6 +1,7 @@
 # Archivos específicos a excluir
-main.*
-!main.tex
+# main.*
+# !main.tex
+# !main.pdf
 cleanup.bat
 Bibliografia.bib
 edicionDelLibro.txss2
