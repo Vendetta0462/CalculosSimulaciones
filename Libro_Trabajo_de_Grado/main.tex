@@ -1,0 +1,231 @@
+\documentclass[8pt, letterpaper]{report}
+
+% Paquetes --------------------------------------------------------------------------
+\usepackage{bm}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{array}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{fixmath}
+%\captionsetup[figure]{name=Figura}
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
+\usepackage{tocloft}
+\usepackage{amssymb,amsmath,amsthm} % Símbolos matemáticos
+\usepackage[spanish]{babel} % Idioma
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[utf8]{inputenc} % Acentos y otros símbolos 
+\usepackage{enumerate} % Páginas
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{physics}
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{siunitx}
+\usepackage{color}
+\usepackage{braket}
+\usepackage[nottoc]{tocbibind}
+%\usepackage{natbib}
+%\usepackage[square,sort,comma,numbers]{natbib} %Para ver solo números
+%\usepackage[square,sort,comma]{natbib}
+\usepackage[style=ieee, backend=biber, maxnames=2]{biblatex}
+\addbibresource{PropuestadeTesis.bib}
+\setlength{\parindent}{0pt} %Quitar indentación
+\decimalpoint
+
+%Definiciones paras las ecuaciones y las figuras --------------------------------------
+
+% Redefinir el comando \theequation para incluir el número de sección y subsección
+\renewcommand{\theequation}{\thechapter.\arabic{equation}}
+
+\DeclareCaptionFormat{myformat}{\textbf{#1#2} #3}
+\captionsetup[figure]{format=myformat}
+
+\addto\captionsspanish{\renewcommand*\contentsname{Tabla de contenido}}
+\addto\captionsspanish{\renewcommand*\listtablename{Lista de tablas}}
+\addto\captionsspanish{\renewcommand*\tablename{Tabla}}
+\addto\captionsspanish{\renewcommand*\listfigurename{Lista de figuras}}
+
+\renewcommand{\cftfigpresnum}{Figura }
+\setlength{\cftfignumwidth}{5em}
+\renewcommand{\cfttabpresnum}{Tabla }
+\setlength{\cfttabnumwidth}{5em}
+
+\tocloftpagestyle{fancy}
+\setlength\cftbeforetoctitleskip{1cm}
+\setlength\cftbeforeloftitleskip{1cm}
+\setlength\cftbeforelottitleskip{1cm}
+
+
+% Reiniciar el contador de ecuaciones al principio de cada subsección -------------------------
+
+\makeatletter
+\@addtoreset{equation}{section}
+\makeatother
+
+% Configuración de márgenes
+\usepackage[left=3cm, right=2.5cm, top=3cm, bottom=3cm]{geometry}
+
+% Configuración del interlineado
+\renewcommand{\baselinestretch}{1.5}
+
+% Configuración de títulos de secciones
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-50pt}{40pt}
+
+% Título de la tesis
+\title{Ecuaciones de Estado de Estrellas de Neutrones mediante la Teoría Relativista de Campo Medio}
+\author{Nicolas Mantilla Molina}
+%\date{Fecha}
+
+% Configuración de puntos en la tabla de contenidos
+\renewcommand{\cftchapleader}{\cftdotfill{\cftsecdotsep}}
+\renewcommand{\cftchapdotsep}{\cftdotsep}
+
+% Configuración de encabezado y pie de página
+\pagestyle{fancy}
+\fancyhf{} % Limpia los encabezados y pies de página predeterminados
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\thepage}
+
+% Redefinir el estilo de página de la primera página de cada capítulo
+\fancypagestyle{plain}{%
+  \fancyhf{} % Limpia los encabezados y pies de página predeterminados
+  \fancyhead[L]{}
+  \fancyhead[C]{Universidad Industrial de Santander}
+  \fancyhead[R]{\thepage}
+}
+\titlespacing*{\chapter}{0pt}{50pt}{20pt} %Cambio los valores del espacio entre el título del cap y el encabezado
+
+\begin{document}
+
+% Portada
+\begin{titlepage}
+    \centering
+    %\begin{minipage}[b]{0.45\textwidth}
+    %    \includegraphics[width=\textwidth]{Figuras/logouis.png}\par\vspace{1cm}
+    %\end{minipage}
+    %\hfill
+    %\begin{minipage}[b]{0.45\textwidth}
+    %    \includegraphics[width=\textwidth]{Figuras/loGOTS.png}\par\vspace{1cm}
+    %\end{minipage}
+    \vspace{5cm}
+    \rule{\textwidth}{2pt}
+    {\LARGE\bfseries ECUACIONES DE ESTADO DE ESTRELLAS DE NEUTRONES MEDIANTE LA TEORÍA RELATIVISTA DE CAMPO MEDIO\par}
+    \rule{\textwidth}{2pt}
+    \vfill
+    {\Large\itshape Nicolas Mantilla Molina\par}
+    \vspace{1cm}
+    {\Large\itshape Trabajo de grado para optar por el título de:  \\
+    \textbf{Físico} \par}
+    
+    \vspace{.8 cm}
+    {\Large\itshape Directora: \par}
+    {\Large\itshape Laura Marcela Becerra Bayona, PhD \par}
+    %\vfill
+    \vspace{0.5cm}
+    {\Large\itshape Co-directores: \par}
+    {\Large\itshape José Fernando Rodriguez Ruiz, PhD \par}
+     {\Large\itshape Luis Alberto Núñez de Villavicencio, PhD \par}
+    \vfill
+    %\vspace{.8cm}
+    {\scshape\Large Universidad  Industrial De Santander \par}
+    {\scshape\Large Facultad de Ciencias \par}
+    {\scshape\Large Escuela de Física \par}
+    {\scshape\Large Bucaramanga \par}
+    {\scshape\Large 2025 \par}
+\end{titlepage}
+
+
+% Dedicatoria
+\clearpage
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{flushright}
+    {\Large\itshape Dedicatoria\par}
+    \vspace{0.5cm}
+	Cuerpo de la dediatoria
+    
+\end{flushright}
+\vspace*{\fill}
+\clearpage
+
+% Agradecimientos
+\clearpage
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{flushleft}
+    {\huge\bfseries Agradecimientos\par}
+    \vspace{0.5cm}
+	Cuerpo de los agradecimientos
+    
+\end{flushleft}
+\vspace*{\fill}
+\clearpage
+
+
+
+% Tabla de contenido
+\pagestyle{empty}
+\tableofcontents
+
+
+% Lista de figuras
+\clearpage
+\listoffigures
+\clearpage
+
+% Página de resumen
+\clearpage
+%\thispagestyle{empty}
+\vspace*{1cm} % Ajusta este valor según tu preferencia
+\begin{flushleft}
+    {\huge\bfseries Resumen\par}
+    \vspace{0.5cm}
+    En el presente trabajo se propone obtener Ecuaciones de Estado (EdE) de una Estrella de Neutrones (EN) mediante la Teoría Relativista de Campo Medio (TRCM). Las EN son objetos cuyas condiciones extremas permiten estudiar la materia nuclear a altas densidades, inalcanzables en laboratorio con la tecnología actual. A través de las EdE, se busca modelar la relación entre  la presión y la densidad de energía en el núcleo estelar, lo cual resulta fundamental para describir propiedades observables de la EN como su masa,  radio y  deformación de marea. Este estudio responde a la necesidad de conectar modelos teóricos con datos experimentales y observacionales, especialmente  aquellos obtenidos por misiones como LIGO, VIRGO y NICER.
+    
+    Las EdE construidas contienen parámetros libres que describen las interacciones y propiedades microscópicas de la materia. Este proyecto tiene como objetivo construir y ajustar modelos de EdE utilizando datos astrofísicos recientes. Adicionalmente, se investigará la capacidad de la EdE hallada para predecir objetos en el Mass-Gap, un rango de valores entre estrellas de neutrones masivas y agujeros negros ligeros, cuya composición sigue siendo debatida. Este enfoque permitirá modelar la estructura de las EN y contribuir al conocimiento de la materia nuclear en condiciones extremas.
+
+    
+\end{flushleft}
+
+
+
+% Añadir la página de resumen al PDF pero no a la tabla de contenidos
+%\addcontentsline{toc}{chapter}{Resumen}
+
+
+%Capítulo 1
+\input{Chapter1/chapter1.tex}
+
+%Capítulo 2
+\input{Chapter2/chapter2.tex}
+
+%Capítulo 3
+\input{Chapter3/chapter3.tex}
+
+%Capítulo 4
+\input{Chapter4/chapter4.tex}
+
+%Capítulo 5
+\input{Chapter5/chapter5.tex}
+
+%Capítulo 6
+\input{Chapter6/chapter6.tex}
+
+
+%\bibliographystyle{ieeetr}
+%\bibliography{PropuestadeTesis}
+\printbibliography
+
+
+%\renewcommand{\bibname}{Referencias}
+%\addcontentsline{toc}{chapter}{Referencias}
+%\bibliography{Bibliografia} % Reemplaza 'biblio' con el nombre de tu archivo .bib
+\end{document}

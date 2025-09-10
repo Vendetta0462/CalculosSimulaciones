@@ -1,0 +1,60 @@
+# Archivos específicos a excluir
+main.*
+!main.tex
+cleanup.bat
+Bibliografia.bib
+edicionDelLibro.txss2
+
+# Carpetas específicas
+.vscode/
+
+# Archivos de compilación de LaTeX
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fls
+*.fdb_latexmk
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.lof
+*.lot
+*.lol
+*.nav
+*.snm
+*.vrb
+*.pdf
+
+# Archivos temporales de LaTeX
+*.idx
+*.ilg
+*.ind
+*.glo
+*.gls
+*.glg
+*.acn
+*.acr
+*.alg
+*.brf
+*.loa
+*.thm
+*.figlist
+*.makefile
+*.fls
+*.fdb_latexmk
+*.auxlock
+
+# Archivos de backup
+*.bak
+*~
+*.tmp
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
