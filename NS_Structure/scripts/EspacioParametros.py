@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.interpolate import CubicSpline
+from scipy.interpolate import PchipInterpolator
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 import matplotlib.pyplot as plt
 import os
@@ -42,49 +42,50 @@ def _nuclear_worker(args):
 	return i, j, sat, ebind, Kc, asym, Lc
 
 def _stellar_worker(args):
-	i, j, A_sigma, A_omega, params, target_mass = args
-	p = params.copy()
-	p[0], p[1] = A_sigma, A_omega
-	# Build EoS
-	dens_max = 1e18 * 1e3 * (1e-45 / m_nuc_MKS)
-	dens_min = 1e12 * 1e3 * (1e-45 / m_nuc_MKS)
-	n_range = np.logspace(np.log10(dens_min), np.log10(dens_max), 200)
-	crust_file = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'EoS_tables', 'EoS_crust.txt'))
-	rho_P, pres, ener, *_ = nsEoS.EoS(n_range, p, add_crust=True, crust_file_path=crust_file)
-	dens_lim = ener[0]
-	P_rho = CubicSpline(ener, pres)
-	rhos_central = np.logspace(13.5, 15.5, 150)
-	masses = np.zeros_like(rhos_central)
-	radios = np.zeros_like(rhos_central)
-	compacs = np.zeros_like(rhos_central)
-	for k, rho_m in enumerate(rhos_central):
-		n_bar = rho_m * 1e3 / m_nuc_MKS * 1e-45
-		rho0_dim, _ = nsEoS.energia_presion(n_bar, p)
-		R = 1.0 / rho0_dim
-		rho_P_pr = lambda P: R * rho_P(P / R)
-		P_central_pr = R * P_rho(1 / R)
-		dens_lim_pr = R * dens_lim
-		rho_nat_to_MKS = 1.0 / MeV_to_fm11 * MeVfm_to_Jm
-		sol = tov.integrador(rf=30.0, dr=1e-3,
-							rho0=rho0_dim * m_nuc**4 / 2 * rho_nat_to_MKS,
-							rho_P=rho_P_pr, P_central=P_central_pr,
-							densidad_limite=dens_lim_pr)
-		r_phys, m_phys, *_ = sol
-		compacs[k] = G_MKS * m_phys / c_MKS**2 / r_phys
-		radios[k] = r_phys * 1e-3
-		masses[k] = m_phys / 1.989e30
-	idx_max = np.nanargmax(masses)
-	mass_max = masses[idx_max]
-	comp_max = compacs[idx_max]
-	# interpolate radius for target_mass
-	if masses[0] <= target_mass <= masses[-1]:
-		idx = np.searchsorted(masses, target_mass)
-		m1, m2 = masses[idx-1], masses[idx]
-		r1, r2 = radios[idx-1], radios[idx]
-		radius_can = r1 + (target_mass - m1) / (m2 - m1) * (r2 - r1)
-	else:
-		radius_can = np.nan
-	return i, j, mass_max, comp_max, radius_can
+    i, j, A_sigma, A_omega, params, target_mass = args
+    p = params.copy()
+    p[0], p[1] = A_sigma, A_omega
+    # Build EoS
+    dens_max = 1e18 * 1e3 * (1e-45 / m_nuc_MKS)
+    dens_min = 1e12 * 1e3 * (1e-45 / m_nuc_MKS)
+    n_range = np.logspace(np.log10(dens_min), np.log10(dens_max), 200)
+    crust_file = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'EoS_tables', 'EoS_crust.txt'))
+    rho_P, pres, ener, dens_sirve, *_ = nsEoS.EoS(n_range, p, add_crust=True, crust_file_path=crust_file)
+    dens_lim = ener[0]
+    P_rho = PchipInterpolator(ener, pres)
+    energia_densidad = PchipInterpolator(dens_sirve, ener)
+    rhos_central = np.logspace(13.5, 15.5, 150)
+    masses = np.zeros_like(rhos_central)
+    radios = np.zeros_like(rhos_central)
+    compacs = np.zeros_like(rhos_central)
+    for k, rho_m in enumerate(rhos_central):
+        n_bar = rho_m * 1e3 / m_nuc_MKS * 1e-45
+        rho0_dim = energia_densidad(n_bar)
+        R = 1.0 / rho0_dim
+        rho_P_pr = lambda P: R * rho_P(P / R)
+        P_central_pr = R * P_rho(1 / R)
+        dens_lim_pr = R * dens_lim
+        rho_nat_to_MKS = 1.0 / MeV_to_fm11 * MeVfm_to_Jm
+        sol = tov.integrador(rf=30.0, dr=1e-3,
+                            rho0=rho0_dim * m_nuc**4 / 2 * rho_nat_to_MKS,
+                            rho_P=rho_P_pr, P_central=P_central_pr,
+                            densidad_limite=dens_lim_pr)
+        r_phys, m_phys, *_ = sol
+        compacs[k] = G_MKS * m_phys / c_MKS**2 / r_phys
+        radios[k] = r_phys * 1e-3
+        masses[k] = m_phys / 1.989e30
+    idx_max = np.nanargmax(masses)
+    mass_max = masses[idx_max]
+    comp_max = compacs[idx_max]
+    # interpolate radius for target_mass
+    if masses[0] <= target_mass <= masses[-1]:
+        idx = np.searchsorted(masses, target_mass)
+        m1, m2 = masses[idx-1], masses[idx]
+        r1, r2 = radios[idx-1], radios[idx]
+        radius_can = r1 + (target_mass - m1) / (m2 - m1) * (r2 - r1)
+    else:
+        radius_can = np.nan
+    return i, j, mass_max, comp_max, radius_can
 
 def compute_nuclear_mesh(A_sigma_range, A_omega_range, params,
 						 sat_range=(0.15, 0.18), ebind_range=(-18.0, -12.0),
