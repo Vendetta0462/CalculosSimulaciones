@@ -318,6 +318,32 @@ def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c], add_crust=False, crus
             return None, ps_core_f, es_core_f, n_core_f, presion_cambio
     return spline, presiones, energias, n_sirve, presion_cambio
 
+def distribucion_especies(n_barions, params=[A_sigma, A_omega, A_rho, b, c]):
+    """
+    Calcula las densidades de número para neutrones, protones y electrones en función de la densidad bariónica dada.
+
+    Args:
+        n_barions (array-like): Array de densidades bariónicas en fm^-3.
+        params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c] que definen el modelo.
+
+    Returns:
+        tuple: Arrays de densidades de número para protones, neutrones y electrones en fm^-3.
+    """
+    # Recorremos las densidades
+    n_neutrones = np.zeros(len(n_barions))
+    n_protones = np.zeros(len(n_barions))
+    n_electrones = np.zeros(len(n_barions))
+    
+    for i, n in enumerate(n_barions):
+        _, x_nF = sol_x_sigma_x_nF(n, params)
+        x_pF = ( (3.0*pi**2)*n/m_nuc**3 - x_nF**3)**(1/3) # Momento de Fermi del protón (y electrón)
+        n_neutrones[i] = (1/(3.0*pi**2)) * (x_nF*m_nuc)**3
+        n_protones[i] = (1/(3.0*pi**2)) * (x_pF*m_nuc)**3
+        n_electrones[i] = n_protones[i] # Neutralidad eléctrica
+
+    return n_protones, n_neutrones, n_electrones
+
+
 #######################################################################
 # GRÁFICAS DE RESULTADOS DE LA ECUACIÓN DE ESTADO
 #######################################################################
