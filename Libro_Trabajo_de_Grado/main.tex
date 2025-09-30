@@ -8,6 +8,7 @@
 \usepackage{fancyhdr}
 \usepackage{array}
 \usepackage{amsfonts}
+\usepackage{cancel}
 \usepackage{mathtools}
 \usepackage{float}
 \usepackage{caption}
@@ -34,7 +35,7 @@
 %\usepackage[square,sort,comma,numbers]{natbib} %Para ver solo números
 %\usepackage[square,sort,comma]{natbib}
 \usepackage[style=ieee, backend=biber, maxnames=2, citestyle=numeric-comp]{biblatex}
-\addbibresource{PropuestadeTesis.bib}
+\addbibresource{Tesis.bib}
 \setlength{\parindent}{0pt} %Quitar indentación
 \decimalpoint
 
@@ -42,6 +43,9 @@
 
 % Redefinir el comando \theequation para incluir el número de sección y subsección
 \renewcommand{\theequation}{\thechapter.\arabic{equation}}
+
+% Redefinir el formato de la numeracion de figuras a capitulo.figura
+\renewcommand{\thefigure}{\thechapter.\arabic{figure}}
 
 \DeclareCaptionFormat{myformat}{\textbf{#1#2} #3}
 \captionsetup[figure]{format=myformat}
@@ -64,11 +68,18 @@
 % Atajos para escribir más rapido
 \newcommand{\sistemaTOV}{\ref{eq:masa} - \ref{eq:tov}}
 \newcommand{\masasol}{\,\text{M}_\odot}
+\newcommand{\rhomeson}{\boldsymbol{\rho}}
+\newcommand{\half}{\tfrac{1}{2}}
 
 % Reiniciar el contador de ecuaciones al principio de cada subsección -------------------------
 
 \makeatletter
-\@addtoreset{equation}{section}
+%\@addtoreset{equation}{section}
+\makeatother
+
+% Hacemos que las gráficas se numeren por capítulos
+\makeatletter
+\@addtoreset{figure}{chapter}
 \makeatother
 
 % Configuración de márgenes
