@@ -343,7 +343,7 @@ donde $\epsilon_e(p_{Fe}) = \sqrt{p_{Fe}^2 + m_e^2}$ es la energía de Fermi del
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.95\linewidth]{Figuras/materia_estelar_base}
-	\caption[Ecuación de estado para la materia de estrellas de neutrones.]{Ecuación de estado para materia de estrellas de neutrones empleando teoría relativista de campo medio. Se usaron los parámetros $\left(\frac{g_\sigma}{m_\sigma}\right)^2=12.684\,\text{fm}^2$, $\left(\frac{g_\omega}{m_\omega}\right)^2=7.148\,\text{fm}^2$, $\left(\frac{g_\rho}{m_\rho}\right)^2=4.410\,\text{fm}^2$, $b=5.610\times10^{-3}$, $c=-6.986\times10^{-3}$.}
+	\caption[Ecuación de estado para el núcleo de estrellas de neutrones.]{Ecuación de estado para el núcleo de estrellas de neutrones empleando teoría relativista de campo medio. Se usaron los parámetros $\left(\frac{g_\sigma}{m_\sigma}\right)^2=12.684\,\text{fm}^2$, $\left(\frac{g_\omega}{m_\omega}\right)^2=7.148\,\text{fm}^2$, $\left(\frac{g_\rho}{m_\rho}\right)^2=4.410\,\text{fm}^2$, $b=5.610\times10^{-3}$, $c=-6.986\times10^{-3}$.}
 	\label{fig:materiaestelarbase}
 \end{figure}
 
@@ -400,4 +400,24 @@ y estas dos cantidades, tras una revisión de 28 estimaciones de experimentos ta
 
 Estas cinco propiedades empíricas ($n_0$, $\frac{B}{A}\big|_0$, $K_0$, $a_\text{sym}$, $L_0$) definen restricciones que cualquier ecuación de estado microscópica debe satisfacer para ser físicamente viable. En el contexto de la teoría relativista de campo medio, estas propiedades y sus incertidumbres se utilizan para determinar el espacio de parámetros del modelo físicamente aceptable.
 
-\subsection{Corteza de la estrella de neutrones}
+\subsection{Corteza de la estrella}
+
+El modelo de teoría relativista de campo medio desarrollado es una descripción de la materia nuclear en el régimen de alta densidad, específicamente para densidades bariónicas superiores a aproximadamente $0.1$ fm$^{-3}$ o $\rho_m \gtrsim 1.7 \times 10^{14}$ g/cm$^3$, donde las interacciones nucleón-nucleón dominan la dinámica del sistema y la aproximación de campo medio tiene sentido. Sin embargo, las estrellas de neutrones presentan una estructura estratificada que incluye regiones de menor densidad donde esta aproximación deja de ser aplicable. La corteza de la estrella, que se extiende desde la superficie hasta el núcleo denso, abarca un rango de densidades de varios órdenes de magnitud y requiere tratamientos teóricos distintos según el régimen de densidad considerado \cite{shapiroBlackHolesWhite2008}.
+
+Para densidades inferiores al punto de goteo de neutrones ($n_{\text{drip}} \approx 2.4\times10^{-4}$ fm$^{-3}$ o $\rho \approx 4 \times 10^{11}$ g/cm$^3$), la materia se compone de una red cristalina de núcleos pesados embebidos en un gas degenerado de electrones, configuración conocida como corteza externa. En este régimen, la ecuación de estado BPS (Baym, Pethick y Sutherland, 1971) \cite{baymGroundStateMatter1971} describe consistentemente con base en la minimización de la energía del estado base de núcleos atómicos para cada densidad, junto con la contribución del gas de electrones relativista. El modelo BPS determina la composición nuclear óptima mediante la competencia entre la energía de masa nuclear, la energía de Coulomb de la red, y la presión del gas electrónico. Por encima de la densidad de goteo de neutrones y hasta densidades del orden de $0.2$ fm$^{-3}$ o $\rho \approx 3.2 \times 10^{14}$ g/cm$^3$ se encuentra la corteza interna, donde los núcleos coexisten con un gas de neutrones libres además del gas de electrones. En este régimen, la ecuación de estado BBP (Baym, Bethe y Pethick, 1971) \cite{baymNeutronStarMatter1971} describe la materia mediante un modelo de gota líquida que considera las contribuciones energéticas de los núcleos, el gas de neutrones libres, y las interacciones nucleares efectivas de la red. Este modelo determina autoconsistentemente la composición nuclear y la fracción de neutrones libres mediante la minimización de la energía total del sistema, que incluye términos de energía de superficie, energía de Coulomb, y energía de simetría nuclear.
+
+El alcance del presente estudio se concentra en la descripción microscópica de la materia nuclear en el régimen de altas energías en las estrellas de neutrones, donde las densidades superan varias veces la densidad de saturación $n_0$, justificando el uso de la teoría relativista de campo medio. Por esta razón, utilizamos las ecuaciones de estado estándar BPS y BBP como entrada externa para integrar las ecuaciones de estructura en las regiones de baja densidad, sin profundizar en los detalles microscópicos de su construcción fuera del marco de este trabajo.
+
+Para construir una ecuación de estado unificada que abarque todo el rango de densidades presente en la estrella, desde la superficie hasta el núcleo, empleamos el método de interpolación \href{https://es.wikipedia.org/wiki/Interpolador_c\%C3\%BAbico_de_Hermite}{PCHIP} (Piecewise Cubic Hermite Interpolating Polynomial), que garantiza una transición suave y monótona entre las diferentes ecuaciones de estado. Este método de interpolación preserva la forma de los datos y evita oscilaciones no físicas que podrían introducir otros métodos de interpolación polinómica. Definimos la densidad de empalme entre la ecuación de estado BBP y nuestro modelo de teoría relativista de campo medio en $n_B = 0.062$ fm$^{-3}$, correspondiente a una densidad de masa de aproximadamente $1.04 \times 10^{14}$ g/cm$^3$. Esta elección se fundamenta en la necesidad de garantizar la causalidad del fluido en toda la estrella, es decir, que la velocidad del sonido $c^2_s = dP/d\rho$ no exceda la velocidad de la luz $c$ en ningún punto. El resultado de esta interpolación para un conjunto de parámetros de ejemplo y su comprobación de causalidad se muestra en la figura \ref{fig:causalidadmateriabase}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{Figuras/causalidad_materia_estelar_completa}
+	\caption[Ecuación de estado unificada y causalidad.]{Ecuación de estado unificada para la estrella de neutrones, construida mediante interpolación PCHIP entre las ecuaciones de estado BPS, BBP y el modelo RMFT. El panel inferior muestra el cuadrado de la velocidad del sonido $c_s^2$ para verificar la condición de causalidad. Se usaron los parámetros $\left(\frac{g_\sigma}{m_\sigma}\right)^2=12.684\,\text{fm}^2$, $\left(\frac{g_\omega}{m_\omega}\right)^2=7.148\,\text{fm}^2$, $\left(\frac{g_\rho}{m_\rho}\right)^2=4.410\,\text{fm}^2$, $b=5.610\times10^{-3}$, $c=-6.986\times10^{-3}$.}
+	\label{fig:causalidadmateriabase}
+\end{figure}
+
+% Figura: Interpolación PCHIP
+% [Espacio para figura mostrando P vs rho para BPS, BBP, interpolación PCHIP, y modelo RMFT, 
+% con énfasis en la región de empalme en n_B = 0.062 fm^{-3}. Incluir panel secundario 
+% mostrando la velocidad del sonido v_s/c para verificar causalidad (v_s < c) en toda la región.]
