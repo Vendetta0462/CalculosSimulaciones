@@ -216,7 +216,7 @@ def energia_presion(n_barion, params=[A_sigma, A_omega, A_rho, b, c]):
     
     return energia, presion
 
-def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c], add_crust=False, crust_file_path=None):
+def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c], add_crust=False, crust_file_path=None, n_jump=0.161):
     """
     Calcula la ecuación de estado (EoS) para un rango de densidades bariónicas.
 
@@ -225,6 +225,7 @@ def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c], add_crust=False, crus
         params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c] que definen el modelo.
         add_crust (bool): Si es True, carga los datos de la corteza y los combina con la EoS del núcleo.
         crust_file_path (str): Ruta al archivo de datos de la corteza (si add_crust es True).
+        n_jump (float): Densidad bariónica en fm^-3 donde se une la corteza con el núcleo.
 
     Returns:
         tuple: CubicSpline de la EoS (P->E), arrays de presiones, energías, densidades y el índice de cambio de signo en la presión.
@@ -267,7 +268,7 @@ def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c], add_crust=False, crus
         E_crust = E_cgs / conv
         P_crust = P_cgs / conv
         # Corte en densidad de saturación
-        n_sat = 0.161
+        n_sat = n_jump
         mask_cr = n_crust <= n_sat
         mask_co = ns_core >= n_sat
         # Concatenar corteza y núcleo
