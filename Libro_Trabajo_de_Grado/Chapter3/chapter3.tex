@@ -22,10 +22,11 @@
 
 \thispagestyle{fancy}
 \chapter{Microfísica: Ecuaciones de Estado}
+\label{chap:microfisica}
 
-La descripción microscópica de la materia en entornos extremos de densidad es un problema de gran complejidad en la física moderna. En estas condiciones, con densidades que exceden significativamente la densidad nuclear de saturación, la materia exhibe comportamientos que requieren marcos teóricos que incorporen efectos relativistas y de muchos cuerpos. La ecuación de estado que gobierna esta materia establece la conexión directa entre la física microscópica de las interacciones nucleares y las propiedades macroscópicas observables de las estrellas de neutrones \cite{oppenheimerMassiveNeutronCores1939}.
+La descripción microscópica de la materia en entornos extremos de densidad es un problema de gran complejidad en la física moderna. En estas condiciones, con densidades que exceden significativamente la densidad nuclear de saturación, la materia exhibe comportamientos que requieren marcos teóricos que incorporen efectos relativistas y de muchos cuerpos, asegurando causalidad en el fluido y modelando las interacciones nucleares relevantes. Los modelos que describen esta materia establecen la conexión directa entre la física microscópica de las interacciones nucleares y las propiedades macroscópicas observables de las estrellas de neutrones \cite{oppenheimerMassiveNeutronCores1939}.
 
-La teoría relativista de campo medio surge como una herramienta particularmente adecuada para abordar este régimen, brindando un tratamiento consistente que respeta la causalidad mientras incorpora las interacciones nucleares fuertes \cite{glendenningCompactStarsNuclear2000}. Este formalismo permite extrapolar desde las propiedades conocidas de materia nuclear simétrica hacia las condiciones asimétricas y de alta densidad relevantes para objetos compactos.
+Diferentes teorías han sido propuestas para describir la materia en este régimen, desde enfoques no-relativistas basados en potenciales nucleares ajustados a datos experimentales \cite{myersNuclearPropertiesAccording1996}, hasta teorías fundamentales como la cromodinámica cuántica (QCD) y sus extensiones efectivas \cite{drischlerGroundingNuclearPhysics2021}. Sin embargo, para obtener una extrapolación adecuada a densidades extremas, es necesario contar con un marco teórico que respete la causalidad y cuya complejidad computacional sea manejable. Es así como la teoría relativista de campo medio surge como una herramienta particularmente adecuada para abordar este régimen, brindando un tratamiento consistente que respeta la causalidad mientras incorpora las interacciones nucleares fuertes \cite{glendenningCompactStarsNuclear2000}. Este formalismo permite extrapolar desde las propiedades conocidas de materia nuclear simétrica hacia las condiciones asimétricas y de alta densidad relevantes para objetos compactos.
 
 \section{Ecuaciones de Estado y Ejemplos}
 
@@ -142,6 +143,7 @@ Estas leyes de conservación derivadas del teorema de Noether añaden restriccio
 
 
 \section{Modelo del Estudio}
+\label{sec:modelo}
 
 El modelo empleado en este trabajo incorpora nucleones (protones y neutrones) interactuando mediante campos mesónicos, y electrones libres. El lagrangiano total incluye términos para nucleones acoplados a los mesones, términos libres para electrones, un mesón escalar neutro $\sigma$ con autointeracciones no-lineales hasta cuarto orden, un mesón vectorial neutro $\omega^\mu$, y un mesón vectorial isovectorial $\boldsymbol{\rho^\mu}$ \cite{glendenningCompactStarsNuclear2000}:
 
@@ -349,6 +351,7 @@ donde $\epsilon_e(p_{Fe}) = \sqrt{p_{Fe}^2 + m_e^2}$ es la energía de Fermi del
 
 
 \subsection{Materia en Saturación Nuclear}
+\label{sec:saturacion}
 
 Si suprimimos los electrones libres del modelo (\ref{eq:lagrangiano}) y consideramos materia nuclear simétrica ($n_p = n_n$), el sistema se reduce a un fluido de nucleones interactuando mediante los campos mesónicos. Este sistema idealizado permite estudiar las propiedades de la materia nuclear en saturación, que corresponde a la densidad a la cual la materia nuclear alcanza su estado de mínima energía por nucleón. Mediante la materia a densidad de saturación es posible calibrar modelos microscópicos de la ecuación de estado nuclear pues tenemos mayor acceso experimental. Se caracteriza por cinco parámetros empíricos que añaden restricciones obligatorias para cualquier teoría microscópica válida \cite{kumarTheoreticalExperimentalConstraints2024}.
 
@@ -400,7 +403,7 @@ y estas dos cantidades, tras una revisión de 28 estimaciones de experimentos ta
 
 Estas cinco propiedades empíricas ($n_0$, $\frac{B}{A}\big|_0$, $K_0$, $a_\text{sym}$, $L_0$) definen restricciones que cualquier ecuación de estado microscópica debe satisfacer para ser físicamente viable. En el contexto de la teoría relativista de campo medio, estas propiedades y sus incertidumbres se utilizan para determinar el espacio de parámetros del modelo físicamente aceptable.
 
-\subsection{Corteza de la estrella}
+\subsection{Corteza de la Estrella}
 
 El modelo de teoría relativista de campo medio desarrollado es una descripción de la materia nuclear en el régimen de alta densidad, específicamente para densidades bariónicas superiores a aproximadamente $0.1$ fm$^{-3}$ o $\rho_m \gtrsim 1.7 \times 10^{14}$ g/cm$^3$, donde las interacciones nucleón-nucleón dominan la dinámica del sistema y la aproximación de campo medio tiene sentido. Sin embargo, las estrellas de neutrones presentan una estructura estratificada que incluye regiones de menor densidad donde esta aproximación deja de ser aplicable. La corteza de la estrella, que se extiende desde la superficie hasta el núcleo denso, abarca un rango de densidades de varios órdenes de magnitud y requiere tratamientos teóricos distintos según el régimen de densidad considerado \cite{shapiroBlackHolesWhite2008}.
 
