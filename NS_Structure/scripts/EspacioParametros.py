@@ -89,15 +89,27 @@ def _stellar_worker(args):
 
 def compute_nuclear_mesh(A_sigma_range, A_omega_range, params,
 						 sat_range=(0.15, 0.18), ebind_range=(-18.0, -12.0),
-						 mask=None, n_prove=None):
+						 mask=None, n_prove=None, bounds=None):
 	"""
 	Compute mesh of saturation density (n_sat), binding energy (B/A), compression modulus (K),
 	symmetry energy (a_sym) and slope L over ranges of A_sigma and A_omega.
 	Returns 6 arrays: n_sat_mesh, ebind_mesh, K_mesh, a_sym_mesh, L_mesh and mask.
 	If mask is None, computes full grid and then applies ranges to generate mask.
+	
+	Parameters
+	----------
+	bounds : dict, optional
+		Dictionary with optional keys 'K', 'a_sym', 'L', each containing a list [min, max].
+		Points outside these ranges will be excluded from the mesh and mask.
 	"""
 	if n_prove is None:
 		n_prove = np.linspace(1e-3, 0.25, 200)
+	
+	# Extract bounds if provided
+	K_bounds = bounds.get('K') if bounds is not None else None
+	a_sym_bounds = bounds.get('a_sym') if bounds is not None else None
+	L_bounds = bounds.get('L') if bounds is not None else None
+	
 	A_sigma_mesh, A_omega_mesh = np.meshgrid(A_sigma_range, A_omega_range)
 	sat_min, sat_max = sat_range
 	ebind_min, ebind_max = ebind_range
@@ -116,13 +128,35 @@ def compute_nuclear_mesh(A_sigma_range, A_omega_range, params,
 		for i, j, sat, ebind, Kc, asym, Lc in executor.map(_nuclear_worker, tasks):
 			n_sat_mesh[i, j] = sat
 			ebind_mesh[i, j] = ebind
+			
+			# Check if sat and ebind are within basic ranges
 			if sat_min <= sat <= sat_max and ebind_min <= ebind <= ebind_max:
-				K_mesh[i, j] = Kc
-				a_sym_mesh[i, j] = asym
-				L_mesh[i, j] = Lc
+				# Apply additional bounds if specified
+				valid = True
+				
+				if K_bounds is not None:
+					if not (K_bounds[0] <= Kc <= K_bounds[1]):
+						valid = False
+				
+				if a_sym_bounds is not None:
+					if not (a_sym_bounds[0] <= asym <= a_sym_bounds[1]):
+						valid = False
+				
+				if L_bounds is not None:
+					if not (L_bounds[0] <= Lc <= L_bounds[1]):
+						valid = False
+				
+				# Only assign values if all bounds are satisfied
+				if valid:
+					K_mesh[i, j] = Kc
+					a_sym_mesh[i, j] = asym
+					L_mesh[i, j] = Lc
+	
 	if mask is None:
+		# Build mask from finite K, a_sym, L values (which already satisfy all constraints)
 		mask = (n_sat_mesh >= sat_min) & (n_sat_mesh <= sat_max) & \
-			   (ebind_mesh >= ebind_min) & (ebind_mesh <= ebind_max)
+			   (ebind_mesh >= ebind_min) & (ebind_mesh <= ebind_max) & \
+			   np.isfinite(K_mesh) & np.isfinite(a_sym_mesh) & np.isfinite(L_mesh)
 	return n_sat_mesh, ebind_mesh, K_mesh, a_sym_mesh, L_mesh, mask
 
 def compute_stellar_mesh(A_sigma_range, A_omega_range, params, mask, target_mass=1.4):
@@ -165,10 +199,11 @@ def plot_nuclear_mesh(A_sigma_range, A_omega_range, n_sat_mesh, ebind_mesh, K_me
     valid_area = np.sum(np.isfinite(K_masked)) * (A_sigma_range[1] - A_sigma_range[0]) * (A_omega_range[1] - A_omega_range[0])
     
     params_names = [r'$A_\rho$', r'$b$', r'$c$', 'Area']
-    params_text = '\n'.join([f'{name}={value:.3f}' if name not in [r'$b$', r'$c$'] else f'{name}={value:.3e}' for name, value in zip(params_names, params[2:]+[valid_area])])
+    # params_text = '\n'.join([f'{name}={value:.3f}' if name not in [r'$b$', r'$c$'] else f'{name}={value:.3e}' for name, value in zip(params_names, params[2:]+[valid_area])])
+    params_text = '\n'.join([f'{name}={value:.3f}' if name not in [r'$b$', r'$c$'] else f'{name}={value:.3e}' for name, value in zip(params_names[:-1], params[2:])])
 
     fig, axes = plt.subplots(1, 2, figsize=(14, 6))
-    cmap = plt.cm.berlin
+    cmap = plt.cm.RdPu
 
     # subplot 1: K_sat
     ax = axes[0]
@@ -176,8 +211,10 @@ def plot_nuclear_mesh(A_sigma_range, A_omega_range, n_sat_mesh, ebind_mesh, K_me
         A_sigma_mesh, A_omega_mesh,
         c=K_masked, cmap=cmap, marker='o'
     )
-    plt.colorbar(sc1, ax=ax, label='Módulo de compresión (MeV)')
-    ax.set_title(r'$K_{sat}$')
+    cb = plt.colorbar(sc1, ax=ax)
+    cb.set_label(r'Módulo de compresión (MeV)', fontsize=14)
+    # ax.set_title(r'$K_{sat}$')
+    ax.set_ylabel(r'$A_\omega$', fontsize=14)
 
     # subplot 2: a_sym (color) y L (tamaño)
     ax = axes[1]
@@ -187,7 +224,8 @@ def plot_nuclear_mesh(A_sigma_range, A_omega_range, n_sat_mesh, ebind_mesh, K_me
         c=a_sym_masked, cmap=cmap,
         vmin=np.nanmin(a_sym_mesh), vmax=np.nanmax(a_sym_mesh)
     )
-    plt.colorbar(sc2, ax=ax, label='Coeficiente de simetría (MeV)')
+    cb = plt.colorbar(sc2, ax=ax)
+    cb.set_label('Coeficiente de simetría (MeV)', fontsize=14)
 
     # líneas de contorno para L con fondo en las etiquetas
     Lmin, Lmax = np.nanmin(L_mesh), np.nanmax(L_mesh)
@@ -198,20 +236,20 @@ def plot_nuclear_mesh(A_sigma_range, A_omega_range, n_sat_mesh, ebind_mesh, K_me
     )
     texts = ax.clabel(
         cs_L,
-        fmt={lev: f'L={lev:.1f}' for lev in levels_L},
-        inline=True, fontsize=9
+        fmt={lev: f'$L_0$={lev:.1f}' for lev in levels_L},
+        inline=True, fontsize=12
     )
     for t in texts:
         t.set_bbox(dict(facecolor='white', alpha=0.7, pad=1))
         
-    ax.set_title(r'$a_{sym}$ y $L$')
+    # ax.set_title(r'$a_{sym}$ y $L$')
     
     for ax in axes:
-        ax.text(0.05, 0.95, params_text, transform=ax.transAxes, fontsize=10,
+        ax.text(0.05, 0.95, params_text, transform=ax.transAxes, fontsize=12,
             verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
         
-        ax.set_xlabel(r'$A_\sigma$')
-        ax.set_ylabel(r'$A_\omega$')
+        ax.set_xlabel(r'$A_\sigma$', fontsize=14)
+        # ax.set_ylabel(r'$A_\omega$')
         cs1 = ax.contour(
             A_sigma_mesh, A_omega_mesh, sat_masked,
             levels=[sat_min, sat_max], colors='black', linestyles='-'
@@ -223,8 +261,8 @@ def plot_nuclear_mesh(A_sigma_range, A_omega_range, n_sat_mesh, ebind_mesh, K_me
                 manual_positions_sat.append(tuple(seg[manual_label_position]))
         ax.clabel(
             cs1,
-            fmt={sat_min: f'n_sat={sat_min}', sat_max: f'n_sat={sat_max}'},
-            inline=True, fontsize=8, manual=manual_positions_sat
+            fmt={sat_min: f'$n_0$={sat_min}', sat_max: f'$n_0$={sat_max}'},
+            inline=True, fontsize=12, manual=manual_positions_sat
         )
 
         cs2 = ax.contour(
@@ -238,7 +276,7 @@ def plot_nuclear_mesh(A_sigma_range, A_omega_range, n_sat_mesh, ebind_mesh, K_me
         ax.clabel(
             cs2,
             fmt={ebind_min: f'B/A={ebind_min}', ebind_max: f'B/A={ebind_max}'},
-            inline=True, fontsize=8, manual=manual_positions_ebind
+            inline=True, fontsize=12, manual=manual_positions_ebind
         )
         if equal_aspect:
             ax.set_aspect('equal', adjustable='box')
@@ -258,35 +296,40 @@ def plot_stellar_mesh(A_sigma_range, A_omega_range, mass_mesh, comp_mesh, radius
     valid_area = np.sum(np.isfinite(mass_masked)) * (A_sigma_range[1] - A_sigma_range[0]) * (A_omega_range[1] - A_omega_range[0])
     
     params_names = [r'$A_\rho$', r'$b$', r'$c$', 'Area']
-    params_text = '\n'.join([f'{name}={value:.3f}' if name not in [r'$b$', r'$c$'] else f'{name}={value:.3e}' for name, value in zip(params_names, params[2:]+[valid_area])])
+    # params_text = '\n'.join([f'{name}={value:.3f}' if name not in [r'$b$', r'$c$'] else f'{name}={value:.3e}' for name, value in zip(params_names, params[2:]+[valid_area])])
+    params_text = '\n'.join([f'{name}={value:.3f}' if name not in [r'$b$', r'$c$'] else f'{name}={value:.3e}' for name, value in zip(params_names[:-1], params[2:])])
 
     sat_min, sat_max = sat_range
     ebind_min, ebind_max = ebind_range
 
     # Graficamos masa máxima y compacidad en dos paneles
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(21, 6))
-    cmap = plt.cm.berlin
+    cmap = plt.cm.RdPu
 
     # Panel de masa máxima
     sc1 = ax1.scatter(A_sigma_mesh, A_omega_mesh, c=mass_masked, cmap=cmap, marker='o')
-    plt.colorbar(sc1, ax=ax1, label=r'Masa máxima (M$_\odot$)')
-    ax1.set_title('Masa máxima')
+    cb = plt.colorbar(sc1, ax=ax1)
+    cb.set_label(r'Masa máxima (M$_\odot$)', fontsize=14)
+    # ax1.set_title('Masa máxima')
+    ax1.set_ylabel(r'$A_\omega$', fontsize=14)
 
     # Panel de compacidad máxima
     sc2 = ax2.scatter(A_sigma_mesh, A_omega_mesh, c=comp_masked, cmap=cmap, marker='o')
-    plt.colorbar(sc2, ax=ax2, label='Compacidad ($GM/c^2R$)')
-    ax2.set_title('Compacidad máxima')
+    cb = plt.colorbar(sc2, ax=ax2)
+    cb.set_label('Compacidad ($GM/c^2R$)', fontsize=14)
+    # ax2.set_title('Compacidad máxima')
         
     # Panel de radio canónico
     sc3 = ax3.scatter(A_sigma_mesh, A_omega_mesh, c=radius_masked, cmap=cmap, marker='o')
-    plt.colorbar(sc3, ax=ax3, label='Radio canónico (km)')
-    ax3.set_title(r'Radio canónico (A 1.4 M$_\odot$)')
+    cb = plt.colorbar(sc3, ax=ax3)
+    cb.set_label('Radio canónico (km)', fontsize=14)
+    # ax3.set_title(r'Radio canónico (A 1.4 M$_\odot$)')
     
     for ax in (ax1, ax2, ax3):
-        ax.text(0.05, 0.95, params_text, transform=ax.transAxes, fontsize=10,
+        ax.text(0.05, 0.95, params_text, transform=ax.transAxes, fontsize=12,
                 verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
-        ax.set_xlabel(r'$A_\sigma$')
-        ax.set_ylabel(r'$A_\omega$')
+        ax.set_xlabel(r'$A_\sigma$', fontsize=14)
+        # ax.set_ylabel(r'$A_\omega$')
         cs1 = ax.contour(
             A_sigma_mesh, A_omega_mesh, sat_masked,
             levels=[sat_min, sat_max], colors='black', linestyles='-'
@@ -298,8 +341,8 @@ def plot_stellar_mesh(A_sigma_range, A_omega_range, mass_mesh, comp_mesh, radius
                 manual_positions_sat.append(tuple(seg[manual_label_position]))
         ax.clabel(
             cs1,
-            fmt={sat_min: f'n_sat={sat_min}', sat_max: f'n_sat={sat_max}'},
-            inline=True, fontsize=8, manual=manual_positions_sat
+            fmt={sat_min: f'$n_0$={sat_min}', sat_max: f'$n_0$={sat_max}'},
+            inline=True, fontsize=12, manual=manual_positions_sat
         )
 
         cs2 = ax.contour(
@@ -313,7 +356,7 @@ def plot_stellar_mesh(A_sigma_range, A_omega_range, mass_mesh, comp_mesh, radius
         ax.clabel(
             cs2,
             fmt={ebind_min: f'B/A={ebind_min}', ebind_max: f'B/A={ebind_max}'},
-            inline=True, fontsize=8, manual=manual_positions_ebind
+            inline=True, fontsize=12, manual=manual_positions_ebind
         )
         if equal_aspect:
             ax.set_aspect('equal', adjustable='box')
