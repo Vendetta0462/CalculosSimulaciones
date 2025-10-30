@@ -8,7 +8,19 @@ from scipy.interpolate import interp1d
 c = 299792458 # Velocidad de la luz en m/s
 G = 6.67430e-11 # Constante de gravitación universal en m^3/kg/s^2
 pi = np.pi # Constante pi
-m_nuc_MKS = 1.66053906660e-27 # Masa de un nucleón en kg
+hbar_MKS = 1.0545718e-34 # J s
+proton_mass = 1.6726219e-27 # kg
+neutron_mass = 1.6749275e-27 # kg
+m_nuc_MKS = (proton_mass + neutron_mass)/2.0 # kg
+e_MKS = 1.602186021766e-19 # C
+
+# Algunas converciones útiles (multiplicar al primero para obtener el segundo)
+Kg_to_fm11 = c/hbar_MKS*1e-15 # kg to fm^-1
+MeV_to_fm11 = e_MKS/(hbar_MKS*c*1e9) # MeV to fm^-1
+MeVfm_to_Jm  = 1e51*e_MKS # MeV/fm to J/m
+
+# Definimos las constantes necesarias en unidades naturales
+m_nuc =  m_nuc_MKS * Kg_to_fm11 # fm^-1
 
 def adimensional_to_fisico(sol_fin, P_central, r_fin, rho0):
     """
@@ -169,9 +181,9 @@ def integrador(rf, dr, rho0, rho_P, P_central, sistema='GR', sol_completa=False,
     # Buscamos el radio límite de la estrella
     lim = len(r)-1
     if densidad_limite == None:
-        # la condicion debe ser con P, no siempre cuando P=0, rho=0
+        # la condicion debe ser con P cuando cae 10 ordenes de magnitud respecto al centro
         for i in range(len(P)):
-            if P[i] <= 0:
+            if P[i] <= P_central*1e-10:
                 lim = i-1
                 break
     else:
@@ -190,7 +202,7 @@ def integrador(rf, dr, rho0, rho_P, P_central, sistema='GR', sol_completa=False,
         # Convertimos las cantidades adimensionales a cantidades físicas
         return adimensional_to_fisico(sol_fin, P_central, r[lim], rho0)
     
-def grafica_masa_radio(radios, masas, densidades_masa):
+def grafica_masa_radio(radios, masas, densidades_masa, nombre_modelo="Modelo EoS"):
     """
     Plots the mass-radius and mass-central density relations for neutron stars.
 
@@ -202,6 +214,8 @@ def grafica_masa_radio(radios, masas, densidades_masa):
         List of masses of neutron stars.
     densidades_masa : list
         List of central densities of neutron stars.
+    nombre_modelo : str, optional
+        Name of the equation of state model to display on the plot.
 
     Returns
     -------
@@ -210,7 +224,17 @@ def grafica_masa_radio(radios, masas, densidades_masa):
 
     # Graficamos las relaciones masa radio y masa densidad en masas solares
     masasolar = 1.989e30  # Masa solar en kg
-    fig, ax = plt.subplots(1, 2, figsize=(12, 6))
+    color = "black"
+    marker = 'v'
+    markercolor = 'black'
+    
+    # Usamos todas las estrellas con radios menores a 20km
+    mask = np.array(radios) <= 20e3
+    masas = masas[mask]
+    radios = radios[mask]
+    densidades_masa = densidades_masa[mask]
+
+    fig, ax = plt.subplots(1, 2, figsize=(12, 6), sharey=True)
 
     # Creamos un colormap personalizado para los puntos
     cmap = mcolors.LinearSegmentedColormap.from_list("custom_cmap", ["cornflowerblue", "darkorchid"])
@@ -218,25 +242,39 @@ def grafica_masa_radio(radios, masas, densidades_masa):
     colors = [cmap(norm(i)) for i in range(len(radios))]
 
     # Graficamos la relación masa-radio
+    ax[0].plot(np.array(radios)/1e3, np.array(masas)/masasolar, '-', color=color, linewidth=1)
     for i in range(len(radios)):
-        ax[0].plot(radios[i] / 1e3, masas[i] / masasolar, 'o', color=colors[i], linewidth=2)
-    ax[0].set_xlabel(r'$R$ (km)', fontsize=16)
-    ax[0].set_ylabel(r'$M$ ($M_\odot$)', fontsize=16)
-    ax[0].set_title(r'Relación Masa-Radio', fontsize=18)
-    ax[0].tick_params(axis='both', which='both', direction='in', right=True, top=True)
-    # Punto en la masa maxima
-    ax[0].plot(radios[np.argmax(masas)] / 1e3, masas.max() / masasolar, 'o', color='red', markeredgewidth=1, markeredgecolor='black')
-    ax[0].grid()
+        ax[0].plot(radios[i] / 1e3, masas[i] / masasolar, 'o', color=colors[i], markersize=3)
+    ax[0].set_xlabel(r'$R$ (km)', fontsize=14)
+    ax[0].set_ylabel(r'$M$ ($M_\odot$)', fontsize=14)
+    ax[0].set_title(r'Relación Masa - Radio', fontsize=15)
+    
+    # Punto en la masa máxima
+    ax[0].plot(radios[np.argmax(masas)] / 1e3, masas.max() / masasolar, marker, color=markercolor, 
+               label='Masa máxima', markersize=10)
+    ax[0].legend(bbox_to_anchor=(0.95, 0.85), loc='upper right', fontsize=14, framealpha=1, edgecolor='black')
+    
+    # Texto con el nombre del modelo debajo de la leyenda, centrado
+    ax[0].text(0.75, 0.7, nombre_modelo, fontsize=14, 
+               bbox=dict(facecolor='white', edgecolor='black', alpha=1),
+               transform=ax[0].transAxes, ha='center')
 
     # Graficamos la relación masa-densidad central
+    ax[1].semilogx(densidades_masa, np.array(masas)/masasolar, '-', color=color, linewidth=1)
     for i in range(len(densidades_masa)):
-        ax[1].semilogx(densidades_masa[i], masas[i] / masasolar, 'o', color=colors[i], linewidth=2)
-    ax[1].set_xlabel(r'$\rho_0^m$ (g/cm$^3$)', fontsize=16)
-    ax[1].set_title(r'Relación Masa-Densidad Central', fontsize=18)
-    ax[1].tick_params(axis='both', which='both', direction='in', right=True, top=True)
-    # Punto en la masa maxima
-    ax[1].plot(densidades_masa[np.argmax(masas)], masas.max() / masasolar, 'o', color='red', markeredgewidth=1, markeredgecolor='black')
-    ax[1].grid()
+        ax[1].semilogx(densidades_masa[i], masas[i] / masasolar, 'o', color=colors[i], markersize=3)
+    ax[1].set_xlabel(r'$\rho_{m0}$ (g/cm$^3$)', fontsize=14)
+    ax[1].set_title(r'Relación Masa - Densidad Central', fontsize=15)
+    
+    # Punto en la masa máxima
+    ax[1].plot(densidades_masa[np.argmax(masas)], masas.max() / masasolar, marker, color=markercolor, 
+               label='Masa máxima', markersize=10)
+
+    # Aplicar estilos consistentes a ambos ejes
+    for axis in ax:
+        axis.tick_params(axis='both', which='both', direction='in', right=True, top=True)
+        axis.axhline(masas.max()/masasolar, color=color, linestyle='--', linewidth=1)
+        axis.grid(which='both', linestyle='--', linewidth=0.5)
 
     print("Masa máxima:", format(masas.max() / masasolar, "2.3f"), "M_sun para rho0_m =", format(densidades_masa[np.argmax(masas)], "2.3e"), "g/cm^3")
 
