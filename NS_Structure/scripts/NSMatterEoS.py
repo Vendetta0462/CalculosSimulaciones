@@ -216,7 +216,7 @@ def energia_presion(n_barion, params=[A_sigma, A_omega, A_rho, b, c]):
     
     return energia, presion
 
-def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c], add_crust=False, crust_file_path=None, n_jump=0.161):
+def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c], add_crust=False, crust_file_path=None, n_jump=0.062):
     """
     Calcula la ecuación de estado (EoS) para un rango de densidades bariónicas.
 
@@ -234,6 +234,10 @@ def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c], add_crust=False, crus
     presiones = np.array([])
     n_sirve = np.array([])
     
+    if add_crust and crust_file_path:
+        n_min = np.min(n_barions)
+        n_max = np.max(n_barions)
+        n_barions = n_barions[n_barions >= n_jump]
     for n in n_barions:
         energia, presion = energia_presion(n, params)
         energias = np.append(energias, energia)
@@ -267,17 +271,14 @@ def EoS(n_barions, params=[A_sigma, A_omega, A_rho, b, c], add_crust=False, crus
         # Arreglos adimensionales de la corteza
         E_crust = E_cgs / conv
         P_crust = P_cgs / conv
-        # Corte en densidad de saturación
-        n_sat = n_jump
-        mask_cr = n_crust <= n_sat
-        mask_co = ns_core >= n_sat
+        # Corte en densidad de salto
+        mask_cr = n_crust <= n_jump
+        mask_co = ns_core >= n_jump
         # Concatenar corteza y núcleo
         n_all = np.concatenate([n_crust[mask_cr], ns_core[mask_co]])
         P_all = np.concatenate([P_crust[mask_cr], ps_core[mask_co]])
         E_all = np.concatenate([E_crust[mask_cr], es_core[mask_co]])
         # Filtrar por el rango de densidades de entrada
-        n_min = np.min(n_barions)
-        n_max = np.max(n_barions)
         mask_range = (n_all >= n_min) & (n_all <= n_max)
         P_all = P_all[mask_range]
         E_all = E_all[mask_range]
@@ -441,7 +442,8 @@ def plot_EoS(rho_P, presiones, energias, n_sirve, rho_0_lambda=m_nuc**4/2, titul
 
     # ----- Subfigura 1: Ecuación de estado con ejes secundarios -----
     ax1.loglog(presiones, energias, "o", label='Puntos de la EoS')
-    ax1.loglog(presiones, rho_P(presiones), label='Interpolación')
+    presiones_int = np.logspace(np.log10(min(presiones)), np.log10(max(presiones)), 500)
+    ax1.loglog(presiones_int, rho_P(presiones_int), label='Interpolación')
     ax1.set_xlabel(r'$P/\rho_0$')
     ax1.set_ylabel(r'$\rho/\rho_0$')
 
