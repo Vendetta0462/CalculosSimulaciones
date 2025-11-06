@@ -202,7 +202,7 @@ def integrador(rf, dr, rho0, rho_P, P_central, sistema='GR', sol_completa=False,
         # Convertimos las cantidades adimensionales a cantidades físicas
         return adimensional_to_fisico(sol_fin, P_central, r[lim], rho0)
     
-def grafica_masa_radio(radios, masas, densidades_masa, nombre_modelo="Modelo EoS"):
+def grafica_masa_radio(radios, masas, densidades_masa, nombre_modelo=None, titles=False):
     """
     Plots the mass-radius and mass-central density relations for neutron stars.
 
@@ -216,6 +216,8 @@ def grafica_masa_radio(radios, masas, densidades_masa, nombre_modelo="Modelo EoS
         List of central densities of neutron stars.
     nombre_modelo : str, optional
         Name of the equation of state model to display on the plot.
+    titles : bool, optional
+        If True, adds titles to the subplots. Default is False.
 
     Returns
     -------
@@ -247,7 +249,8 @@ def grafica_masa_radio(radios, masas, densidades_masa, nombre_modelo="Modelo EoS
         ax[0].plot(radios[i] / 1e3, masas[i] / masasolar, 'o', color=colors[i], markersize=3)
     ax[0].set_xlabel(r'$R$ (km)', fontsize=14)
     ax[0].set_ylabel(r'$M$ ($M_\odot$)', fontsize=14)
-    ax[0].set_title(r'Relación Masa - Radio', fontsize=15)
+    if titles:
+        ax[0].set_title(r'Relación Masa - Radio', fontsize=15)
     
     # Punto en la masa máxima
     ax[0].plot(radios[np.argmax(masas)] / 1e3, masas.max() / masasolar, marker, color=markercolor, 
@@ -255,16 +258,18 @@ def grafica_masa_radio(radios, masas, densidades_masa, nombre_modelo="Modelo EoS
     ax[0].legend(bbox_to_anchor=(0.95, 0.85), loc='upper right', fontsize=14, framealpha=1, edgecolor='black')
     
     # Texto con el nombre del modelo debajo de la leyenda, centrado
-    ax[0].text(0.75, 0.7, nombre_modelo, fontsize=14, 
-               bbox=dict(facecolor='white', edgecolor='black', alpha=1),
-               transform=ax[0].transAxes, ha='center')
+    if nombre_modelo is not None:
+        ax[0].text(0.75, 0.7, nombre_modelo, fontsize=14, 
+                   bbox=dict(facecolor='white', edgecolor='black', alpha=1),
+                   transform=ax[0].transAxes, ha='center')
 
     # Graficamos la relación masa-densidad central
     ax[1].semilogx(densidades_masa, np.array(masas)/masasolar, '-', color=color, linewidth=1)
     for i in range(len(densidades_masa)):
         ax[1].semilogx(densidades_masa[i], masas[i] / masasolar, 'o', color=colors[i], markersize=3)
     ax[1].set_xlabel(r'$\rho_{m0}$ (g/cm$^3$)', fontsize=14)
-    ax[1].set_title(r'Relación Masa - Densidad Central', fontsize=15)
+    if titles:
+        ax[1].set_title(r'Relación Masa - Densidad Central', fontsize=15)
     
     # Punto en la masa máxima
     ax[1].plot(densidades_masa[np.argmax(masas)], masas.max() / masasolar, marker, color=markercolor, 

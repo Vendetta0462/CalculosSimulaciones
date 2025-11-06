@@ -372,21 +372,26 @@ def plot_EoS(rho_P, presiones, energias, n_sirve, rho_0_lambda=m_nuc**4/2, titul
     conv = rho_0_lambda / MeV_to_fm11 * MeVfm_to_Jm * rho_MKSTocgs # Conversión de unidades de presión y energía a cgs (erg/cm^3 y Ba)
 
     # Creamos la figura con dos subfiguras (side by side)
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    
+    color1 = 'black'
+    color2 = 'darkorchid'
+    
+    x_presiones = np.logspace(np.log10(min(presiones[presiones>0])*0.9), np.log10(max(presiones)*1.1), 300)
 
     # ----- Subfigura 1: Ecuación de estado con ejes secundarios -----
-    ax1.loglog(presiones, energias, "o", label='Puntos de la EoS')
-    ax1.loglog(presiones, rho_P(presiones), label='Interpolación')
-    ax1.set_xlabel(r'$P/\rho_0$')
-    ax1.set_ylabel(r'$\rho/\rho_0$')
+    # ax1.loglog(presiones, energias, "o", label='Puntos de la EoS')
+    ax1.loglog(x_presiones, rho_P(x_presiones), color=color1, label='Interpolación')
+    ax1.set_xlabel(r'$P/\rho_0$', fontsize=14)
+    ax1.set_ylabel(r'$\rho/\rho_0$', fontsize=14)
 
     # Agregamos ejes secundarios: eje X superior y eje Y derecho (cgs)
     secax_x = ax1.secondary_xaxis('top', functions=(lambda x: x * conv, lambda x: x / conv))
-    secax_x.set_xlabel(r'$P$ [Ba]')
+    secax_x.set_xlabel(r'$P$ [Ba]', fontsize=14)
     secax_y = ax1.secondary_yaxis('right', functions=(lambda x: x * conv, lambda x: x / conv))
-    secax_y.set_ylabel(r'$\rho$ [erg/cm$^3$]')
+    secax_y.set_ylabel(r'$\rho$ [erg/cm$^3$]', fontsize=14)
 
-    ax1.legend()
+    # ax1.legend()
     ax1.grid()
 
     # ----- Subfigura 2: P y energía vs densidad de masa -----
@@ -396,10 +401,10 @@ def plot_EoS(rho_P, presiones, energias, n_sirve, rho_0_lambda=m_nuc**4/2, titul
     p_data = presiones * conv  
     e_data = energias  * conv
 
-    ax2.loglog(x_data, p_data, "o", label='Presión [Ba]')
-    ax2.loglog(x_data, e_data, "o", label='Energía [erg/cm$^3$]')
-    ax2.set_xlabel(r'$\rho_m$ [g/cm$^3$]')
-    ax2.set_ylabel(r'$P$ y $\rho$')
+    ax2.loglog(x_data, p_data, label='Presión [Ba]', color=color1)
+    ax2.loglog(x_data, e_data, label='D. Energía [erg/cm$^3$]', color=color2, linestyle='--')
+    ax2.set_xlabel(r'$\rho_m$ [g/cm$^3$]', fontsize=14)
+    # ax2.set_ylabel(r'$P$ y $\rho$')
     ax2.legend()
     ax2.grid()
 
@@ -442,13 +447,13 @@ def plot_saturacion(n_prove, params=[A_sigma, A_omega, A_rho, b, c, t], rho_0_la
             
         # Graficamos la energía de enlace por nucleón en función de x_f
         plt.figure(figsize=(8,6))
-        plt.plot(n_prove, (energias_prove/n_prove - m_nuc)/MeV_to_fm11, "-o")
-        plt.xlabel(r'$n_{barion}$ [fm$^{-3}$]')
-        plt.ylabel(r'$\frac{\rho}{n}-m_{nuc}$ [MeV]')
+        plt.plot(n_prove, (energias_prove/n_prove - m_nuc)/MeV_to_fm11, "-k")
+        plt.xlabel(r'$n_{B}$ [fm$^{-3}$]', fontsize=14)
+        plt.ylabel(r'$\frac{\rho}{n}-m$ [MeV]', fontsize=14)
         # plt.ylim(-20, 20)
         # Anotamos el mínimo y su energia con un punto, una flecha y los valores de B/A y n_saturacion con ofset vertical de +2, centrado
-        plt.annotate(r'$\left(\frac{B}{A}\right)_{min}=$'+format((energia_saturacion), ".3f")+' MeV'+'\n'+'$n_{sat}$ = '+format(n_saturacion, '.3f')+'$fm^{-3}$', xy=(n_saturacion, energia_saturacion), xytext=(n_saturacion, energia_saturacion+2), arrowprops=dict(arrowstyle='->'), horizontalalignment='center')
-        plt.title(r'Energía de enlace por nucleón en función de $n_{barion}$')
+        plt.annotate(r'$\left(\frac{B}{A}\right)_{min}=$'+format((energia_saturacion), ".3f")+' MeV'+'\n'+'$n_{0}$ = '+format(n_saturacion, '.3f')+'$fm^{-3}$', xy=(n_saturacion, energia_saturacion), xytext=(n_saturacion, energia_saturacion+2), arrowprops=dict(arrowstyle='->'), horizontalalignment='center')
+        # plt.title(r'Energía de enlace por nucleón en función de $n_{B}$')
         plt.grid()
         plt.show()
         
