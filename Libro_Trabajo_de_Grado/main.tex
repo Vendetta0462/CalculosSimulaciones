@@ -36,7 +36,7 @@
 %\usepackage[square,sort,comma,numbers]{natbib} %Para ver solo números
 %\usepackage[square,sort,comma]{natbib}
 \usepackage[style=ieee, backend=biber, maxnames=2, citestyle=numeric-comp]{biblatex}
-\addbibresource{Tesis.bib}
+\addbibresource{Tesis\string Pregrado.bib}
 \setlength{\parindent}{0pt} %Quitar indentación
 \decimalpoint
 
@@ -72,6 +72,17 @@
 \newcommand{\rhomeson}{\boldsymbol{\rho}}
 \newcommand{\half}{\tfrac{1}{2}}
 \newcommand{\xsigma}{\tilde{x}_\sigma}
+
+%Controla espacio antes y despues de ecuaciones
+\usepackage{etoolbox}
+\AtBeginEnvironment{equation}{\vspace{-8pt}}
+\AtBeginEnvironment{equation*}{\vspace{-8pt}}
+\AtBeginEnvironment{align}{\vspace{-8pt}}
+\AtBeginEnvironment{align*}{\vspace{-8pt}}
+\AtBeginEnvironment{gather}{\vspace{-8pt}}
+\AtBeginEnvironment{gather*}{\vspace{-8pt}}
+%\AtEndEnvironment{equation}{\vspace{-0.5em}}
+
 
 % Reiniciar el contador de ecuaciones al principio de cada subsección -------------------------
 
