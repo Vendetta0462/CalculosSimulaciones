@@ -26,7 +26,7 @@
 
 La descripción microscópica de la materia en entornos extremos de densidad es un problema de gran complejidad en la física moderna. En estas condiciones, con densidades que exceden significativamente la densidad nuclear de saturación, la materia exhibe comportamientos que requieren marcos teóricos que incorporen efectos relativistas y de muchos cuerpos, asegurando causalidad en el fluido y modelando las interacciones nucleares relevantes. Los modelos que describen esta materia establecen la conexión directa entre la física microscópica de las interacciones nucleares y las propiedades macroscópicas observables de las estrellas de neutrones \cite{oppenheimerMassiveNeutronCores1939}.
 
-Diferentes teorías han sido propuestas para describir la materia en este régimen, desde enfoques no-relativistas basados en potenciales nucleares ajustados a datos experimentales \cite{myersNuclearPropertiesAccording1996}, hasta teorías fundamentales como la cromodinámica cuántica (QCD) y sus extensiones efectivas \cite{drischlerGroundingNuclearPhysics2021}. Sin embargo, para obtener una extrapolación adecuada a densidades extremas, es necesario contar con un marco teórico que respete la causalidad y cuya complejidad computacional sea manejable. Es así como la teoría relativista de campo medio surge como una herramienta particularmente adecuada para abordar este régimen, brindando un tratamiento consistente que respeta la causalidad mientras incorpora las interacciones nucleares fuertes \cite{glendenningCompactStarsNuclear2000}. Este formalismo permite extrapolar desde las propiedades conocidas de materia nuclear simétrica hacia las condiciones asimétricas y de alta densidad relevantes para objetos compactos.
+Diferentes teorías han sido propuestas para describir la materia en este régimen, desde enfoques no-relativistas basados en potenciales nucleares ajustados a datos experimentales \cite{myersNuclearPropertiesAccording1996, sakuragiSaturationNuclearMatter2016}, hasta teorías fundamentales como la cromodinámica cuántica (QCD) y sus extensiones efectivas \cite{drischlerGroundingNuclearPhysics2021}. Sin embargo, para obtener una extrapolación adecuada a densidades extremas, es necesario contar con un marco teórico que respete la causalidad y cuya complejidad computacional sea manejable. Es así como la teoría relativista de campo medio surge como una herramienta particularmente adecuada para abordar este régimen, brindando un tratamiento consistente que respeta la causalidad mientras incorpora las interacciones nucleares fuertes \cite{glendenningCompactStarsNuclear2000}. Este formalismo permite extrapolar desde las propiedades conocidas de materia nuclear simétrica hacia las condiciones asimétricas y de alta densidad relevantes para objetos compactos.
 
 \section{Ecuaciones de Estado y Ejemplos}
 
@@ -78,14 +78,14 @@ entre los potenciales químicos $\mu_i$, suponiendo que los neutrinos escapan de
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.55\linewidth]{Figuras/gas_npe}
+	\includegraphics[width=0.56\linewidth]{Figuras/gas_npe}
 	\caption[Ecuación de estado de gas ideal degenerado]{Ecuación de estado normalizada de un gas ideal degenerado de neutrones, protones y electrones. La ecuación de estado es causal ($c_s^2 = dP/d\rho < 1$). $\rho_0$ es el parámetro de adimensionalización y corresponde a la densidad de energía a $\rho_m=10^{18}$ g/cm$^3$.}
 	\label{fig:eosnpe}
 \end{figure}
 
 La figura \ref{fig:eosnpe} muestra la ecuación de estado adimensionalizada para un gas ideal de neutrones, protones y electrones libres, obtenida tras resolver el sistema de integrales (\ref{eq:densidad_fermi_general}) y (\ref{eq:presion_fermi_general}) e interpolar. Luego, integrando las ecuaciones TOV (\sistemaTOV) obtenemos las masas y radios de estrellas construidas con este material, como se muestra en la figura \ref{fig:mrnpe}. Este modelo sencillo predice una masa máxima de apenas 0.7$\, \masasol$, muy inferior a las masas que se han observado de estrellas de neutrones (listadas en la sección \ref{sec:obsNS}), motivando la búsqueda de modelos más realistas que incluyan las interacciones nucleares para lograr replicar las observaciones.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=0.9\linewidth]{Figuras/gas_npe_MR}
 	\caption[Relaciones masa-radio de gas ideal degenerado]{Relaciones de masa - radio (izquierda) y masa - densidad central de masa (derecha) de estrellas de neutrones constituidas por un gas ideal de neutrones, protones y electrones libres.}
@@ -98,7 +98,7 @@ La figura \ref{fig:eosnpe} muestra la ecuación de estado adimensionalizada para
 \label{sec:rmft}
 
 La teoría relativista de campo medio, formulada por Walecka en 1974 \cite{waleckaTheoryHighlyCondensed1974}, es un marco teórico que describe las interacciones nucleares mediante el intercambio de mesones efectivos, extendiendo el modelo de gas degenerado (discutido en \ref{sec:gasnpe}) e incorporando naturalmente los efectos relativistas cuando los nucleones alcanzan velocidades comparables a la velocidad de la luz en condiciones de alta densidad. Esta aproximación ofrece ventajas significativas respecto a enfoques no-relativistas basados en potenciales fenomenológicos, ya que es una teoría covariante y reproduce simultáneamente las propiedades de saturación nuclear, el comportamiento asintótico a alta densidad, y la consistencia causal relativista. Adicionalmente, al ser una teoría efectiva, requiere de un menor esfuerzo computacional respecto a teorías más fundamentales como QCD.
-
+\clearpage
 El formalismo se construye a partir de un lagrangiano que describe nucleones interactuando a través de campos mesónicos: los campos fermiónicos representan los grados de libertad nucleónicos y leptónicos, mientras que los campos bosónicos representan mesones que median las interacciones fuertes. La aproximación de campo medio consiste en reemplazar los operadores de campo mesónicos por sus valores esperados en el estado base degenerado:
 
 \begin{equation}
@@ -125,7 +125,7 @@ donde $d^4x$ es el elemento de volumen en coordenadas de Minkowski. El principio
 \end{equation}
 
 donde $\varphi_b$ representa todos los campos presentes. La teoría presenta simetrías externas e internas que determinan sus conservaciones y sus consecuencias físicas. Las simetrías externas son las transformaciones del grupo de Poincaré: traslaciones espaciotemporales $x^\mu \mapsto x'^\mu = x^\mu + a^\mu$ y boosts de Lorentz $x^\mu \mapsto x'^\mu = \Lambda^\mu{}_\nu x^\nu$. Las simetrías internas relevantes incluyen la simetría de gauge global $U(1)$ $\psi \mapsto e^{-i\lambda}\psi$ asociada con la conservación del número bariónico, y la simetría de isospín $SU(2)$ $\psi \mapsto e^{-i\boldsymbol{\tau}\cdot\boldsymbol{\lambda}}\psi$ asociada con la relación entre neutrones y protones, en la aproximación de iguales masas.
-
+\clearpage
 El teorema de Noether establece una correspondencia entre simetrías continuas del lagrangiano y cantidades conservadas. Para cada simetría continua existe una corriente conservada correspondiente que satisface una ecuación de continuidad. El tensor de energía-momento, asociado a la simetría externa, se define como:
 
 \begin{equation}
@@ -154,7 +154,7 @@ La corriente de isospín, asociada a la simetría interna $SU(2)$, se define com
 donde $\boldsymbol{\tau} = \tau^a$ ($a = 1, 2, 3$) son las matrices de Pauli en el espacio de isospín. La simetría de isospín ha sido ampliamente utilizada para describir las interacciones nucleares. En la realidad física esta simetría está ligeramente rota por las diferencias de masa entre neutrones y protones, y por las interacciones electromagnéticas. Sin embargo, dado que estas violaciones son pequeñas en la escala de interacciones fuertes, pueden tratarse como pequeñas correcciones e ignorarse en primera aproximación \cite{baczykIsospinsymmetryBreakingMasses2018}. La conservación aproximada de isospín justifica el tratamiento unificado de neutrones y protones en modelos de materia nuclear.
 
 Estas leyes de conservación derivadas del teorema de Noether añaden restricciones importantes sobre la dinámica del sistema y establecen conexiones directas entre las simetrías fundamentales de la teoría y las cantidades físicamente observables.
-
+\clearpage
 
 \section{Modelo del Estudio}
 \label{sec:modelo}
@@ -185,7 +185,7 @@ Las ecuaciones de movimiento para los campos se obtienen mediante las ecuaciones
 		&+ 4g_\rho[(\rhomeson^\mu \cdot \rhomeson_\nu)\rhomeson^\nu - (\rhomeson_\nu \cdot \rhomeson^\nu)\rhomeson^\mu]]. \label{eq:eom_rho_full}
 	\end{aligned}
 \end{gather}
-
+\clearpage
 Para los campos fermiónicos se obtienen las ecuaciones de Dirac, acoplada a los campos mesónicos para los nucleones y libre para los electrones:
 
 \begin{gather*}
@@ -332,7 +332,7 @@ y por (\ref{eq:valor_esperado_general}), la densidad escalar es:
 \end{equation}
 
 % Aunque todas las integrales anteriores son analíticas, la ecuación de movimiento para el campo escalar (\ref{eq:eom_meson_mf}) es una ecuación no lineal en $\sigma$ que debe resolverse autoconsistentemente con métodos numéricos. Además, resolviendo el sistema con $g_\sigma \sigma$, $g_\omega \omega_0$ y $g_\rho \rho_{30}$ como variables, el modelo tiene como parámetros libres unicamente los cocientes $g_\sigma/m_\sigma$, $g_\omega/m_\omega$ y $g_\rho/m_\rho$, junto con los parámetros de autointeracción escalar.
-
+\clearpage
 Para hallar la ecuación de estado, calculamos el tensor de energía-momento canónico (\ref{eq:tensor_energia_momento}) en el marco de referencia del fluido en reposo e isotrópico, utilizando el lagrangiano (\ref{eq:lagrangiano}). Luego, hallamos el valor esperado de las componentes empleando el método de las ecuaciones (\ref{eq:valor_esperado_general} - \ref{eq:derivada_hamiltoniano}) y las identificamos con las cantidades termodinámicas de densidad de energía y presión para un fluido perfecto (\ref{eq:tensor_fluido_perfecto}). Las expresiones para densidad de energía y presión son:
 
 \begin{gather}
@@ -394,14 +394,15 @@ Estas expresiones son funciones de la densidad de número de protones, neutrones
 
 De las expresiones adimensionalizadas (\ref{eq:eom_sigma_adimensional} - \ref{eq:ligaduras_adimensionales}) podemos entender el sistema físico descrito por el modelo. Primero, es importante notar que, si bien definimos ocho constantes inicialmente ($g_i$, $m_i$ con $i=\{\sigma, \omega, \rho\}$, $b$, $c$), las ecuaciones solo dependen de cinco combinaciones adimensionales de estas constantes: los cocientes $A_i$, y los parámetros de autointeracción escalar $b$ y $c$. Por lo tanto, el modelo tiene cinco parámetros libres que deben ser ajustados para reproducir datos experimentales o teóricos adicionales. En segundo lugar, podemos deducir que el campo escalar $\sigma$ actúa para reducir la masa efectiva de los nucleones disminuyendo la energía por partícula a mayores densidades, mientras que el campo vectorial $\omega_0$ aumenta la energía por partícula debido a su acoplamiento con la densidad bariónica total. Esto indica que el mesón $\sigma$ genera una interacción atractiva entre nucleones, mientras que el mesón $\omega$ genera una interacción repulsiva. Finalmente, el mesón $\rho$ actúa para ajustar la diferencia entre las densidades de protones y neutrones con un efecto ``repulsivo'' ante la asimetría del sistema.
 
-Ahora que tenemos un sistema cerrado, podemos resolverlo numéricamente para cada valor de $n_B$, obteniendo la ecuación de estado $\tilde{\rho}(\tilde{P})$, como se muestra en la figura \ref{fig:materiaestelarbase}. Sin embargo, aún es necesario determinar los parámetros del modelo para que sea físicamente consistente. Para ello, acudimos a las propiedades empíricas de la materia nuclear en saturación, descritas a continuación.
-
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.95\linewidth]{Figuras/materia_estelar_base}
+	\includegraphics[width=\linewidth]{Figuras/materia_estelar_base}
 	\caption[Ecuación de estado para el núcleo de estrellas de neutrones.]{Ecuación de estado (izquierda) y variables termodinámicas en función de la densidad de masa (derecha) para el núcleo de estrellas de neutrones empleando teoría relativista de campo medio. $\rho_0=m^4/2$ es el factor de adimensionalización. Se usaron los parámetros $\left(\frac{g_\sigma}{m_\sigma}\right)^2=12.684\,\text{fm}^2$, $\left(\frac{g_\omega}{m_\omega}\right)^2=7.148\,\text{fm}^2$, $\left(\frac{g_\rho}{m_\rho}\right)^2=4.410\,\text{fm}^2$, $b=5.610\times10^{-3}$, $c=-6.986\times10^{-3}$.}
 	\label{fig:materiaestelarbase}
 \end{figure}
+
+
+Ahora que tenemos un sistema cerrado, podemos resolverlo numéricamente para cada valor de $n_B$, obteniendo la ecuación de estado $\tilde{\rho}(\tilde{P})$, como se muestra en la figura \ref{fig:materiaestelarbase}. Sin embargo, aún es necesario determinar los parámetros del modelo para que sea físicamente consistente. Para ello, acudimos a las propiedades empíricas de la materia nuclear en saturación, descritas a continuación.
 
 
 \subsection{Materia en Saturación Nuclear}
@@ -409,14 +410,14 @@ Ahora que tenemos un sistema cerrado, podemos resolverlo numéricamente para cad
 
 Si suprimimos los electrones libres del modelo (\ref{eq:lagrangiano}) y consideramos materia nuclear simétrica ($n_p = n_n$), el sistema se reduce a un fluido de nucleones interactuando mediante los campos mesónicos. Este sistema debe reproducir las propiedades de la materia nuclear en saturación, caracterizada por cinco parámetros empíricos que añaden restricciones obligatorias para cualquier teoría microscópica válida \cite{kumarTheoreticalExperimentalConstraints2024}. Estos parámetros pueden determinarse experimentalmente mediante mediciones en experimentos terrestres, siendo una herramienta de calibración para los modelos teóricos nucleares.
 
-La densidad de saturación nuclear $n_0$ define la densidad a la cual la materia nuclear simétrica alcanza su estado de mínima energía de enlace por nucleón $\frac{B}{A}\big|_0$. Tras ajustar datos de 1654 núcleos en su estado base con N, Z $\geq 8$ a un modelo semi-empírico no relativista de gota líquida, se obtienen valores:
+La densidad de saturación nuclear $n_0$ define la densidad a la cual la materia nuclear simétrica alcanza su estado de mínima energía de enlace por nucleón $\frac{B}{A}\big|_0$. Tras aplicar un análisis bayesiano a una colección de ligaduras de la Teoría Funcional de la Densidad, que incluyen modelos relativistas de campo medio y de Skyrme, se obtienen valores \cite{drischlerBayesianMixtureModel2024}:
 
 \begin{align}
-	&n_0 = 0.16114\, \text{fm}^{-3} \label{eq:densidad_saturacion}, \\
-	&\frac{B}{A}\bigg|_0 = \frac{\rho(n_0)}{n_0} - m = -16.24 \, \text{MeV}, \label{eq:energia_enlace_saturacion}
+	&n_0 = 0.157 \pm 0.010 \, \text{fm}^{-3} \label{eq:densidad_saturacion}, \\
+	&\frac{B}{A}\bigg|_0 = \frac{\rho(n_0)}{n_0} - m = -15.97 \pm 0.40 \, \text{MeV}. \label{eq:energia_enlace_saturacion}
 \end{align}
 
-despreciando el término de superficie y el de Coulomb \cite{kumarTheoreticalExperimentalConstraints2024, myersNuclearPropertiesAccording1996}. En nuestro modelo (\ref{eq:lagrangiano}), estas propiedades de saturación se determinan hallando el mínimo de la función $\tfrac{B}{A}(n_B)$ en ausencia de electrones, como se muestra de ejemplo en la figura \ref{fig:saturacionbase}.
+Este resultado empírico es consistente con estimaciones realizadas a partir de mediciones de disperción de electrones con violación de paridad en $^{208}$Pb en el experimento PREX \cite{horowitzInsightsNuclearSaturation2020} y ajustes de 1654 núcleos atómicos a un modelo de gota líquida \cite{kumarTheoreticalExperimentalConstraints2024, myersNuclearPropertiesAccording1996}. En nuestro modelo (\ref{eq:lagrangiano}), estas propiedades de saturación se determinan hallando el mínimo de la función $\tfrac{B}{A}(n_B)$ en ausencia de electrones, como se muestra de ejemplo en la figura \ref{fig:saturacionbase}.
 
 \begin{figure}[h]
 	\centering
@@ -431,7 +432,7 @@ El módulo de compresibilidad nuclear $K_0$ caracteriza la rigidez de la materia
 	K_0 = 9n_0^2 \frac{\partial^2}{\partial n^2}\left(\frac{\rho}{n}\right)\bigg|_{n=n_0} = 230 \pm 40 \, \text{MeV}.
 	\label{eq:modulo_compresibilidad_empirico}
 \end{equation}
-
+\newpage
 Esta cantidad está relacionada algebraicamente con cantidades de nuestro modelo de materia simétrica en saturación mediante:
 
 \begin{equation}
@@ -444,14 +445,16 @@ Esta cantidad está relacionada algebraicamente con cantidades de nuestro modelo
 
 donde $x_Fp=x_Fn=x_F$.
 
-La energía de simetría $a_\text{sym}$ cuantifica el costo energético de desviarse de la composición simétrica. Esta cantidad determina la composición de protones y neutrones en materia nuclear densa, afectando directamente las propiedades de las estrellas de neutrones. La pendiente de la energía de simetría $L_0$ describe la dependencia de la energía de simetría con la densidad de bariones alrededor de la densidad de saturación. Para estas dos cantidades, tras una revisión de 28 estimaciones tanto de experimentos terrestres como de observaciones astronómicas de estrellas de neutrones, se estiman valores representativos \cite{kumarTheoreticalExperimentalConstraints2024, liUnderstandingAstrophysicalEffects2019}:
+La energía de simetría $a_\text{sym}$ cuantifica el costo energético de desviarse de la composición simétrica. Esta cantidad determina la composición de protones y neutrones en materia nuclear densa, afectando directamente las propiedades de las estrellas de neutrones. La pendiente de la energía de simetría $L_0$ describe la dependencia de la energía de simetría con la densidad de bariones alrededor de la densidad de saturación.
+\clearpage
+Para estas dos cantidades, tras una revisión de 28 estimaciones tanto de experimentos terrestres como de observaciones astronómicas de estrellas de neutrones, se estiman valores representativos \cite{kumarTheoreticalExperimentalConstraints2024, liUnderstandingAstrophysicalEffects2019}:
 
 \begin{align}
 	&a_\text{sym} = \frac{1}{2} \frac{\partial^2}{\partial t^2}\left(\frac{E}{A}\right)\bigg|_{t=0} = 31.6 \pm 2.7 \, \text{MeV}, \label{eq:energia_simetria_empirico} \\
 	&L_0 = 3n_0 \frac{\partial a_\text{sym}}{\partial n}\bigg|_{n=n_0} = 58.9 \pm 16 \, \text{MeV}. \label{eq:pendiente_simetria_empirico},
 \end{align}
 
-donde $t = (n_n - n_p)/n_B$ es el parámetro de asimetría de isospín. Es de notar que, si bien el valor fiducial tiene una baja incertidumbre, las estimaciones individuales de $L_0$ varían ampliamente con intervalos de confianza que oscilan entre 20 y 120 MeV debido a la dificultad para acceder a materia altamente asimétrica en el laboratorio. En nuestro modelo, estas cantidades pueden calcularse como:
+donde $t = (n_n - n_p)/n_B$ es el parámetro de asimetría de isospín. Es de notar que, si bien el valor fiducial tiene una baja incertidumbre, las estimaciones individuales de $L_0$ varían ampliamente con intervalos de confianza que se estiman entre 20 y 120 MeV debido a la dificultad para acceder a materia altamente asimétrica en el laboratorio \cite{esteeProbingSymmetryEnergy2021}. En nuestro modelo, estas cantidades pueden calcularse como:
 
 \begin{align}
 	\frac{a_\text{sym}}{m} &= \frac{x_F^2}{6\sqrt{x_F^2 + \xsigma^2}} + \frac{1}{12\pi^2}A_\rho x_F^3, \label{eq:energia_simetria} \\
@@ -459,7 +462,7 @@ donde $t = (n_n - n_p)/n_B$ es el parámetro de asimetría de isospín. Es de no
 \end{align}
 
 Estas cinco propiedades empíricas ($n_0$, $\frac{B}{A}\big|_0$, $K_0$, $a_\text{sym}$, $L_0$) definen restricciones que cualquier ecuación de estado microscópica debe satisfacer para ser físicamente viable. En el contexto de la teoría relativista de campo medio, estas propiedades y sus incertidumbres se utilizan para determinar las regiones en el espacio de parámetros que producen ecuaciones de estado físicamente aceptables frente a mediciones nucleares experimentales.
-
+\clearpage
 \section{Corteza de la Estrella}
 
 El modelo de teoría relativista de campo medio desarrollado es una descripción de la materia nuclear en el régimen de alta densidad, específicamente para densidades bariónicas superiores a aproximadamente $0.1$ fm$^{-3}$ o $\rho_m \gtrsim 1.7 \times 10^{14}$ g/cm$^3$, donde las interacciones nucleón-nucleón dominan la dinámica del sistema y la aproximación de campo medio tiene sentido. Sin embargo, las estrellas de neutrones presentan una estructura estratificada que incluye regiones de menor densidad donde esta aproximación deja de ser aplicable. La corteza de la estrella, que se extiende desde la superficie hasta el núcleo denso, abarca un rango de densidades de varios órdenes de magnitud y requiere tratamientos teóricos distintos según el régimen de densidad considerado \cite{shapiroBlackHolesWhite2008}.
