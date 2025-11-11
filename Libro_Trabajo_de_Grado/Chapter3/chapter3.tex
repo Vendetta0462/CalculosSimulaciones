@@ -53,7 +53,7 @@ Para densidades suficientemente bajas tal que se pueda despreciar la interacció
 	P &= P_n + P_p + P_e, \label{eq:presion_total}
 \end{align}
 
-donde cada componente fermionica contribuye según:
+donde cada componente fermiónica contribuye según:
 
 \begin{align}
 	\rho_i &= \frac{g_i}{8\pi^2} \int_0^{p_{Fi}} p^2\sqrt{p^2 + m_i^2} \, dp, \label{eq:densidad_fermi_general} \\
@@ -214,7 +214,7 @@ Hasta el momento tenemos un conjunto de ecuaciones de movimiento diferenciales, 
 
 donde las primeras dos componentes del mesón $\rhomeson^\mu$ son escritas en términos de los operadores de creación y aniquilación para mesones rho cargados $\rho_\pm^\mu = \frac{1}{\sqrt{2}}(\rho_1^\mu\pm i\rho_2^\mu)$, luego su valor esperado se anula en el estado base del sistema \cite{glendenningCompactStarsNuclear2000}, anulando el término fuente de la corriente propia del campo.
 
-Para los campos fermiónicos se tienen ecuaciones sin dependencia de las coordenadas de espaciotiempo, siendo estados propios de momento:
+Para los campos fermiónicos se tienen ecuaciones sin dependencia de las coordenadas de espacio-tiempo, siendo estados propios de momento:
 
 \begin{equation}
 	\begin{gathered}
@@ -410,23 +410,23 @@ Ahora que tenemos un sistema cerrado, podemos resolverlo numéricamente para cad
 
 Si suprimimos los electrones libres del modelo (\ref{eq:lagrangiano}) y consideramos materia nuclear simétrica ($n_p = n_n$), el sistema se reduce a un fluido de nucleones interactuando mediante los campos mesónicos. Este sistema debe reproducir las propiedades de la materia nuclear en saturación, caracterizada por cinco parámetros empíricos que añaden restricciones obligatorias para cualquier teoría microscópica válida \cite{kumarTheoreticalExperimentalConstraints2024}. Estos parámetros pueden determinarse experimentalmente mediante mediciones en laboratorios terrestres, siendo una herramienta de calibración para los modelos teóricos nucleares.
 
-La densidad de saturación nuclear $n_0$ define la densidad a la cual la materia nuclear simétrica alcanza su estado de mínima energía de enlace por nucleón $\frac{B}{A}\big|_0$. Tras aplicar un análisis bayesiano a una colección de ligaduras de la Teoría Funcional de la Densidad, que incluyen modelos relativistas de campo medio y de Skyrme, se obtienen valores \cite{drischlerBayesianMixtureModel2024}:
+La densidad de saturación nuclear $n_0$ define la densidad a la cual la materia nuclear simétrica alcanza su estado de mínima energía de enlace por nucleón $\frac{B}{A}$. Tras aplicar un análisis bayesiano a una colección de ligaduras de la Teoría Funcional de la Densidad, que incluyen modelos relativistas de campo medio y de Skyrme, se obtienen valores \cite{drischlerBayesianMixtureModel2024}:
 
 \begin{align}
 	&n_0 = 0.157 \pm 0.010 \, \text{fm}^{-3} \label{eq:densidad_saturacion}, \\
-	&\frac{B}{A}\bigg|_0 = \frac{\rho(n_0)}{n_0} - m = -15.97 \pm 0.40 \, \text{MeV}. \label{eq:energia_enlace_saturacion}
+	&\frac{B}{A} = \frac{\rho(n_0)}{n_0} - m = -15.97 \pm 0.40 \, \text{MeV}. \label{eq:energia_enlace_saturacion}
 \end{align}
 
-Este resultado empírico es consistente con estimaciones realizadas a partir de mediciones de disperción de electrones con violación de paridad en $^{208}$Pb en el experimento PREX \cite{horowitzInsightsNuclearSaturation2020} y ajustes de 1654 núcleos atómicos a un modelo de gota líquida \cite{kumarTheoreticalExperimentalConstraints2024, myersNuclearPropertiesAccording1996}. En nuestro modelo (\ref{eq:lagrangiano}), estas propiedades de saturación se determinan hallando el mínimo de la función $\tfrac{B}{A}(n_B)$ en ausencia de electrones, como se muestra de ejemplo en la figura \ref{fig:saturacionbase}.
+Este resultado empírico es consistente con estimaciones realizadas a partir de mediciones de dispersión de electrones con violación de paridad en $^{208}$Pb en el experimento PREX \cite{horowitzInsightsNuclearSaturation2020} y ajustes de 1654 núcleos atómicos a un modelo de gota líquida \cite{kumarTheoreticalExperimentalConstraints2024, myersNuclearPropertiesAccording1996}. En nuestro modelo (\ref{eq:lagrangiano}), estas propiedades de saturación se determinan hallando el mínimo de la función $\tfrac{B}{A}(n_B)$ en ausencia de electrones, como se muestra de ejemplo en la figura \ref{fig:saturacionbase}.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\linewidth]{Figuras/saturacion_base}
-	\caption[Energía de enlace por nucleón en saturación nuclear]{Energía de enlace por nucleón en función de la densidad bariónica para materia nuclear simétrica sin electrones. La densidad de saturación $n_0$ y la energía de enlace por nucleón en saturación $\frac{B}{A}\big|_0$ se señalan en el mínimo. Se usaron los parámetros $\left(\frac{g_\sigma}{m_\sigma}\right)^2=12.684\,\text{fm}^2$, $\left(\frac{g_\omega}{m_\omega}\right)^2=7.148\,\text{fm}^2$, $\left(\frac{g_\rho}{m_\rho}\right)^2=4.410\,\text{fm}^2$, $b=5.610\times10^{-3}$, $c=-6.986\times10^{-3}$.}
+	\caption[Energía de enlace por nucleón en saturación nuclear]{Energía de enlace por nucleón en función de la densidad bariónica para materia nuclear simétrica sin electrones. La densidad de saturación $n_0$ y la energía de enlace por nucleón en saturación $\frac{B}{A}$ se señalan en el mínimo. Se usaron los parámetros $\left(\frac{g_\sigma}{m_\sigma}\right)^2=12.684\,\text{fm}^2$, $\left(\frac{g_\omega}{m_\omega}\right)^2=7.148\,\text{fm}^2$, $\left(\frac{g_\rho}{m_\rho}\right)^2=4.410\,\text{fm}^2$, $b=5.610\times10^{-3}$, $c=-6.986\times10^{-3}$.}
 	\label{fig:saturacionbase}
 \end{figure}
 
-El módulo de compresibilidad nuclear $K_0$ caracteriza la rigidez de la materia nuclear ante compresiones alrededor del punto de saturación. Este parámetro es determinante para la extrapolación de la ecuación de estado a densidades supranucleares, y es estimado mediate las resonancias monopolares en núcleos pesados. Considerando un modelo de cadena de núcleos para esta resonancia en $^{208}$Pb, se obtiene \cite{kumarTheoreticalExperimentalConstraints2024, khanConstrainingNuclearEquation2012}:
+El módulo de compresibilidad nuclear $K_0$ caracteriza la rigidez de la materia nuclear ante compresiones alrededor del punto de saturación. Este parámetro es determinante para la extrapolación de la ecuación de estado a densidades supranucleares, y es estimado mediante las resonancias monopolares en núcleos pesados. Considerando un modelo de cadena de núcleos para esta resonancia en $^{208}$Pb, se obtiene \cite{kumarTheoreticalExperimentalConstraints2024, khanConstrainingNuclearEquation2012}:
 
 \begin{equation}
 	K_0 = 9n_0^2 \frac{\partial^2}{\partial n^2}\left(\frac{\rho}{n}\right)\bigg|_{n=n_0} = 230 \pm 40 \, \text{MeV}.
@@ -454,14 +454,14 @@ Para estas dos cantidades, tras una revisión de 28 estimaciones tanto de experi
 	&L_0 = 3n_0 \frac{\partial a_\text{sym}}{\partial n}\bigg|_{n=n_0} = 58.9 \pm 16 \, \text{MeV}. \label{eq:pendiente_simetria_empirico},
 \end{align}
 
-donde $t = (n_n - n_p)/n_B$ es el parámetro de asimetría de isospín. Es de notar que, si bien el valor fiducial tiene una baja incertidumbre, las estimaciones individuales de $L_0$ varían ampliamente con intervalos de confianza que se estiman entre 20 y 120 MeV debido a la dificultad para acceder a materia altamente asimétrica en el laboratorio \cite{esteeProbingSymmetryEnergy2021}. En nuestro modelo, estas cantidades pueden calcularse como:
+donde $t = (n_n - n_p)/n_B$ es el parámetro de asimetría de isospín. Es de notar que, si bien el valor fiduciario tiene una baja incertidumbre, las estimaciones individuales de $L_0$ varían ampliamente con intervalos de confianza que se estiman entre 20 y 120 MeV debido a la dificultad para acceder a materia altamente asimétrica en el laboratorio \cite{esteeProbingSymmetryEnergy2021}. En nuestro modelo, estas cantidades pueden calcularse como:
 
 \begin{align}
 	\frac{a_\text{sym}}{m} &= \frac{x_F^2}{6\sqrt{x_F^2 + \xsigma^2}} + \frac{1}{12\pi^2}A_\rho x_F^3, \label{eq:energia_simetria} \\
 	\frac{L_0}{m} &= \frac{x_F^2}{6\sqrt{x_F^2 + \xsigma^2}}\left(1 + \frac{\xsigma^2}{x_F^2 + \xsigma^2}\right) + \frac{1}{4\pi^2}A_\rho x_F^3. \label{eq:pendiente_simetria}
 \end{align}
 
-Estas cinco propiedades empíricas ($n_0$, $\frac{B}{A}\big|_0$, $K_0$, $a_\text{sym}$, $L_0$) definen restricciones que cualquier ecuación de estado microscópica debe satisfacer para ser físicamente viable. En el contexto de la teoría relativista de campo medio, estas propiedades y sus incertidumbres se utilizan para determinar las regiones en el espacio de parámetros que producen ecuaciones de estado físicamente aceptables frente a mediciones nucleares experimentales.
+Estas cinco propiedades empíricas ($n_0$, $\frac{B}{A}$, $K_0$, $a_\text{sym}$, $L_0$) definen restricciones que cualquier ecuación de estado microscópica debe satisfacer para ser físicamente viable. En el contexto de la teoría relativista de campo medio, estas propiedades y sus incertidumbres se utilizan para determinar las regiones en el espacio de parámetros que producen ecuaciones de estado físicamente aceptables frente a mediciones nucleares experimentales.
 \clearpage
 \section{Corteza de la Estrella}
 
