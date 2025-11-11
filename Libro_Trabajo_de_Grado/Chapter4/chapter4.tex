@@ -2,17 +2,20 @@
 \thispagestyle{fancy}
 % Resultados
 
-Como se estableció en el capítulo anterior (sección \ref{sec:modelo}), el modelo considerado en el marco de la teoría relativista de campo medio contiene cinco parámetros libres: los tres acoplamientos mesón-nucleón $A_\sigma, A_\omega$ y $A_\rho$, junto con los parámetros de autointeracción del mesón escalar $b$ y $c$. Estos parámetros determinan completamente la ecuación de estado de la materia nuclear y, consecuentemente, las propiedades macroscópicas de las estrellas de neutrones a través de las ecuaciones de estructura TOV (\ref{eq:tov}).
+Como se estableció en el capítulo anterior (sección \ref{sec:modelo}), el modelo considerado para la ecuación de estado en el marco de la teoría relativista de campo medio contiene cinco parámetros libres: los tres acoplamientos mesón-nucleón $A_\sigma, A_\omega$ y $A_\rho$, junto con los parámetros de autointeracción del mesón escalar $b$ y $c$. Estos parámetros determinan completamente la ecuación de estado de la materia nuclear y, consecuentemente, las propiedades macroscópicas de las estrellas de neutrones a través de las ecuaciones de estructura TOV (\ref{eq:tov}).
 
-El ajuste de estos parámetros se realiza imponiendo que el modelo reproduzca las propiedades empíricas de la materia nuclear en saturación, descritas en la sección \ref{sec:saturacion}. Múltiples métodos son empleados para ajustar los parámetros del modelo a las observaciones nucleares y las astrofísicas. Algunos estudios utilizan análisis bayesianos \cite{chenBuildingRelativisticMean2014, huangConstrainingRelativisticMean2024}, mientras que otros aplican técnicas de optimización utilizando herramientas de aprendizaje de máquina y redes neuronales \cite{guoInsightsNeutronStar2024}. Sin embargo, cada conjunto de parámetros que satisface estas restricciones nucleares produce una ecuación de estado diferente a altas densidades, generando predicciones distintas para las propiedades estelares observables como la masa máxima y el radio. Por esta misma razón, han sido propuestos una gran variedad de modelos de ecuaciones de estado en la literatura, dentro de este mismo formalismo, los cuales se filtran añadiendo cada vez más restricciones físicas \cite{dutraRelativisticMeanFieldHadronic2014}. Esta falta de unicidad en el espacio de parámetros refleja la incertidumbre en la extrapolación desde la densidad de saturación nuclear hacia los regímenes de densidad extrema presentes en el interior de las estrellas de neutrones.
+El ajuste de estos parámetros se realiza imponiendo que el modelo reproduzca las propiedades empíricas de la materia nuclear en saturación, descritas en la sección \ref{sec:saturacion}, y las observaciones astrofísicas, descritas en la sección \ref{sec:obsNS}. Múltiples métodos son empleados para este ajuste: algunos estudios utilizan análisis bayesianos \cite{chenBuildingRelativisticMean2014, huangConstrainingRelativisticMean2024}, mientras que otros aplican técnicas de optimización utilizando herramientas de aprendizaje de máquina y redes neuronales \cite{guoInsightsNeutronStar2024}. Sin embargo, cada conjunto de parámetros que satisface estas restricciones nucleares produce una ecuación de estado diferente a altas densidades, generando predicciones distintas para las propiedades estelares observables como la masa máxima y el radio. Por esta misma razón, dentro de este mismo formalismo han sido propuestos una gran variedad de modelos de ecuaciones de estado, los cuales se filtran añadiendo cada vez más restricciones físicas \cite{dutraRelativisticMeanFieldHadronic2014}. Esta falta de unicidad en el espacio de parámetros refleja la incertidumbre en la extrapolación desde la densidad de saturación nuclear hacia los regímenes de densidad extrema presentes en el interior de las estrellas de neutrones.
 
 
-El objetivo central de este capítulo es explorar sistemáticamente el espacio de parámetros del modelo, identificando los conjuntos que satisfacen las restricciones nucleares y que son consistentes con las observaciones astrofísicas actuales. Este análisis establece relaciones entre los parámetros microscópicos del lagrangiano (\ref{eq:lagrangiano}) y las propiedades macroscópicas observables, permitiendo estudiar cómo las interacciones nucleares del modelo determinan la estructura de las estrellas de neutrones. En particular, se realiza la búsqueda del conjunto de parámetros que maximiza la masa estelar predicha, planteando límites superiores teóricos.
+El objetivo central de este capítulo es caracterizar sistemáticamente el espacio de parámetros del modelo, identificando los conjuntos que satisfacen las restricciones nucleares y que son consistentes con las observaciones astrofísicas actuales. Este análisis establece relaciones entre los parámetros microscópicos de la materia (\ref{eq:lagrangiano}) y las propiedades macroscópicas observables, permitiendo estudiar cómo las interacciones nucleares determinan la estructura de las estrellas de neutrones. En particular, en este trabajo queremos determinar el conjunto de parámetros que maximiza la masa estelar predicha, planteando límites superiores teóricos.
 
 \clearpage
-\section{Correlación entre Parámetros y Observables}
+\section{Estudio del Espacio de Parámetros}
+\subsection{Correlaciones entre Parámetros y Observables}
 
-Partiendo del conjunto de parámetros \cite{glendenningCompactStarsNuclear2000}
+Debido a que los parámetros del modelo representan las intensidades físicas de las interacciones nucleares, es posible establecer correlaciones directas entre variaciones en estos parámetros y cambios en las propiedades nucleares y estelares. Por ejemplo, un aumento en el acoplamiento vectorial $A_\omega$ incrementa la repulsión entre nucleones, resultando en una disminución de la densidad de saturación $n_0$. Del mismo modo, un incremento en el acoplamiento isovectorial $A_\rho$ eleva la energía de simetría $a_\text{sym}$, afectando la composición protón-neutrón de la materia nuclear.
+
+Consideremos el conjunto de parámetros \cite{glendenningCompactStarsNuclear2000}:
 
 \begin{equation}
 \begin{aligned}
@@ -25,7 +28,7 @@ Partiendo del conjunto de parámetros \cite{glendenningCompactStarsNuclear2000}
 \end{aligned}
 \end{equation}
 	
-se obtienen las propiedades nucleares y estelares
+cuyas propiedades nucleares y estelares son:
 
 \begin{equation}
 \begin{aligned}
@@ -36,26 +39,53 @@ se obtienen las propiedades nucleares y estelares
 &L_0 = 79.63 \, \text{MeV}, & 
 &M_\text{max} = 2.33 \, \masasol, \\
 &R_{1.4} = 13.76 \, \text{km}, &
-&C = 0.298, &
+&C_\text{max} = 0.298, &
 \label{eq:props_glendenning}
 \end{aligned}
 \end{equation}
 
-donde $C = G M_\text{max} / c^2 R_{M_\text{max}}$ es la compacidad de la estrella de masa máxima, cuyo límite superor se establece al rededor de $C \lesssim 0.33$ tras evaluar implicaciones de observaciones recientes en ecuaciones de estado \cite{annalaMultimessengerConstraintsUltradense2022}. Ya que los parámetros del modelo representan las intensidades físicas de las interacciones nucleares, es posible establecer correlaciones directas entre variaciones en estos parámetros y cambios en las propiedades nucleares y estelares. Por ejemplo, un aumento en el acoplamiento vectorial $A_\omega$ incrementa la repulsión entre nucleones, resultando en una disminución de la densidad de saturación $n_0$. Del mismo modo, un incremento en el acoplamiento isovectorial $A_\rho$ eleva la energía de simetría $a_\text{sym}$, afectando la composición protón-neutrón de la materia nuclear. Considerando variaciones de los parámetros alrededor de los valores en (\ref{eq:params_glendenning}), se observan las tendencias recopiladas en la figura \ref{fig:correlacionesparams}. Es necesario resaltar la independencia de $n_0$, $B/A$ y $K_0$ respecto a variaciones en $A_\rho$, lo cual es consistente con la interpretación física de este acoplamiento como responsable únicamente de las interacciones isovectoriales. Adicionalmente, parece relevante estudiar el espacio de parámetros $A_\sigma - A_\omega$, ya que ambos acoplamientos afectan todas las propiedades nucleares y estelares, sugiriendo una mayor influencia en la determinación de la ecuación de estado. Sobre el estudio del espacio de parámetros se profundiza en la siguiente sección.
+donde $C_\text{max} = G M_\text{max} / c^2 R_{(M_\text{max})}$ es la compacidad de la estrella de masa máxima, cuyo límite superior se establece al rededor de $C_\text{max}= \lesssim 0.33$ tras evaluar implicaciones de observaciones recientes en ecuaciones de estado \cite{annalaMultimessengerConstraintsUltradense2022}. Realizando variaciones de estos parámetros alrededor de los valores en (\ref{eq:params_glendenning}), se observan las tendencias recopiladas en la figura \ref{fig:correlacionesparams}. La figura muestra el coeficiente de correlación de Pearson entre cada parámetro y cada propiedad nuclear y estelar. Los valores representan la fuerza y dirección de la relación lineal entre dos variables: valores cercanos a 1.0 indican una correlación positiva fuerte (si aumento el parámetro, aumenta la propiedad), mientras que valores cercanos a -1.0 indican una correlación negativa fuerte (si aumento el parámetro, disminuye la propiedad). Los valores intermedios reflejan correlaciones más débiles o nulas, en las que el parámetro tiene poca o ninguna influencia en la propiedad considerada. Es necesario notar que estas correlaciones son válidas localmente alrededor del conjunto de parámetros elegido, pero pueden variar en otras regiones del espacio de parámetros. Además, este coeficiente cuantifica la fuerza de la correlación, más no la pendiente de la relación entre las variables. 
+
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\linewidth]{Figuras/correlaciones_params}
-	\caption[Correlaciones entre parámetros y observables]{Correlaciones cualitativas entre variaciones en los parámetros del modelo relativista de campo medio alrededor de los valores en (\ref{eq:params_glendenning}) y cambios en las propiedades nucleares y estelares. Valores cercanos a 1.0 indican una correlación positiva fuerte, mientras que valores cercanos a -1.0 indican una correlación negativa fuerte. Los valores intermedios reflejan correlaciones más débiles o nulas.}
+	\caption[Correlaciones entre parámetros y observables]{Correlaciones cualitativas entre variaciones en los parámetros del modelo relativista de campo medio alrededor de los valores en (\ref{eq:params_glendenning}), y cambios en las propiedades nucleares y estelares. Valores cercanos a 1.0 indican una correlación positiva fuerte, mientras que valores cercanos a -1.0 indican una correlación negativa fuerte. Los valores intermedios reflejan correlaciones más débiles o nulas.}
 	\label{fig:correlacionesparams}
 \end{figure}
 
+Es necesario resaltar la independencia de $n_0$, $B/A$ y $K_0$ respecto a variaciones en $A_\rho$, lo cual es consistente con la interpretación física de este acoplamiento como responsable únicamente de las interacciones isovectoriales. Adicionalmente, parece oportuno basar el estudio en el plano de parámetros $A_\sigma - A_\omega$ pues ambos acoplamientos están fuertemente correlacionados con todas las propiedades nucleares y estelares, sugiriendo una mayor influencia en la determinación de la ecuación de estado. La naturaleza atractiva del acoplamiento escalar $A_\sigma$ y la naturaleza repulsiva del acoplamiento vectorial $A_\omega$ explican las correlaciones opuestas observadas en la figura \ref{fig:correlacionesparams} para estas dos interacciones, salvo para la masa máxima $M_\text{max}$, donde ambos acoplamientos muestran una correlación positiva fuerte. 
 
-\section{Espacio de Parámetros}
+Por otro lado, la relación lineal entre los parámetros $b$ y $c$ con la compresibilidad $K_0$ no es tan clara como la de $A_\sigma$ y $A_\omega$, pero sigue siendo útil para ajustar esta propiedad nuclear. De igual forma, sus correlaciones con las demás propiedades nucleares y estelares son más débiles, aunque siguen siendo significativas para el ajuste del modelo. Finalmente, dado el interés en encontrar ecuaciones de estado que permitan estrellas de neutrones con masas máximas elevadas, según lo observado en la figura \ref{fig:correlacionesparams} parece conveniente aumentar simultáneamente los parámetros $A_\sigma$, $A_\omega$ y $c$, y disminuir $A_\rho$, siempre manteniendo las propiedades nucleares dentro de los rangos aceptables.
+
+\subsection{Regiones Válidas en el Espacio de Parámetros}
 
 La exploración del espacio de parámetros del modelo relativista de campo medio es un problema de optimización multidimensional bajo múltiples restricciones. El espacio completo está definido por los cinco parámetros libres: $A_\sigma$, $A_\omega$, $A_\rho$, $b$ y $c$. La metodología empleada para identificar conjuntos de parámetros físicamente aceptables consta de varias etapas sistemáticas.
 
-Queremos identificar los conjuntos de parámetros que satisfacen las restricciones dentro de los márgenes experimentales. Estos conjuntos comprenden regiones del espacio de parámetros que son consistentes con las propiedades nucleares conocidas. Como puede evidenciarse en la figura \ref{fig:correlacionesparams}, los parámetros del modelo que influyen claramente en todas las propiedades nucleares y estelares son $A_\sigma$ y $A_\omega$, luego se decide realizar un barrido sistemático en el plano $A_\sigma - A_\omega$, mientras que los otros tres parámetros se ajustan para satisfacer las restricciones nucleares. De esta forma, para una elección particular de parámetros $b$ y $c$, los demás parámetros con influencia en el módulo de compresibilidad $K_0$, se busca la región del plano $A_\sigma - A_\omega$ que satisface las restricciones de densidad de saturación $n_0$ y de energía de enlace por nucleón $B/A$. Si los valores de $K_0$ dentro de esta región también cumplen la restricción impuesta, se procede a ajustar $A_\rho$ para satisfacer las restricciones de energía de simetría $a_\text{sym}$ y su pendiente $L_0$ sin afectar las otras propiedades nucleares, pues estas no dependen de $A_\rho$. Este procedimiento se repite para diferentes elecciones de los parámetros $b$ y $c$, explorando así el espacio de parámetros del modelo. La figura \ref{fig:flowchartmetodo} ilustra el flujo del método descrito. 
+Queremos identificar los conjuntos de parámetros que satisfacen las restricciones dentro de los márgenes experimentales. Estos conjuntos comprenden regiones del espacio de parámetros que son consistentes con las propiedades nucleares conocidas. Como puede evidenciarse en la figura \ref{fig:correlacionesparams}, los parámetros del modelo que influyen claramente en todas las propiedades nucleares y estelares son $A_\sigma$ y $A_\omega$. Por lo tanto, el método sistemático empleado consiste en los siguientes pasos, ilustrados en el diagrama de flujo de la figura \ref{fig:flowchartmetodo}:
+
+\begin{enumerate}
+    \item Se elige un par de valores específicos para los parámetros $b$ y $c$, que junto con $A_\sigma$ y $A_\omega$ influyen en el módulo de compresibilidad $K_0$.
+    
+    \item Se realiza un barrido sistemático en el plano $A_\sigma - A_\omega$, buscando la región que satisface simultáneamente las restricciones de:
+    \begin{itemize}
+        \item Densidad de saturación: $0.147 \, \text{fm}^{-3} \leq n_0 \leq 0.167 \, \text{fm}^{-3}$ (\ref{eq:densidad_saturacion})
+        \item Energía de enlace por nucleón: $-16.37 \, \text{MeV} \leq B/A \leq -15.57 \, \text{MeV}$ (\ref{eq:energia_enlace_saturacion})
+    \end{itemize}
+    
+    \item Se verifica que los valores del módulo de compresibilidad $K_0$ dentro de esta región cumplan con la restricción: $190 \, \text{MeV} \leq K_0 \leq 270 \, \text{MeV}$ (\ref{eq:modulo_compresibilidad_empirico}).
+    
+    \item Si la región identificada satisface las tres restricciones anteriores, se ajusta el parámetro $A_\rho$ para satisfacer las restricciones de:
+    \begin{itemize}
+        \item Energía de simetría: $28.9 \, \text{MeV} \leq a_\text{sym} \leq 34.3 \, \text{MeV}$ (\ref{eq:energia_simetria_empirico})
+        \item Pendiente de la energía de simetría: $40 \, \text{MeV} \leq L_0 \leq 100 \, \text{MeV}$. Aunque el rango experimental fiduciario es más reducido (\ref{eq:pendiente_simetria_empirico}), esta propiedad tiene mayor libertad debido a la falta de consenso en su valor, permitiéndonos utilizar este intervalo más amplio en nuestro análisis \cite{kumarTheoreticalExperimentalConstraints2024}.
+    \end{itemize}
+    Esto se realiza sin afectar las otras propiedades nucleares, pues estas no dependen de $A_\rho$.
+    
+    \item Se repite el procedimiento para diferentes elecciones de los parámetros $b$ y $c$, explorando así el espacio de parámetros del modelo.
+    
+    \item Finalmente, se calculan las propiedades estelares (masa máxima $M_\text{max}$, radio canónico $R_{1.4}$, y compacidad máxima $C_\text{max}$) para las regiones de parámetros que satisfacen todas las restricciones nucleares anteriores.
+\end{enumerate}
 
 %\clearpage
 
@@ -73,7 +103,7 @@ Queremos identificar los conjuntos de parámetros que satisfacen las restriccion
 	\label{fig:flowchartmetodo}
 \end{figure}
 
-Aplicando este método, se identifican múltiples conjuntos de parámetros que satisfacen las restricciones nucleares. Cada conjunto produce una ecuación de estado diferente a altas densidades, generando predicciones variadas para las propiedades estelares. Por ejemplo, tras realizar este proceso para un par de valores específicos de $b$ y $c$, se obtiene la región del plano $A_\sigma - A_\omega$ mostrada en la figura \ref{fig:region_nuclear_a}. Cada punto en esta región corresponde a un conjunto de parámetros que puede ser empleado para determinar las propiedades estelares resultantes, como la masa máxima y el radio de estrellas de neutrones. Además, si variamos los valores de $b$ y $c$ de modo que $K_0$ se mantenga dentro del rango aceptable, y ajustamos $A_\rho$ para cumplir las propiedades de simetría, obtenemos otras regiones válidas, como la mostrada en la figura \ref{fig:region_nuclear_b}. Esta nueva región tiene valores mayores de $A_\sigma$, $A_\omega$ y $c$, y valores menores de $A_\rho$ y $b$ en comparación con la región anterior.  
+Aplicando este método, se identifican múltiples conjuntos de parámetros que satisfacen las restricciones nucleares. Cada conjunto produce una ecuación de estado diferente a altas densidades, generando diferentes predicciones para las propiedades estelares. Por ejemplo, tras realizar este proceso para un par de valores específicos de $b$ y $c$, se obtiene la región del plano $A_\sigma - A_\omega$ mostrada en la figura \ref{fig:region_nuclear_a}. Cada punto en esta región corresponde a un conjunto de parámetros válido que puede ser empleado para determinar las propiedades estelares resultantes. Además, si variamos los valores de $b$ y $c$ de modo que $K_0$ se mantenga dentro del rango aceptable, y ajustamos $A_\rho$ para cumplir las propiedades de simetría, obtenemos otras regiones válidas, como la mostrada en la figura \ref{fig:region_nuclear_b}. Esta nueva región tiene valores mayores de $A_\sigma$, $A_\omega$ y $c$, y valores menores de $A_\rho$ y $b$ en comparación con la región anterior.  
 
 \begin{figure}[h]
     \centering
