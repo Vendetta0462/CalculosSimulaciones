@@ -8,3 +8,6 @@ __pycache__/
 
 # Ignorar archivos de configuración de vscode
 .vscode/
+
+# Ignora archivos de datos calculados
+NS_Structure/results/EspacioParametros
