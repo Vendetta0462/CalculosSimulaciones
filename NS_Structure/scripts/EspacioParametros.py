@@ -98,7 +98,7 @@ def compute_nuclear_mesh(A_sigma_range, A_omega_range, params,
 	Parameters
 	----------
 	bounds : dict, optional
-		Dictionary with optional keys 'n_sat', 'Ebind', 'K', 'a_sym', 'L', each containing
+		Dictionary with optional keys 'n_sat', 'ebind', 'K', 'a_sym', 'L', each containing
         a list [min, max]. Points outside these ranges will be excluded from the mesh and mask.
 	"""
 	if n_prove is None:
@@ -109,7 +109,7 @@ def compute_nuclear_mesh(A_sigma_range, A_omega_range, params,
 	a_sym_bounds = bounds.get('a_sym') if bounds is not None else None
 	L_bounds = bounds.get('L') if bounds is not None else None
 	sat_min, sat_max = bounds.get('n_sat', (0.15, 0.18)) if bounds is not None else (0.15, 0.18)
-	ebind_min, ebind_max = bounds.get('Ebind', (-18.0, -12.0)) if bounds is not None else (-18.0, -12.0)
+	ebind_min, ebind_max = bounds.get('ebind', (-18.0, -12.0)) if bounds is not None else (-18.0, -12.0)
 
 	A_sigma_mesh, A_omega_mesh = np.meshgrid(A_sigma_range, A_omega_range)
 	shape = A_sigma_mesh.shape
@@ -184,7 +184,8 @@ def compute_stellar_mesh(A_sigma_range, A_omega_range, params, mask, target_mass
     return mass_mesh, comp_mesh, radius_mesh
 
 def plot_nuclear_mesh(A_sigma_range, A_omega_range, n_sat_mesh, ebind_mesh, K_mesh, a_sym_mesh,
-                      L_mesh, params, bounds=None, manual_label_position=5, equal_aspect=False):
+                      L_mesh, params, bounds=None, manual_label_position=5, equal_aspect=False, 
+                      xlim=None, ylim=None, colormap=plt.cm.RdPu, contours=True):
     A_sigma_mesh, A_omega_mesh = np.meshgrid(A_sigma_range, A_omega_range)
     K_masked = np.ma.masked_invalid(K_mesh)
     sat_masked = np.ma.masked_invalid(n_sat_mesh)
@@ -193,7 +194,7 @@ def plot_nuclear_mesh(A_sigma_range, A_omega_range, n_sat_mesh, ebind_mesh, K_me
     L_masked = np.ma.masked_invalid(L_mesh)
 
     sat_min, sat_max = bounds.get('n_sat', (0.15, 0.18)) if bounds is not None else (0.15, 0.18)
-    ebind_min, ebind_max = bounds.get('Ebind', (-18.0, -12.0)) if bounds is not None else (-18.0, -12.0)
+    ebind_min, ebind_max = bounds.get('ebind', (-18.0, -12.0)) if bounds is not None else (-18.0, -12.0)
 
     # Calculamos el area de la zona válida en el espacio A_sigma - A_omega
     # valid_area = np.sum(np.isfinite(K_masked)) * (A_sigma_range[1] - A_sigma_range[0]) * (A_omega_range[1] - A_omega_range[0])
@@ -202,91 +203,89 @@ def plot_nuclear_mesh(A_sigma_range, A_omega_range, n_sat_mesh, ebind_mesh, K_me
     # params_text = '\n'.join([f'{name}={value:.3f}' if name not in [r'$b$', r'$c$'] else f'{name}={value:.3e}' for name, value in zip(params_names, params[2:]+[valid_area])])
     params_text = '\n'.join([f'{name}={value:.3f}' if name not in [r'$b$', r'$c$'] else f'{name}={value:.3e}' for name, value in zip(params_names[:-1], params[2:])])
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
-    cmap = plt.cm.RdPu
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(21, 6))
+    cmap = colormap
 
     # subplot 1: K_sat
-    ax = axes[0]
-    sc1 = ax.scatter(
+    sc1 = ax1.scatter(
         A_sigma_mesh, A_omega_mesh,
         c=K_masked, cmap=cmap, marker='o'
     )
-    cb = plt.colorbar(sc1, ax=ax)
+    cb = plt.colorbar(sc1, ax=ax1)
     cb.set_label(r'Módulo de compresión (MeV)', fontsize=14)
-    # ax.set_title(r'$K_{sat}$')
-    ax.set_ylabel(r'$A_\omega$', fontsize=14)
+    # ax1.set_title(r'$K_{sat}$')
+    ax1.set_ylabel(r'$A_\omega$', fontsize=14)
 
-    # subplot 2: a_sym (color) y L (tamaño)
-    ax = axes[1]
-    # colorear según a_sym
-    sc2 = ax.scatter(
+    # subplot 2: a_sym
+    sc2 = ax2.scatter(
         A_sigma_mesh, A_omega_mesh,
         c=a_sym_masked, cmap=cmap,
         vmin=np.nanmin(a_sym_mesh), vmax=np.nanmax(a_sym_mesh)
     )
-    cb = plt.colorbar(sc2, ax=ax)
+    cb = plt.colorbar(sc2, ax=ax2)
     cb.set_label('Coeficiente de simetría (MeV)', fontsize=14)
-
-    # líneas de contorno para L con fondo en las etiquetas
-    Lmin, Lmax = np.nanmin(L_mesh), np.nanmax(L_mesh)
-    levels_L = np.linspace(Lmin, Lmax, 6)
-    cs_L = ax.contour(
-        A_sigma_mesh, A_omega_mesh, L_masked,
-        levels=levels_L, colors='black', linestyles='--'
-    )
-    texts = ax.clabel(
-        cs_L,
-        fmt={lev: f'$L_0$={lev:.1f}' for lev in levels_L},
-        inline=True, fontsize=12
-    )
-    for t in texts:
-        t.set_bbox(dict(facecolor='white', alpha=0.7, pad=1))
-        
-    # ax.set_title(r'$a_{sym}$ y $L$')
+    # ax2.set_title(r'$a_{sym}$')
     
-    for ax in axes:
+    # subplot 3: L
+    sc3 = ax3.scatter(
+        A_sigma_mesh, A_omega_mesh,
+        c=L_masked, cmap=cmap,
+        vmin=np.nanmin(L_mesh), vmax=np.nanmax(L_mesh)
+    )
+    cb = plt.colorbar(sc3, ax=ax3)
+    cb.set_label('Pendiente de simetría (MeV)', fontsize=14)
+    # ax3.set_title(r'$L_0$')
+    
+    for ax in (ax1, ax2, ax3):
         ax.text(0.05, 0.95, params_text, transform=ax.transAxes, fontsize=12,
             verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
         
         ax.set_xlabel(r'$A_\sigma$', fontsize=14)
         # ax.set_ylabel(r'$A_\omega$')
-        cs1 = ax.contour(
-            A_sigma_mesh, A_omega_mesh, sat_masked,
-            levels=[sat_min, sat_max], colors='black', linestyles='-'
-        )
-        # Prepara posiciones manuales en los extremos de cada segmento
-        manual_positions_sat = []
-        for segs in cs1.allsegs:
-            for seg in segs:
-                manual_positions_sat.append(tuple(seg[manual_label_position]))
-        ax.clabel(
-            cs1,
-            fmt={sat_min: f'$n_0$={sat_min}', sat_max: f'$n_0$={sat_max}'},
-            inline=True, fontsize=12, manual=manual_positions_sat
-        )
+        if contours:
+            cs1 = ax.contour(
+                A_sigma_mesh, A_omega_mesh, sat_masked,
+                levels=[sat_min, sat_max], colors='black', linestyles='-'
+            )
+            # Prepara posiciones manuales en los extremos de cada segmento
+            manual_positions_sat = []
+            for segs in cs1.allsegs:
+                for seg in segs:
+                    manual_positions_sat.append(tuple(seg[manual_label_position]))
+            ax.clabel(
+                cs1,
+                fmt={sat_min: f'$n_0$={sat_min}', sat_max: f'$n_0$={sat_max}'},
+                inline=True, fontsize=12, manual=manual_positions_sat
+            )
 
-        cs2 = ax.contour(
-            A_sigma_mesh, A_omega_mesh, ebind_masked,
-            levels=[ebind_min, ebind_max], colors='black', linestyles='-'
-        )
-        manual_positions_ebind = []
-        for segs in cs2.allsegs:
-            for seg in segs:
-                manual_positions_ebind.append(tuple(seg[manual_label_position]))
-        ax.clabel(
-            cs2,
-            fmt={ebind_min: f'B/A={ebind_min}', ebind_max: f'B/A={ebind_max}'},
-            inline=True, fontsize=12, manual=manual_positions_ebind
-        )
+            cs2 = ax.contour(
+                A_sigma_mesh, A_omega_mesh, ebind_masked,
+                levels=[ebind_min, ebind_max], colors='black', linestyles='-'
+            )
+            manual_positions_ebind = []
+            for segs in cs2.allsegs:
+                for seg in segs:
+                    manual_positions_ebind.append(tuple(seg[manual_label_position]))
+            ax.clabel(
+                cs2,
+                fmt={ebind_min: f'B/A={ebind_min}', ebind_max: f'B/A={ebind_max}'},
+                inline=True, fontsize=12, manual=manual_positions_ebind
+            )
         if equal_aspect:
             ax.set_aspect('equal', adjustable='box')
+            
+        if xlim is not None:
+            ax.set_xlim(xlim)
+        if ylim is not None:
+            ax.set_ylim(ylim)
 
     plt.tight_layout()
     plt.show()
     return fig
 
 def plot_stellar_mesh(A_sigma_range, A_omega_range, mass_mesh, comp_mesh, radius_mesh, sat_mesh,
-                      ebind_mesh, params, bounds=None, manual_label_position=5, equal_aspect=False):
+                      ebind_mesh, params, bounds=None, manual_label_position=5, equal_aspect=False, 
+                      xlim=None, ylim=None, colormap=plt.cm.RdPu, contours=True):
     A_sigma_mesh, A_omega_mesh = np.meshgrid(A_sigma_range, A_omega_range)
     mass_masked = np.ma.masked_invalid(mass_mesh)
     comp_masked = np.ma.masked_invalid(comp_mesh)
@@ -301,12 +300,11 @@ def plot_stellar_mesh(A_sigma_range, A_omega_range, mass_mesh, comp_mesh, radius
     params_text = '\n'.join([f'{name}={value:.3f}' if name not in [r'$b$', r'$c$'] else f'{name}={value:.3e}' for name, value in zip(params_names[:-1], params[2:])])
 
     sat_min, sat_max = bounds.get('n_sat', (0.15, 0.18)) if bounds is not None else (0.15, 0.18)
-    ebind_min, ebind_max = bounds.get('Ebind', (-18.0, -12.0)) if bounds is not None else (-18.0, -12.0)
+    ebind_min, ebind_max = bounds.get('ebind', (-18.0, -12.0)) if bounds is not None else (-18.0, -12.0)
 
     # Graficamos masa máxima y compacidad en dos paneles
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(21, 6))
-    cmap = plt.cm.RdPu
-
+    cmap = colormap
     # Panel de masa máxima
     sc1 = ax1.scatter(A_sigma_mesh, A_omega_mesh, c=mass_masked, cmap=cmap, marker='o')
     cb = plt.colorbar(sc1, ax=ax1)
@@ -317,7 +315,7 @@ def plot_stellar_mesh(A_sigma_range, A_omega_range, mass_mesh, comp_mesh, radius
     # Panel de compacidad máxima
     sc2 = ax2.scatter(A_sigma_mesh, A_omega_mesh, c=comp_masked, cmap=cmap, marker='o')
     cb = plt.colorbar(sc2, ax=ax2)
-    cb.set_label('Compacidad ($GM/c^2R$)', fontsize=14)
+    cb.set_label('Compacidad máxima ($GM/c^2R$)', fontsize=14)
     # ax2.set_title('Compacidad máxima')
         
     # Panel de radio canónico
@@ -331,36 +329,42 @@ def plot_stellar_mesh(A_sigma_range, A_omega_range, mass_mesh, comp_mesh, radius
                 verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
         ax.set_xlabel(r'$A_\sigma$', fontsize=14)
         # ax.set_ylabel(r'$A_\omega$')
-        cs1 = ax.contour(
-            A_sigma_mesh, A_omega_mesh, sat_masked,
-            levels=[sat_min, sat_max], colors='black', linestyles='-'
-        )
-        # Prepara posiciones manuales en los extremos de cada segmento
-        manual_positions_sat = []
-        for segs in cs1.allsegs:
-            for seg in segs:
-                manual_positions_sat.append(tuple(seg[manual_label_position]))
-        ax.clabel(
-            cs1,
-            fmt={sat_min: f'$n_0$={sat_min}', sat_max: f'$n_0$={sat_max}'},
-            inline=True, fontsize=12, manual=manual_positions_sat
-        )
+        if contours:
+            cs1 = ax.contour(
+                A_sigma_mesh, A_omega_mesh, sat_masked,
+                levels=[sat_min, sat_max], colors='black', linestyles='-'
+            )
+            # Prepara posiciones manuales en los extremos de cada segmento
+            manual_positions_sat = []
+            for segs in cs1.allsegs:
+                for seg in segs:
+                    manual_positions_sat.append(tuple(seg[manual_label_position]))
+            ax.clabel(
+                cs1,
+                fmt={sat_min: f'$n_0$={sat_min}', sat_max: f'$n_0$={sat_max}'},
+                inline=True, fontsize=12, manual=manual_positions_sat
+            )
 
-        cs2 = ax.contour(
-            A_sigma_mesh, A_omega_mesh, ebind_masked,
-            levels=[ebind_min, ebind_max], colors='black', linestyles='-'
-        )
-        manual_positions_ebind = []
-        for segs in cs2.allsegs:
-            for seg in segs:
-                manual_positions_ebind.append(tuple(seg[manual_label_position]))
-        ax.clabel(
-            cs2,
-            fmt={ebind_min: f'B/A={ebind_min}', ebind_max: f'B/A={ebind_max}'},
-            inline=True, fontsize=12, manual=manual_positions_ebind
-        )
+            cs2 = ax.contour(
+                A_sigma_mesh, A_omega_mesh, ebind_masked,
+                levels=[ebind_min, ebind_max], colors='black', linestyles='-'
+            )
+            manual_positions_ebind = []
+            for segs in cs2.allsegs:
+                for seg in segs:
+                    manual_positions_ebind.append(tuple(seg[manual_label_position]))
+            ax.clabel(
+                cs2,
+                fmt={ebind_min: f'B/A={ebind_min}', ebind_max: f'B/A={ebind_max}'},
+                inline=True, fontsize=12, manual=manual_positions_ebind
+            )
         if equal_aspect:
             ax.set_aspect('equal', adjustable='box')
+
+        if xlim is not None:
+            ax.set_xlim(xlim)
+        if ylim is not None:
+            ax.set_ylim(ylim)
 
     plt.tight_layout()
     plt.show()
