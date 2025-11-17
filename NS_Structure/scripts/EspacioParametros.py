@@ -108,9 +108,8 @@ def compute_nuclear_mesh(A_sigma_range, A_omega_range, params,
 	K_bounds = bounds.get('K') if bounds is not None else None
 	a_sym_bounds = bounds.get('a_sym') if bounds is not None else None
 	L_bounds = bounds.get('L') if bounds is not None else None
-	sat_min, sat_max = bounds.get('n_sat', (0.15, 0.18)) if bounds is not None else (0.15, 0.18)
-	ebind_min, ebind_max = bounds.get('ebind', (-18.0, -12.0)) if bounds is not None else (-18.0, -12.0)
-
+	sat_min, sat_max = bounds.get('n_sat', (0.147, 0.167)) if bounds is not None else (0.147, 0.167)
+	ebind_min, ebind_max = bounds.get('ebind', (-16.37, -15.57)) if bounds is not None else (-16.37, -15.57)
 	A_sigma_mesh, A_omega_mesh = np.meshgrid(A_sigma_range, A_omega_range)
 	shape = A_sigma_mesh.shape
 	n_sat_mesh = np.full(shape, np.nan)
@@ -193,8 +192,8 @@ def plot_nuclear_mesh(A_sigma_range, A_omega_range, n_sat_mesh, ebind_mesh, K_me
     a_sym_masked = np.ma.masked_invalid(a_sym_mesh)
     L_masked = np.ma.masked_invalid(L_mesh)
 
-    sat_min, sat_max = bounds.get('n_sat', (0.15, 0.18)) if bounds is not None else (0.15, 0.18)
-    ebind_min, ebind_max = bounds.get('ebind', (-18.0, -12.0)) if bounds is not None else (-18.0, -12.0)
+    sat_min, sat_max = bounds.get('n_sat', (0.147, 0.167)) if bounds is not None else (0.147, 0.167)
+    ebind_min, ebind_max = bounds.get('ebind', (-16.37, -15.57)) if bounds is not None else (-16.37, -15.57)
 
     # Calculamos el area de la zona válida en el espacio A_sigma - A_omega
     # valid_area = np.sum(np.isfinite(K_masked)) * (A_sigma_range[1] - A_sigma_range[0]) * (A_omega_range[1] - A_omega_range[0])
@@ -299,8 +298,8 @@ def plot_stellar_mesh(A_sigma_range, A_omega_range, mass_mesh, comp_mesh, radius
     # params_text = '\n'.join([f'{name}={value:.3f}' if name not in [r'$b$', r'$c$'] else f'{name}={value:.3e}' for name, value in zip(params_names, params[2:]+[valid_area])])
     params_text = '\n'.join([f'{name}={value:.3f}' if name not in [r'$b$', r'$c$'] else f'{name}={value:.3e}' for name, value in zip(params_names[:-1], params[2:])])
 
-    sat_min, sat_max = bounds.get('n_sat', (0.15, 0.18)) if bounds is not None else (0.15, 0.18)
-    ebind_min, ebind_max = bounds.get('ebind', (-18.0, -12.0)) if bounds is not None else (-18.0, -12.0)
+    sat_min, sat_max = bounds.get('n_sat', (0.147, 0.167)) if bounds is not None else (0.147, 0.167)
+    ebind_min, ebind_max = bounds.get('ebind', (-16.37, -15.57)) if bounds is not None else (-16.37, -15.57)
 
     # Graficamos masa máxima y compacidad en dos paneles
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(21, 6))
