@@ -58,6 +58,45 @@ Es necesario resaltar la independencia de $n_0$, $B/A$ y $K_0$ respecto a variac
 
 Por otro lado, la relación lineal entre los parámetros $b$ y $c$ con la compresibilidad $K_0$ no es tan clara como la de $A_\sigma$ y $A_\omega$, pero sigue siendo útil para ajustar esta propiedad nuclear. De igual forma, sus correlaciones con las demás propiedades nucleares y estelares son más débiles, aunque siguen siendo significativas para el ajuste del modelo. Finalmente, dado el interés en encontrar ecuaciones de estado que permitan estrellas de neutrones con masas máximas elevadas, según lo observado en la figura \ref{fig:correlacionesparams} parece conveniente aumentar simultáneamente los parámetros $A_\sigma$, $A_\omega$ y $c$, y disminuir $A_\rho$, siempre manteniendo las propiedades nucleares dentro de los rangos aceptables.
 
+Para estudiar el impacto los parámetros del modelo en la ecuación de estado y las propiedades macroscópicas de las estrellas de neutrones, se presentan en la figura \ref{fig:eos_mass_radius_parametros} las ecuaciones de estado y las curvas masa-radio obtenidas al variar independientemente cada uno de los parámetros alrededor de los valores en (\ref{eq:params_glendenning}), manteniendo los otros parámetros fijos. Las ecuaciones de estado se presentan a partir del empalme con la ecuación de estado para la corteza, discutida en la sección \ref{sec:corteza}, el cual es el mismo en todos los casos. Con estas visualizaciones, podemos corroborar cómo afecta cada parámetro a la rigidez de la ecuación de estado, a la masa y al radio de las estrellas de neutrones. Se observa que únicamente el aumento del parámetro $A_\sigma$ produce un aumento en la rigidez de la ecuación de estado del modelo, mientras que los aumentos en $A_\omega$, $A_\rho$, $b$ y $c$ tienden a suavizar la ecuación de estado. Respecto a las masas de las estrellas, en los rangos considerados, los parámetros $A_\omega$ y $c$ muestran un impacto considerable al aumentar la masa máxima, mientras que $A_\sigma$ produce un aumento más moderado. Por otro lado, el parámetro $b$ produce una ligera disminución en la masa máxima al aumentar su valor, mientras que $A_\rho$ tiene un impacto casi nulo en la masa máxima. En cuanto a los radios, todos los parámetros considerados muestran un impacto significativo, siendo $A_\omega$ y $c$ los que producen los aumentos más pronunciados, mientras que $A_\rho$ y $b$ producen aumentos más moderados, y $A_\sigma$ produce una disminución moderada al aumentar su valor. \textbf{REALMENTE ES UN AUMENTO EN LA RIGIDEZ?}
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Figuras/variacion_params_sigma}
+        \caption{}
+        \label{fig:variacion_sigma}
+    \end{subfigure}
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Figuras/variacion_params_omega}
+        \caption{}
+        \label{fig:variacion_omega}
+    \end{subfigure}
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Figuras/variacion_params_rho}
+        \caption{}
+        \label{fig:variacion_rho}
+    \end{subfigure}
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Figuras/variacion_params_b}
+        \caption{}
+        \label{fig:variacion_b}
+    \end{subfigure}
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Figuras/variacion_params_c}
+        \caption{}
+        \label{fig:variacion_c}
+    \end{subfigure}
+    \caption[Ecuaciones de estado y curvas masa-radio al variar los parámetros]{Ecuaciones de estado (izquierda) y curvas masa-radio (derecha) obtenidas al variar cada uno de los parámetros del modelo relativista de campo medio alrededor de los valores en (\ref{eq:params_glendenning}), manteniendo los demás parámetros fijos. (a) Variación de $A_\sigma$. (b) Variación de $A_\omega$. (c) Variación de $A_\rho$. (d) Variación de $b$. (e) Variación de $c$. \textbf{ORGANIZAR MEJOR LA VISUALIZACION}}
+    \label{fig:eos_mass_radius_parametros}
+\end{figure}
+\clearpage
+
 \subsection{Regiones Válidas en el Espacio de Parámetros}
 
 La exploración del espacio de parámetros del modelo relativista de campo medio es un problema de optimización multidimensional bajo múltiples restricciones. El espacio completo está definido por los cinco parámetros libres: $A_\sigma$, $A_\omega$, $A_\rho$, $b$ y $c$. La metodología empleada para identificar conjuntos de parámetros físicamente aceptables consta de varias etapas sistemáticas.
@@ -208,4 +247,15 @@ Las regiones de parámetros mostradas en las figuras \ref{fig:region_nuclear}, \
     \includegraphics[width=0.8\linewidth]{Figuras/new_comparacion_regiones_validas}
     \caption[Comparación de regiones en el plano $A_\sigma$ - $A_\omega$]{Comparación de las regiones del plano de parámetros $A_\sigma$ - $A_\omega$ que satisfacen las restricciones nucleares y son consistentes con las estimaciones observacionales, y las masas máximas que producen.}
     \label{fig:comparacion_regiones}
+\end{figure}
+
+% Introducimos y discutimos la comparación de las EoS y M-R obtenidas para la configuración de mayor masa máxima en cada región válida del espacio de parámetros.
+
+Es interesante comparar las ecuaciones de estado y las curvas masa-radio obtenidas para la configuración de mayor masa máxima en cada región válida del espacio de parámetros. Esta comparación permite evaluar cómo las diferentes elecciones de parámetros afectan la rigidez de la ecuación de estado y las propiedades macroscópicas de las estrellas de neutrones. En la figura \ref{fig:comparacion_regiones_eos}, se presentan las ecuaciones de estado y las curvas masa-radio correspondientes a las configuraciones de mayor masa máxima en cada una de las regiones válidas discutidas anteriormente. Vale destacar que se comprobó que todas las ecuaciones de estado cumplen con el límite de velocidad de la luz, asegurando la causalidad del modelo en todas las configuraciones consideradas. Además, las ecuaciones de estado se presentan a partir del empalme con la ecuación de estado para la corteza, discutida en la sección \ref{sec:corteza}, el cual es el mismo en todos los casos. Observamos que las ecuaciones de estado varían entre las diferentes regiones, reflejando las distintas elecciones de parámetros. En particular, la rigidez de la ecuación de estado, que influye directamente en la masa máxima y el radio de las estrellas de neutrones, muestra diferencias apreciables. Las curvas masa-radio exhiben variaciones considerables, con diferencias en la masa máxima alcanzada y en los radios correspondientes para estrellas de masa $1.4 \, \masasol$. Resaltamos el hecho de que todas las configuraciones presentadas cumplen con las restricciones nucleares y son consistentes con las observaciones astrofísicas actuales, lo que muestra la capacidad del modelo relativista de campo medio para describir la materia nuclear en estrellas de neutrones bajo diferentes elecciones de parámetros.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\linewidth]{Figuras/comparacion_regiones_validas_eos}
+    \caption[Comparación de ecuaciones de estado y curvas masa-radio de diferentes regiones]{Comparación de las ecuaciones de estado (izquierda) y las curvas masa-radio (derecha) obtenidas para la configuración de mayor masa máxima en cada región válida del espacio de parámetros.}
+    \label{fig:comparacion_regiones_eos}
 \end{figure}
