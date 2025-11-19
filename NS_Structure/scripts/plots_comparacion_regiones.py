@@ -174,7 +174,7 @@ def plot_comparison(files_dict, dens_min=4e-2, dens_max=1.0, rf=30.0, dr=3e-5):
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))
     
     # Colores y estilos de línea
-    colors = plt.cm.copper_r(np.linspace(0.2, 0.9, len(files_dict)))
+    colors = plt.cm.copper_r(np.linspace(0.3, 1, len(files_dict)))
     line_styles = ['-', '--', '-.', ':', (0, (3, 1, 1, 1))]
     
     # Factor de conversión a MeV/fm^3
@@ -226,10 +226,10 @@ def plot_comparison(files_dict, dens_min=4e-2, dens_max=1.0, rf=30.0, dr=3e-5):
         # Graficar EoS (P en y, rho en x)
         color = colors[idx]
         ls = line_styles[idx % len(line_styles)]
-        axes[0].loglog(rho_vals_MeV, P_vals_MeV, color=color, linestyle=ls, linewidth=1, label=param_label)
+        axes[0].loglog(rho_vals_MeV, P_vals_MeV, color=color, linestyle=ls, linewidth=1.8, label=param_label)
         
         # Graficar M-R
-        axes[1].plot(radios_filtered, masses_filtered, color=color, linestyle=ls, linewidth=1)
+        axes[1].plot(radios_filtered, masses_filtered, color=color, linestyle=ls, linewidth=1.8)
         
         print(f"  Masa máxima: {np.max(masses):.3f} M_sun")
         print(f"  Parámetros: A_σ={params[0]:.1f}, A_ω={params[1]:.1f}, A_ρ={params[2]:.1f}, b={params[3]:.2e}, c={params[4]:.2e}")
@@ -291,7 +291,7 @@ if __name__ == '__main__':
     
     # Generar gráfica de comparación
     start_time = time()
-    fig = plot_comparison(files_to_compare, dens_min=2.5e-2, dens_max=4.0, rf=30.0, dr=3e-5)
+    fig = plot_comparison(files_to_compare, dens_min=0.157, dens_max=4.0, rf=30.0, dr=3e-5)
     end_time = time()
     print(f"\nTiempo de ejecución: {end_time - start_time:.2f} segundos")
     plt.show()

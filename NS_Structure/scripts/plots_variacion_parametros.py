@@ -152,7 +152,7 @@ def plot_parameter_variation(base_params, param_index, param_values, param_name=
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
     
     # Generate colors and line styles
-    colors = colormap(np.linspace(0, 1, len(param_values)))
+    colors = colormap(np.linspace(0.3, 1, len(param_values)))
     linestyles = ['-', '--', '-.', ':', (0, (3, 1, 1, 1))]  # solid, dashed, dashdot, dotted, custom
     
     # Store results for finding max mass
@@ -196,7 +196,7 @@ def plot_parameter_variation(base_params, param_index, param_values, param_name=
         ls = linestyles[i % len(linestyles)]
         
         # Plot EoS
-        ax1.plot(ener_MeV_fm3, pres_MeV_fm3, color=colors[i], linestyle=ls, linewidth=1,
+        ax1.plot(ener_MeV_fm3, pres_MeV_fm3, color=colors[i], linestyle=ls, linewidth=1.7,
                 label=f'{param_name}={param_val:.2f}' if param_index in [2] else 
                       f'{param_name}={param_val:.3e}' if param_index in [3, 4] else
                       f'{param_name}={param_val:.1f}')
@@ -207,7 +207,7 @@ def plot_parameter_variation(base_params, param_index, param_values, param_name=
         masses_filtered = masses[mask_radius]
         
         # Plot M-R relation
-        ax2.plot(radios_filtered, masses_filtered, color=colors[i], linestyle=ls, linewidth=1)
+        ax2.plot(radios_filtered, masses_filtered, color=colors[i], linestyle=ls, linewidth=1.7)
     
     # Format EoS plot
     ax1.set_xlabel(r'Densidad de energía (MeV/fm$^3$)', fontsize=14)
@@ -411,10 +411,11 @@ if __name__ == "__main__":
     # dr = 1e-3
     
     # Densidad mínima y máxima para graficar EoS
-    dens_min_plot = 4e-2
+    # dens_min_plot = 4e-2
+    dens_min_plot = 0.157
     # dens_min_plot = 2.5e-2
-    dens_max_plot = 1.0
-    # dens_max_plot = 1.5
+    # dens_max_plot = 1.0
+    dens_max_plot = 1.5
     
     print("Base parameters:")
     param_names = ['A_sigma', 'A_omega', 'A_rho', 'b', 'c']
@@ -425,8 +426,8 @@ if __name__ == "__main__":
     print("\n=== Example 1: Varying One Parameter ===")
     t0 = time()
     # A_sigma_values = np.linspace(12.0*m_nuc**2, 13.5*m_nuc**2, 5)
-    param_values = np.linspace(-7e-3, 7e-3, 5)
-    index = 4
+    param_values = np.linspace(250, 300, 5)
+    index = 0
     fig1 = plot_parameter_variation(base_params, param_index=index, param_values=param_values,
                                     n_range=n_range, rhos_central=rhos_central,
                                     dens_min=dens_min_plot, dens_max=dens_max_plot,
