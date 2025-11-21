@@ -26,7 +26,8 @@
 
 La descripción microscópica de la materia en entornos extremos de densidad es un problema de gran complejidad en la física moderna. En estas condiciones, con densidades que exceden significativamente la densidad nuclear de saturación, la materia exhibe comportamientos que requieren marcos teóricos que incorporen efectos relativistas y de muchos cuerpos, asegurando causalidad en el fluido y modelando las interacciones nucleares relevantes. Los modelos que describen esta materia establecen la conexión directa entre la física microscópica de las interacciones nucleares y las propiedades macroscópicas observables de las estrellas de neutrones \cite{oppenheimerMassiveNeutronCores1939}.
 
-Diferentes teorías han sido propuestas para describir la materia en este régimen, desde enfoques no-relativistas basados en potenciales nucleares ajustados a datos experimentales \cite{myersNuclearPropertiesAccording1996, sakuragiSaturationNuclearMatter2016}, hasta teorías fundamentales como la cromodinámica cuántica (QCD) y sus extensiones efectivas \cite{drischlerGroundingNuclearPhysics2021}. Sin embargo, para obtener una extrapolación adecuada a densidades extremas, es necesario contar con un marco teórico que respete la causalidad y cuya complejidad computacional sea manejable. Es así como la teoría relativista de campo medio surge como una herramienta particularmente adecuada para abordar este régimen, brindando un tratamiento consistente que respeta la causalidad mientras incorpora las interacciones nucleares fuertes \cite{glendenningCompactStarsNuclear2000}. Este formalismo permite extrapolar desde las propiedades conocidas de materia nuclear simétrica hacia las condiciones asimétricas y de alta densidad relevantes para objetos compactos.
+Diferentes teorías han sido propuestas para describir la materia en este régimen, desde enfoques no-relativistas basados en potenciales nucleares ajustados a datos experimentales \cite{myersNuclearPropertiesAccording1996, sakuragiSaturationNuclearMatter2016}, hasta teorías fundamentales como la cromodinámica cuántica (QCD) y sus extensiones efectivas \cite{drischlerGroundingNuclearPhysics2021}. Sin embargo, para obtener una extrapolación adecuada a densidades extremas, es necesario contar con un marco teórico que respete la causalidad y cuya complejidad computacional sea manejable. Es así como la teoría relativista de campo medio surge como una herramienta particularmente adecuada para abordar este régimen, brindando un tratamiento consistente que respeta la causalidad mientras incorpora las interacciones nucleares fuertes \cite{glendenningCompactStarsNuclear2000}. Este formalismo permite extrapolar desde las propiedades conocidas de materia nuclear simétrica hacia las condiciones asimétricas y de alta densidad relevantes para objetos compactos
+\clearpage
 
 \section{Ecuaciones de Estado y Ejemplos}
 
@@ -78,7 +79,7 @@ entre los potenciales químicos $\mu_i$, suponiendo que los neutrinos escapan de
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.56\linewidth]{Figuras/gas_npe}
+	\includegraphics[width=0.55\linewidth]{Figuras/gas_npe}
 	\caption[Ecuación de estado de gas ideal degenerado]{Ecuación de estado normalizada de un gas ideal degenerado de neutrones, protones y electrones. La ecuación de estado es causal ($c_s^2 = dP/d\rho < 1$). $\rho_0$ es el parámetro de adimensionalización y corresponde a la densidad de energía a $\rho_m=10^{18}$ g/cm$^3$.}
 	\label{fig:eosnpe}
 \end{figure}
@@ -87,18 +88,18 @@ La figura \ref{fig:eosnpe} muestra la ecuación de estado adimensionalizada para
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.9\linewidth]{Figuras/gas_npe_MR}
+	\includegraphics[width=0.85\linewidth]{Figuras/gas_npe_MR}
 	\caption[Relaciones masa-radio de gas ideal degenerado]{Relaciones de masa - radio (izquierda) y masa - densidad central de masa (derecha) de estrellas de neutrones constituidas por un gas ideal de neutrones, protones y electrones libres.}
 	\label{fig:mrnpe}
 \end{figure}
 
-
+\clearpage
 
 \section{Teoría Relativista de Campo Medio}
 \label{sec:rmft}
 
 La teoría relativista de campo medio, formulada por Walecka en 1974 \cite{waleckaTheoryHighlyCondensed1974}, es un marco teórico que describe las interacciones nucleares mediante el intercambio de mesones efectivos, extendiendo el modelo de gas degenerado (discutido en \ref{sec:gasnpe}) e incorporando naturalmente los efectos relativistas cuando los nucleones alcanzan velocidades comparables a la velocidad de la luz en condiciones de alta densidad. Esta aproximación ofrece ventajas significativas respecto a enfoques no-relativistas basados en potenciales fenomenológicos, ya que es una teoría covariante y reproduce simultáneamente las propiedades de saturación nuclear, el comportamiento asintótico a alta densidad, y la consistencia causal relativista. Adicionalmente, al ser una teoría efectiva, requiere de un menor esfuerzo computacional respecto a teorías más fundamentales como QCD.
-\clearpage
+
 El formalismo se construye a partir de un lagrangiano que describe nucleones interactuando a través de campos mesónicos: los campos fermiónicos representan los grados de libertad nucleónicos y leptónicos, mientras que los campos bosónicos representan mesones que median las interacciones fuertes. La aproximación de campo medio consiste en reemplazar los operadores de campo mesónicos por sus valores esperados en el estado base degenerado:
 
 \begin{equation}
@@ -125,7 +126,7 @@ donde $d^4x$ es el elemento de volumen en coordenadas de Minkowski. El principio
 \end{equation}
 
 donde $\varphi_b$ representa todos los campos presentes. La teoría presenta simetrías externas e internas que determinan sus conservaciones y sus consecuencias físicas. Las simetrías externas son las transformaciones del grupo de Poincaré: traslaciones espaciotemporales $x^\mu \mapsto x'^\mu = x^\mu + a^\mu$ y boosts de Lorentz $x^\mu \mapsto x'^\mu = \Lambda^\mu{}_\nu x^\nu$. Las simetrías internas relevantes incluyen la simetría de gauge global $U(1)$ $\psi \mapsto e^{-i\lambda}\psi$ asociada con la conservación del número bariónico, y la simetría de isospín $SU(2)$ $\psi \mapsto e^{-i\boldsymbol{\tau}\cdot\boldsymbol{\lambda}}\psi$ asociada con la relación entre neutrones y protones, en la aproximación de iguales masas.
-\clearpage
+
 El teorema de Noether establece una correspondencia entre simetrías continuas del lagrangiano y cantidades conservadas. Para cada simetría continua existe una corriente conservada correspondiente que satisface una ecuación de continuidad. El tensor de energía-momento, asociado a la simetría externa, se define como:
 
 \begin{equation}
@@ -154,7 +155,8 @@ La corriente de isospín, asociada a la simetría interna $SU(2)$, se define com
 donde $\boldsymbol{\tau} = \tau^a$ ($a = 1, 2, 3$) son las matrices de Pauli en el espacio de isospín. La simetría de isospín ha sido ampliamente utilizada para describir las interacciones nucleares. En la realidad física esta simetría está ligeramente rota por las diferencias de masa entre neutrones y protones, y por las interacciones electromagnéticas. Sin embargo, dado que estas violaciones son pequeñas en la escala de interacciones fuertes, pueden tratarse como pequeñas correcciones e ignorarse en primera aproximación \cite{baczykIsospinsymmetryBreakingMasses2018}. La conservación aproximada de isospín justifica el tratamiento unificado de neutrones y protones en modelos de materia nuclear.
 
 Estas leyes de conservación derivadas del teorema de Noether añaden restricciones importantes sobre la dinámica del sistema y establecen conexiones directas entre las simetrías fundamentales de la teoría y las cantidades físicamente observables.
-\clearpage
+
+%\vspace{-15pt}
 
 \section{Modelo del Estudio}
 \label{sec:modelo}
@@ -174,6 +176,7 @@ El modelo empleado en este trabajo incorpora nucleones (protones y neutrones) in
 \end{equation}
 
 donde $\psi$ es una representación conveniente de los campos nucleónicos como un espinor de ocho componentes, $\psi_e$ es el campo del electrón, $\omega_{\mu\nu} = \partial_\mu \omega_\nu - \partial_\nu \omega_\mu$ y $\rhomeson_{\mu\nu} = \partial_\mu \rhomeson_\nu - \partial_\nu \rhomeson_\mu$ son los tensores antisimétricos de campo asociados a los mesones $\omega$ y $\rhomeson$ respectivamente, $m \approx 938.92 \text{MeV}$ es la masa de un nucleón considerada igual para protones y neutrones, y $m_i$ es la masa de la especie $i$. Los parámetros adimensionales de acoplamiento $g_{\sigma}$, $g_{\omega}$, $g_{\rho}$ cuantifican la intensidad de las interacciones nucleón-mesón, y los parámetros adimensionales $b$, $c$ regulan las autointeracciones del mesón sigma. En la construcción de este lagrangiano se acopla el campo escalar con la densidad escalar, el campo vectorial con la corriente bariónica, y el campo isovectorial con la 3-corriente de isospín. Esta última corriente contiene no solo una contribución por los nucleones, sino también una contribución por la corriente propia del campo $\rhomeson$ y otra por la interacción del mesón con su propia 3-corriente.
+\clearpage
 
 Las ecuaciones de movimiento para los campos se obtienen mediante las ecuaciones de Euler-Lagrange (\ref{eq:euler_lagrange}). Para los campos mesónicos, se satisfacen:
 
@@ -185,7 +188,7 @@ Las ecuaciones de movimiento para los campos se obtienen mediante las ecuaciones
 		&+ 4g_\rho[(\rhomeson^\mu \cdot \rhomeson_\nu)\rhomeson^\nu - (\rhomeson_\nu \cdot \rhomeson^\nu)\rhomeson^\mu]]. \label{eq:eom_rho_full}
 	\end{aligned}
 \end{gather}
-\clearpage
+
 Para los campos fermiónicos se obtienen las ecuaciones de Dirac, acoplada a los campos mesónicos para los nucleones y libre para los electrones:
 
 \begin{gather*}
@@ -194,7 +197,6 @@ Para los campos fermiónicos se obtienen las ecuaciones de Dirac, acoplada a los
 \end{gather*}
 
 Hasta el momento tenemos un conjunto de ecuaciones de movimiento diferenciales, no lineales y acopladas que describen la dinámica completa del sistema. Aplicamos la aproximación de campo medio descrita en la sección \ref{sec:rmft}, considerando que tenemos materia estática y uniforme en su estado base, de modo que los valores esperados de los campos mesónicos son constantes en el espacio y el tiempo. En este caso, las derivadas espaciales y temporales de los campos mesónicos se anulan, simplificando las ecuaciones de movimiento a un sistema algebraico acoplado. Mantendremos las etiquetas para los campos, recordado que ahora son el valor esperado en el estado base. Para los mesones (\ref{eq:eom_sigma_full} - \ref{eq:eom_rho_full}), sustituyendo consistentemente las fuentes de corriente por su valor esperado, se obtiene:
-
 % \begin{equation*}
 % 	\begin{aligned}
 % 		m_\sigma^2 \sigma &= g_\sigma \left[ \langle \bar{\psi} \psi \rangle - bm(g_\sigma\sigma)^2 - c(g_\sigma\sigma)^3\right], \\
@@ -277,7 +279,7 @@ donde el último término se anula porque $\psi$ es una función propia. Tomando
 \begin{equation*}
 	(\bar{\psi} \gamma^i \psi)_{\Vec{p},\kappa} = \frac{\partial \epsilon(\Vec{p})_\kappa}{\partial p^i},
 \end{equation*}
-
+\clearpage
 y por (\ref{eq:valor_esperado_general}), la corriente de nucleones es:
 
 \begin{equation}
@@ -320,7 +322,7 @@ Finalmente, tomando la derivada (\ref{eq:derivada_hamiltoniano}) con respecto a 
 \begin{equation*}
 	(\bar{\psi} \psi)_{\Vec{p},\kappa} = \frac{m^*}{\sqrt{p^2 + m^{*2}}},
 \end{equation*}
-
+\clearpage
 y por (\ref{eq:valor_esperado_general}), la densidad escalar es:
 
 \begin{equation}
@@ -332,7 +334,7 @@ y por (\ref{eq:valor_esperado_general}), la densidad escalar es:
 \end{equation}
 
 % Aunque todas las integrales anteriores son analíticas, la ecuación de movimiento para el campo escalar (\ref{eq:eom_meson_mf}) es una ecuación no lineal en $\sigma$ que debe resolverse autoconsistentemente con métodos numéricos. Además, resolviendo el sistema con $g_\sigma \sigma$, $g_\omega \omega_0$ y $g_\rho \rho_{30}$ como variables, el modelo tiene como parámetros libres unicamente los cocientes $g_\sigma/m_\sigma$, $g_\omega/m_\omega$ y $g_\rho/m_\rho$, junto con los parámetros de autointeracción escalar.
-\clearpage
+
 Para hallar la ecuación de estado, calculamos el tensor de energía-momento canónico (\ref{eq:tensor_energia_momento}) en el marco de referencia del fluido en reposo e isotrópico, utilizando el lagrangiano (\ref{eq:lagrangiano}). Luego, hallamos el valor esperado de las componentes empleando el método de las ecuaciones (\ref{eq:valor_esperado_general} - \ref{eq:derivada_hamiltoniano}) y las identificamos con las cantidades termodinámicas de densidad de energía y presión para un fluido perfecto (\ref{eq:tensor_fluido_perfecto}). Las expresiones para densidad de energía y presión son:
 
 \begin{gather}
@@ -432,7 +434,7 @@ El módulo de compresibilidad nuclear $K_0$ caracteriza la rigidez de la materia
 	K_0 = 9n_0^2 \frac{\partial^2}{\partial n^2}\left(\frac{\rho}{n}\right)\bigg|_{n=n_0} = 230 \pm 40 \, \text{MeV}.
 	\label{eq:modulo_compresibilidad_empirico}
 \end{equation}
-\newpage
+
 Esta cantidad está relacionada algebraicamente con cantidades de nuestro modelo de materia simétrica en saturación mediante:
 
 \begin{equation}
@@ -446,7 +448,7 @@ Esta cantidad está relacionada algebraicamente con cantidades de nuestro modelo
 donde $x_Fp=x_Fn=x_F$.
 
 La energía de simetría $a_\text{sym}$ cuantifica el costo energético de desviarse de la composición simétrica. Esta cantidad determina la composición de protones y neutrones en materia nuclear densa, afectando directamente las propiedades de las estrellas de neutrones. La pendiente de la energía de simetría $L_0$ describe la dependencia de la energía de simetría con la densidad de bariones alrededor de la densidad de saturación.
-\clearpage
+
 Para estas dos cantidades, tras una revisión de 28 estimaciones tanto de experimentos terrestres como de observaciones astronómicas de estrellas de neutrones, se estiman valores representativos \cite{kumarTheoreticalExperimentalConstraints2024, liUnderstandingAstrophysicalEffects2019}:
 
 \begin{align}
@@ -462,7 +464,6 @@ donde $t = (n_n - n_p)/n_B$ es el parámetro de asimetría de isospín. Es de no
 \end{align}
 
 Estas cinco propiedades empíricas ($n_0$, $\frac{B}{A}$, $K_0$, $a_\text{sym}$, $L_0$) definen restricciones que cualquier ecuación de estado microscópica debe satisfacer para ser físicamente viable. En el contexto de la teoría relativista de campo medio, estas propiedades y sus incertidumbres se utilizan para determinar las regiones en el espacio de parámetros que producen ecuaciones de estado físicamente aceptables frente a mediciones nucleares experimentales.
-\clearpage
 
 \section{Corteza de la Estrella}
 \label{sec:corteza}
