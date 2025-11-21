@@ -350,7 +350,7 @@ def distribucion_especies(n_barions, params=[A_sigma, A_omega, A_rho, b, c]):
 # GRÁFICAS DE RESULTADOS DE LA ECUACIÓN DE ESTADO
 #######################################################################
 
-def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c]):
+def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c], protones=False, logx=True):
     """
     Grafica las funciones de autoconsistencia x_sigma y x_nF para un rango de densidades bariónicas.
     
@@ -364,6 +364,8 @@ def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c]):
     Args:
         n_prove (array-like): Array de densidades bariónicas en fm^-3.
         params (list): Lista de parámetros [A_sigma, A_omega, A_rho, b, c] para el modelo.
+        protones (bool): Si es True, también grafica x_pF en el subplot de x_nF.
+        logx (bool): Si es True, usa escala logarítmica en el eje x.
     
     Returns:
         None
@@ -374,12 +376,16 @@ def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c]):
     # Inicializamos arreglos para las soluciones
     x_sigma_vals = np.zeros(len(n_prove))
     x_nF_vals = np.zeros(len(n_prove))
+    if protones:
+        x_pF_vals = np.zeros(len(n_prove))
     
     # Recorremos las densidades de prueba y resolvemos la función de autoconsistencia
     for i, n in enumerate(n_prove):
         sol = sol_x_sigma_x_nF(n, params)
         x_sigma_vals[i] = sol[0]
         x_nF_vals[i] = sol[1]
+        if protones:
+            x_pF_vals[i] = ( (3.0*pi**2)*n/m_nuc**3 - x_nF_vals[i]**3)**(1/3)
     
     # Creamos la figura con dos subplots lado a lado
     fig, axs = plt.subplots(1, 2, figsize=(12, 6))
@@ -387,32 +393,38 @@ def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c]):
 
     # Ponemos escala logarítmica en x y añadimos rejilla
     for ax in axs:
-        ax.set_xscale('log')
+        if logx:
+            ax.set_xscale('log')
         ax.grid(True, which='major', linestyle='--', alpha=0.8)
 
     # Primer subplot: x_sigma
-    axs[0].plot(n_prove, x_sigma_vals, "o-", color=color)
-    axs[0].set_xlabel(r'Densidad bariónica [fm$^{-3}$]')
-    axs[0].set_ylabel(r'$x_{\sigma}$')
-    axs[0].set_title(r'$x_{\sigma}$ vs densidad (log)')
+    axs[0].plot(n_prove, x_sigma_vals, "-", color=color, linewidth=1.5)
+    axs[0].set_xlabel(r'Densidad bariónica [fm$^{-3}$]', fontsize=14)
+    axs[0].set_ylabel(r'$\tilde{x}_{\sigma}$', fontsize=14)
+    # axs[0].set_title(r'$x_{\sigma}$ vs densidad (log)')
 
     secax0 = axs[0].secondary_xaxis(
         'top',
         functions=(lambda x: x/conv_factor, lambda x: x*conv_factor)
     )
-    secax0.set_xlabel(r'Densidad [g/cm$^3$]')
+    secax0.set_xlabel(r'Densidad [g/cm$^3$]', fontsize=14)
 
     # Segundo subplot: x_nF
-    axs[1].plot(n_prove, x_nF_vals, "o-", color=color)
-    axs[1].set_xlabel(r'Densidad bariónica [fm$^{-3}$]')
-    axs[1].set_ylabel(r'$x_{nF}$')
-    axs[1].set_title(r'$x_{nF}$ vs densidad (log)')
+    axs[1].plot(n_prove, x_nF_vals, "-", color=color, linewidth=1.5, label=r'$x_{Fn}$')
+    if protones:
+        axs[1].plot(n_prove, x_pF_vals, "--", color="#852B17", linewidth=1.5, label=r'$x_{Fp}$')
+    axs[1].set_xlabel(r'Densidad bariónica [fm$^{-3}$]', fontsize=14)
+    if protones:
+        axs[1].legend(fontsize=14)
+    else:
+        axs[1].set_ylabel(r'$x_{Fn}$', fontsize=14)
+    # axs[1].set_title(r'$x_{nF}$ vs densidad (log)')
 
     secax1 = axs[1].secondary_xaxis(
         'top',
         functions=(lambda x: x/conv_factor, lambda x: x*conv_factor)
     )
-    secax1.set_xlabel(r'Densidad [g/cm$^3$]')
+    secax1.set_xlabel(r'Densidad [g/cm$^3$]', fontsize=14)
 
     plt.tight_layout()
     plt.show()
