@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from NSMatterEoS import EoS, m_nuc, MeV_to_fm11, MeVfm_to_Jm
+from NSMatterEoS import EoS, m_nuc, MeV_to_fm11, MeVfm_to_Jm, m_nuc_MKS
 
 # Parámetros y rangos
 n_jump = 0.062
@@ -82,3 +82,11 @@ ax_eos.legend(fontsize=12)
 ax_eos.grid(True, linestyle='--', alpha=0.5)
 plt.tight_layout()
 plt.show()
+
+# Checkamos que se cumpla la condición rho >= 3P
+if np.any(E_cgs_core < 3 * P_cgs_core):
+    # Densidad a la que se viola
+    idx_violation = np.where(E_cgs_core < 3 * P_cgs_core)[0][0]
+    n_violation = n_core[idx_violation]
+    n_mass_violation = n_violation * 1e45 * m_nuc_MKS / 1e3  # g/cm3
+    print(f'¡Advertencia: Se viola la condición rho >= 3P en el núcleo a n = {n_violation:.2f} fm^-3 or {n_mass_violation:2.2e} g/cm^3!')
