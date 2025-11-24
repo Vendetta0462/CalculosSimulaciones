@@ -84,7 +84,14 @@ entre los potenciales químicos $\mu_i$, suponiendo que los neutrinos escapan de
 	\label{fig:eosnpe}
 \end{figure}
 
-La figura \ref{fig:eosnpe} muestra la ecuación de estado adimensionalizada para un gas ideal de neutrones, protones y electrones libres, obtenida tras resolver el sistema de integrales (\ref{eq:densidad_fermi_general}) y (\ref{eq:presion_fermi_general}) e interpolar. Luego, integrando las ecuaciones TOV (\sistemaTOV) obtenemos las masas y radios de estrellas construidas con este material, como se muestra en la figura \ref{fig:mrnpe}. Este modelo sencillo predice una masa máxima de apenas 0.7$\, \masasol$, muy inferior a las masas que se han observado de estrellas de neutrones (listadas en la sección \ref{sec:obsNS}), motivando la búsqueda de modelos más realistas que incluyan las interacciones nucleares para lograr replicar las observaciones.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.85\linewidth]{Figuras/gas_npe_fraccion}
+	\caption[Fracción de neutrones en el gas ideal degenerado]{Fracción de neutrones respecto al número de nucleones $n_n/n_B$ como función de la densidad bariónica $n_B$ en un gas ideal degenerado de neutrones, protones y electrones.}
+	\label{fig:gas_npe_fraccion}
+\end{figure}
+
+La figura \ref{fig:eosnpe} muestra la ecuación de estado adimensionalizada para un gas ideal de neutrones, protones y electrones libres, obtenida tras resolver el sistema de integrales (\ref{eq:densidad_fermi_general}) y (\ref{eq:presion_fermi_general}) e interpolar. Adicionalmente, se puede calcular la fracción de neutrones respecto al número total de nucleones (bariones) $n_n/n_B = n_n/(n_n+n_p)$ como función de la densidad bariónica $n_B$, como se muestra en la figura \ref{fig:fraccion_neutrones}. Este modelo predice que la materia en equilibrio beta es predominantemente neutrónica, con una fracción de neutrones que supera el 90\% para densidades entre $7\times 10^{12}$ g/cm$^3$ y $10^{15}$ g/cm$^3$. La fracción de neutrones en este rango de densidades inicia muy cercana al 1, disminuyendo lentamente a medida que la densidad aumenta, alcanzando aproximadamente un 90.5\% al llegar a $10^{17}$ g/cm$^3$, consistente con lo esperado para materia nuclear en equilibrio beta \cite{shapiroBlackHolesWhite2008}.
 
 \begin{figure}[h]
 	\centering
@@ -93,7 +100,7 @@ La figura \ref{fig:eosnpe} muestra la ecuación de estado adimensionalizada para
 	\label{fig:mrnpe}
 \end{figure}
 
-\clearpage
+Luego de obtener la ecuación de estado e integrando las ecuaciones TOV (\sistemaTOV) obtenemos las masas y radios de estrellas construidas con este material, como se muestra en la figura \ref{fig:mrnpe}. Este modelo sencillo predice una masa máxima de apenas 0.7$\, \masasol$, muy inferior a las masas que se han observado de estrellas de neutrones (listadas en la sección \ref{sec:obsNS}), motivando la búsqueda de modelos más realistas que incluyan las interacciones nucleares para lograr replicar las observaciones.
 
 \section{Teoría Relativista de Campo Medio}
 \label{sec:rmft}
@@ -176,7 +183,7 @@ El modelo empleado en este trabajo incorpora nucleones (protones y neutrones) in
 \end{equation}
 
 donde $\psi$ es una representación conveniente de los campos nucleónicos como un espinor de ocho componentes, $\psi_e$ es el campo del electrón, $\omega_{\mu\nu} = \partial_\mu \omega_\nu - \partial_\nu \omega_\mu$ y $\rhomeson_{\mu\nu} = \partial_\mu \rhomeson_\nu - \partial_\nu \rhomeson_\mu$ son los tensores antisimétricos de campo asociados a los mesones $\omega$ y $\rhomeson$ respectivamente, $m \approx 938.92 \text{MeV}$ es la masa de un nucleón considerada igual para protones y neutrones, y $m_i$ es la masa de la especie $i$. Los parámetros adimensionales de acoplamiento $g_{\sigma}$, $g_{\omega}$, $g_{\rho}$ cuantifican la intensidad de las interacciones nucleón-mesón, y los parámetros adimensionales $b$, $c$ regulan las autointeracciones del mesón sigma. En la construcción de este lagrangiano se acopla el campo escalar con la densidad escalar, el campo vectorial con la corriente bariónica, y el campo isovectorial con la 3-corriente de isospín. Esta última corriente contiene no solo una contribución por los nucleones, sino también una contribución por la corriente propia del campo $\rhomeson$ y otra por la interacción del mesón con su propia 3-corriente.
-\clearpage
+
 
 Las ecuaciones de movimiento para los campos se obtienen mediante las ecuaciones de Euler-Lagrange (\ref{eq:euler_lagrange}). Para los campos mesónicos, se satisfacen:
 
@@ -279,7 +286,7 @@ donde el último término se anula porque $\psi$ es una función propia. Tomando
 \begin{equation*}
 	(\bar{\psi} \gamma^i \psi)_{\Vec{p},\kappa} = \frac{\partial \epsilon(\Vec{p})_\kappa}{\partial p^i},
 \end{equation*}
-\clearpage
+
 y por (\ref{eq:valor_esperado_general}), la corriente de nucleones es:
 
 \begin{equation}
@@ -322,7 +329,7 @@ Finalmente, tomando la derivada (\ref{eq:derivada_hamiltoniano}) con respecto a 
 \begin{equation*}
 	(\bar{\psi} \psi)_{\Vec{p},\kappa} = \frac{m^*}{\sqrt{p^2 + m^{*2}}},
 \end{equation*}
-\clearpage
+
 y por (\ref{eq:valor_esperado_general}), la densidad escalar es:
 
 \begin{equation}
