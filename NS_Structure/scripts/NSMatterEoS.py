@@ -389,7 +389,7 @@ def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c], proto
     
     # Creamos la figura con dos subplots lado a lado
     fig, axs = plt.subplots(1, 2, figsize=(12, 6))
-    color = "#914098" 
+    color = "k" 
 
     # Ponemos escala logarítmica en x y añadimos rejilla
     for ax in axs:
@@ -425,6 +425,12 @@ def plot_autoconsistencia(n_prove, params=[A_sigma, A_omega, A_rho, b, c], proto
         functions=(lambda x: x/conv_factor, lambda x: x*conv_factor)
     )
     secax1.set_xlabel(r'Densidad [g/cm$^3$]', fontsize=14)
+    
+    axs[0].set_ylim(0, 1)
+    
+    for ax in axs:
+        ax.set_xlim(min(n_prove), max(n_prove))
+        ax.set_ylim(bottom=0)
 
     plt.tight_layout()
     plt.show()

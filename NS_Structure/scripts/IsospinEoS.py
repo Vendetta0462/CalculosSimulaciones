@@ -372,12 +372,12 @@ def plot_EoS(rho_P, presiones, energias, n_sirve, rho_0_lambda=m_nuc**4/2, titul
     conv = rho_0_lambda / MeV_to_fm11 * MeVfm_to_Jm * rho_MKSTocgs # Conversión de unidades de presión y energía a cgs (erg/cm^3 y Ba)
 
     # Creamos la figura con dos subfiguras (side by side)
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
     
     color1 = 'black'
     color2 = 'darkorchid'
     
-    x_presiones = np.logspace(np.log10(min(presiones[presiones>0])*0.9), np.log10(max(presiones)*1.1), 300)
+    x_presiones = np.logspace(np.log10(min(presiones[presiones>0])), np.log10(max(presiones)), 300)
 
     # ----- Subfigura 1: Ecuación de estado con ejes secundarios -----
     # ax1.loglog(presiones, energias, "o", label='Puntos de la EoS')
@@ -394,6 +394,9 @@ def plot_EoS(rho_P, presiones, energias, n_sirve, rho_0_lambda=m_nuc**4/2, titul
     # ax1.legend()
     ax1.grid()
 
+    ax1.set_xlim(min(x_presiones), max(x_presiones))
+    ax1.set_ylim(min(rho_P(x_presiones)), max(rho_P(x_presiones)))
+    
     # ----- Subfigura 2: P y energía vs densidad de masa -----
     # Aquí se convierten las unidades de P y energía a cgs usando el mismo factor 'conv'
     x_data = n_sirve * 1e45 * m_nuc_MKS * 1e-3   # Conversión a la densidad de masa (en g/cm^3)
@@ -404,9 +407,11 @@ def plot_EoS(rho_P, presiones, energias, n_sirve, rho_0_lambda=m_nuc**4/2, titul
     ax2.loglog(x_data, p_data, label='Presión [Ba]', color=color1)
     ax2.loglog(x_data, e_data, label='D. Energía [erg/cm$^3$]', color=color2, linestyle='--')
     ax2.set_xlabel(r'$\rho_m$ [g/cm$^3$]', fontsize=14)
-    # ax2.set_ylabel(r'$P$ y $\rho$')
-    ax2.legend()
+    ax2.set_ylabel('Variables termodinámicas', fontsize=14)
+    ax2.legend(fontsize=14)
     ax2.grid()
+    ax2.set_xlim(min(x_data), max(x_data))
+    ax2.set_ylim(min(min(p_data), min(e_data)), max(max(p_data), max(e_data)))
 
     fig.suptitle(titulo)
     plt.tight_layout()

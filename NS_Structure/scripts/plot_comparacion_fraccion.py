@@ -140,7 +140,7 @@ def plot_comparison(files_dict, n_bind=None, n_frac=None):
     axes[1].set_ylabel(r'$n_n/n_B$', fontsize=14)
     axes[1].grid(True, alpha=0.3)
     axes[1].set_xlim(n_frac[0], n_frac[-1]*1.1)
-    axes[1].set_ylim(0.5, 1.01)
+    axes[1].set_ylim(0.6, 1.01)
     
     # Agregar eje secundario superior con densidad de masa
     secax1 = axes[1].secondary_xaxis('top',
@@ -169,6 +169,6 @@ if __name__ == '__main__':
     
     # Generar gráfica de comparación
     n_bind = np.linspace(0.001, 0.7, 200)
-    n_frac = np.logspace(np.log10(0.157), 2, 200)
+    n_frac = np.logspace(np.log10(0.157), 1, 200)
     fig = plot_comparison(files_to_compare, n_bind=n_bind, n_frac=n_frac)
     plt.show()
