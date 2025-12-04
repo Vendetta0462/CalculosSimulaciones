@@ -35,14 +35,14 @@ Una ecuación de estado define la relación termodinámica entre las variables q
 
 \subsection{Ecuación Politrópica}
 
-La ecuación de estado politrópica es uno de los modelos más sencillos para describir materia estelar, estableciendo una relación de ley de potencias entre la presión y la densidad de masa:
+La ecuación de estado politrópica es uno de los modelos más sencillos para describir materia estelar, estableciendo una relación de ley de potencias entre la presión $P$ y la densidad de masa $\rho_m$:
 
 \begin{equation}
 	P = K (\rho_m)^{\gamma},
 	\label{eq:eos_politropica}
 \end{equation}
 
-donde $K$ es una constante politrópica y $\gamma$ es el índice adiabático. Esta forma funcional, aunque fenomenológica, captura comportamientos asintóticos importantes de sistemas físicos más complejos y brinda soluciones analíticas o semi-analíticas para las ecuaciones de estructura estelar. El índice politrópico $n = 1/(\gamma - 1)$ determina las características de compresibilidad del material: valores bajos de $n$ corresponden a materia incompresible, mientras que valores altos describen sistemas altamente compresibles. Para materia ultra-relativista, $\gamma = 4/3$ ($n = 3$), mientras que para materia no-relativista degenerada, $\gamma = 5/3$ ($n = 3/2$) \cite{chandrasekharIntroductionStudyStellar1970}. Este modelo de ecuación de estado es ampliamente utilizada en su versión politrópica a trozos (Piecewise Polytropic) para aproximar ecuaciones de estado más complejas mediante segmentos con diferentes índices politrópicos, lo que facilita su implementación en simulaciones numéricas. En particular, es empleada para realizar estimaciones sobre el impacto de las mediciones astrofísicas de estrellas de neutrones en la ecuación de estado de la materia nuclear densa \cite{raaijmakersConstraintsDenseMatter2021}.
+donde $K$ es una constante politrópica y $\gamma$ es el índice adiabático. Esta forma funcional, aunque fenomenológica, captura comportamientos asintóticos importantes de sistemas físicos más complejos y brinda soluciones analíticas o semi-analíticas para las ecuaciones de estructura estelar. El índice politrópico $n = 1/(\gamma - 1)$ determina las características de compresibilidad del material: valores bajos de $n$ corresponden a materia incompresible, mientras que valores altos describen sistemas altamente compresibles. Para materia ultra-relativista, el índice adiabátoco es $\gamma = 4/3$ ($n = 3$), mientras que para materia no-relativista degenerada, es $\gamma = 5/3$ ($n = 3/2$) \cite{chandrasekharIntroductionStudyStellar1970}. Este modelo de ecuación de estado es ampliamente utilizada en su versión politrópica a trozos (Piecewise Polytropic) para aproximar ecuaciones de estado más complejas mediante segmentos con diferentes índices politrópicos, lo que facilita su implementación en simulaciones numéricas \cite{becerraRealisticAnisotropicNeutron2024, raaijmakersConstraintsDenseMatter2021, chatziioannouNeutronStarsDense2024, choudhuryNICERViewNearest2024b}. En particular, es empleada para realizar estimaciones sobre el impacto de las mediciones astrofísicas de estrellas de neutrones en la ecuación de estado de la materia nuclear densa \cite{raaijmakersConstraintsDenseMatter2021}.
 
 \subsection{Gas Ideal Degenerado}
 \label{sec:gasnpe}
@@ -77,21 +77,28 @@ y el equilibrio beta débil
 
 entre los potenciales químicos $\mu_i$, suponiendo que los neutrinos escapan del sistema sin alterar su energía. Estas restricciones permiten expresar todas las densidades en función de un parámetro libre como el momento de Fermi del electrón $p_{Fe}$, lo que reduce el sistema a una parametrización unidimensional.
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.55\linewidth]{Figuras/gas_npe}
-	\caption[Ecuación de estado de gas ideal degenerado]{Ecuación de estado normalizada de un gas ideal degenerado de neutrones, protones y electrones. La ecuación de estado es causal ($c_s^2 = dP/d\rho < 1$). $\rho_0$ es el parámetro de adimensionalización y corresponde a la densidad de energía a $\rho_m=10^{18}$ g/cm$^3$.}
-	\label{fig:eosnpe}
-\end{figure}
+La figura \ref{fig:eosnpe} muestra la ecuación de estado adimensionalizada para un gas ideal de neutrones, protones y electrones libres, obtenida tras resolver el sistema de integrales (\ref{eq:densidad_fermi_general}) y (\ref{eq:presion_fermi_general}) e interpolar, verificando que es causal ($c_s^2 < 1$). Adicionalmente, la figura \ref{fig:gas_npe_fraccion} muestra la fracción de neutrones respecto al número total de nucleones (bariones) $n_n/n_B = n_n/(n_n+n_p)$ como función de la densidad bariónica $n_B$. Se muestra la fracción de neutrones en el rango de densidades de 7.0$\times 10^{12}$ g/cm$^3$ a 1.6$\times 10^{16}$ g/cm$^3$. La fracción de neutrones en este rango de densidades inicia muy cercana al 100\%, disminuyendo lentamente a medida que la densidad aumenta, alcanzando aproximadamente un 94.5\% al llegar a $10^{16}$ g/cm$^3$, consistente con lo esperado para materia nuclear en equilibrio beta \cite{shapiroBlackHolesWhite2008}.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.8\linewidth]{Figuras/gas_npe_fraccion}
-	\caption[Fracción de neutrones en el gas ideal degenerado]{Fracción de neutrones respecto al número de nucleones $n_n/n_B$ como función de la densidad bariónica $n_B$ en un gas ideal degenerado de neutrones, protones y electrones.}
-	\label{fig:gas_npe_fraccion}
+	\begin{subfigure}{0.42\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{Figuras/gas_npe}
+		\caption{}
+		\label{fig:eosnpe}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.57\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{Figuras/gas_npe_fraccion}
+		\caption{}
+		\label{fig:gas_npe_fraccion}
+	\end{subfigure}
+	\caption[Propiedades del gas ideal degenerado]{Propiedades del gas ideal degenerado de neutrones, protones y electrones. (a) Ecuación de estado normalizada. La ecuación de estado es causal ($c_s^2 = dP/d\rho < 1$). $\rho_0$ es el parámetro de adimensionalización y corresponde a la densidad de energía a $\rho_m=10^{18}$ g/cm$^3$. (b) Fracción de neutrones respecto al número de nucleones $n_n/n_B$ como función de la densidad bariónica $n_B$.}
+	\label{fig:gas_npe_propiedades}
 \end{figure}
 
-La figura \ref{fig:eosnpe} muestra la ecuación de estado adimensionalizada para un gas ideal de neutrones, protones y electrones libres, obtenida tras resolver el sistema de integrales (\ref{eq:densidad_fermi_general}) y (\ref{eq:presion_fermi_general}) e interpolar. Adicionalmente, se puede calcular la fracción de neutrones respecto al número total de nucleones (bariones) $n_n/n_B = n_n/(n_n+n_p)$ como función de la densidad bariónica $n_B$, como se muestra en la figura \ref{fig:gas_npe_fraccion}. Se muestra la fracción de neutrones en el rango de densidades de 7.0$\times 10^{12}$ g/cm$^3$ a 1.6$\times 10^{16}$ g/cm$^3$. La fracción de neutrones en este rango de densidades inicia muy cercana al 100\%, disminuyendo lentamente a medida que la densidad aumenta, alcanzando aproximadamente un 94.5\% al llegar a $10^{16}$ g/cm$^3$, consistente con lo esperado para materia nuclear en equilibrio beta \cite{shapiroBlackHolesWhite2008}.
+Luego de obtener la ecuación de estado e integrando las ecuaciones TOV (\sistemaTOV) obtenemos las masas y radios de estrellas construidas con este material, como se muestra en la figura \ref{fig:mrnpe}. Este modelo sencillo predice una masa máxima de apenas 0.7$\, \masasol$, muy inferior a las masas que se han observado de estrellas de neutrones (listadas en la sección \ref{sec:obsNS}), motivando la búsqueda de modelos más realistas que incluyan las interacciones nucleares para lograr replicar las observaciones.
 
 \begin{figure}[h]
 	\centering
@@ -99,8 +106,6 @@ La figura \ref{fig:eosnpe} muestra la ecuación de estado adimensionalizada para
 	\caption[Relaciones masa-radio de gas ideal degenerado]{Relaciones de masa - radio (izquierda) y masa - densidad central de masa (derecha) de estrellas de neutrones constituidas por un gas ideal de neutrones, protones y electrones libres.}
 	\label{fig:mrnpe}
 \end{figure}
-
-Luego de obtener la ecuación de estado e integrando las ecuaciones TOV (\sistemaTOV) obtenemos las masas y radios de estrellas construidas con este material, como se muestra en la figura \ref{fig:mrnpe}. Este modelo sencillo predice una masa máxima de apenas 0.7$\, \masasol$, muy inferior a las masas que se han observado de estrellas de neutrones (listadas en la sección \ref{sec:obsNS}), motivando la búsqueda de modelos más realistas que incluyan las interacciones nucleares para lograr replicar las observaciones.
 
 \section{Teoría Relativista de Campo Medio}
 \label{sec:rmft}
@@ -125,14 +130,14 @@ El formalismo de la teoría relativista de campo medio se construye sobre la teo
 	\label{eq:accion}
 \end{equation}
 
-donde $d^4x$ es el elemento de volumen en coordenadas de Minkowski. El principio de acción estacionaria establece que las configuraciones físicas de los campos corresponden a los extremos de esta funcional, lo que conduce a las ecuaciones de Euler-Lagrange para todos los campos:
+donde $d^4x$ es el elemento de volumen en coordenadas de Minkowski. El principio de acción estacionaria establece que las configuraciones físicas de los campos corresponden a los extremos de este funcional, lo que conduce a las ecuaciones de Euler-Lagrange para todos los campos:
 
 \begin{equation}
 	\frac{\partial \mathcal{L}}{\partial \varphi_b} - \partial_\mu \left( \frac{\partial \mathcal{L}}{\partial (\partial_\mu \varphi_b)} \right) = 0,
 	\label{eq:euler_lagrange}
 \end{equation}
 
-donde $\varphi_b$ representa todos los campos presentes. La teoría presenta simetrías externas e internas que determinan sus conservaciones y sus consecuencias físicas. Las simetrías externas son las transformaciones del grupo de Poincaré: traslaciones espaciotemporales $x^\mu \mapsto x'^\mu = x^\mu + a^\mu$ y boosts de Lorentz $x^\mu \mapsto x'^\mu = \Lambda^\mu{}_\nu x^\nu$. Las simetrías internas relevantes incluyen la simetría de gauge global $U(1)$ $\psi \mapsto e^{-i\lambda}\psi$ asociada con la conservación del número bariónico, y la simetría de isospín $SU(2)$ $\psi \mapsto e^{-i\boldsymbol{\tau}\cdot\boldsymbol{\lambda}}\psi$ asociada con la relación entre neutrones y protones, en la aproximación de iguales masas.
+donde $\varphi_b$ representa todos los campos presentes. La teoría presenta simetrías externas e internas que determinan sus leyes de conservación y sus consecuencias físicas. Las simetrías externas son las transformaciones del grupo de Poincaré: traslaciones espaciotemporales $x^\mu \mapsto x'^\mu = x^\mu + a^\mu$ y boosts de Lorentz $x^\mu \mapsto x'^\mu = \Lambda^\mu{}_\nu x^\nu$. Las simetrías internas relevantes incluyen la simetría de gauge global $U(1)$ $\psi \mapsto e^{-i\lambda}\psi$ asociada con la conservación del número bariónico, y la simetría de isospín $SU(2)$ $\psi \mapsto e^{-i\boldsymbol{\tau}\cdot\boldsymbol{\lambda}}\psi$ asociada con la relación entre neutrones y protones, en la aproximación de iguales masas.
 
 El teorema de Noether establece una correspondencia entre simetrías continuas del lagrangiano y cantidades conservadas. Para cada simetría continua existe una corriente conservada correspondiente que satisface una ecuación de continuidad. El tensor de energía-momento, asociado a la simetría externa, se define como:
 
@@ -150,7 +155,7 @@ La corriente bariónica, asociada a la simetría interna $U(1)$, se define como:
 	\label{eq:corriente_barionica}
 \end{equation}
 
-donde $\gamma^\mu$ son las matrices de Dirac y la suma se extiende sobre todas las especies de bariones presentes. Esto implica que el número bariónico $\int d^3x \, J_B^0$ integrado sobre el volumen total del sistema considerado permanece constante en el tiempo, reflejando el hecho experimental de que los bariones no se crean ni se destruyen en interacciones fuertes como se ha evidenciado por ALICE en el LHC \cite{acharyaGlobalBaryonNumber2020} y se ha probado desde su postulación en 1940 \cite{gurrExperimentalTestBaryon1967}.
+donde $\gamma^\mu$ son las matrices de Dirac y la suma se extiende sobre todas las especies de bariones presentes. Esto implica que el número bariónico $\int d^3x \, J_B^0$ integrado sobre el volumen total del sistema permanece constante en el tiempo, reflejando el hecho experimental de que los bariones no se crean ni se destruyen en interacciones fuertes como se ha evidenciado por ALICE en el LHC \cite{acharyaGlobalBaryonNumber2020} y se ha probado desde su postulación en 1940 \cite{gurrExperimentalTestBaryon1967}.
 
 La corriente de isospín, asociada a la simetría interna $SU(2)$, se define como:
 
@@ -159,9 +164,9 @@ La corriente de isospín, asociada a la simetría interna $SU(2)$, se define com
 	\label{eq:corriente_isospin}
 \end{equation}
 
-donde $\boldsymbol{\tau} = \tau^a$ ($a = 1, 2, 3$) son las matrices de Pauli en el espacio de isospín. La simetría de isospín ha sido ampliamente utilizada para describir las interacciones nucleares. En la realidad física esta simetría está ligeramente rota por las diferencias de masa entre neutrones y protones, y por las interacciones electromagnéticas. Sin embargo, dado que estas violaciones son pequeñas en la escala de interacciones fuertes, pueden tratarse como pequeñas correcciones e ignorarse en primera aproximación \cite{baczykIsospinsymmetryBreakingMasses2018}. La conservación aproximada de isospín justifica el tratamiento unificado de neutrones y protones en modelos de materia nuclear.
+donde $\boldsymbol{\tau} = \tau^a$ ($a = 1, 2, 3$) son las matrices de Pauli en el espacio de isospín. La simetría de isospín ha sido ampliamente utilizada para describir las interacciones nucleares. En la realidad física esta simetría está ligeramente rota por las diferencias de masa entre neutrones y protones, y por las interacciones electromagnéticas. Sin embargo, dado que estas violaciones son pequeñas en la escala de interacciones fuertes, pueden tratarse como pequeñas correcciones e ignorarse en una primera aproximación \cite{baczykIsospinsymmetryBreakingMasses2018}. La conservación aproximada de isospín justifica el tratamiento unificado de neutrones y protones en modelos de materia nuclear.
 
-Estas leyes de conservación derivadas del teorema de Noether añaden restricciones importantes sobre la dinámica del sistema y establecen conexiones directas entre las simetrías fundamentales de la teoría y las cantidades físicamente observables.
+% Estas leyes de conservación derivadas del teorema de Noether añaden restricciones importantes sobre la dinámica del sistema y establecen conexiones directas entre las simetrías fundamentales de la teoría y las cantidades físicamente observables.
 
 %\vspace{-15pt}
 
@@ -182,7 +187,7 @@ El modelo empleado en este trabajo incorpora nucleones (protones y neutrones) in
 	\end{aligned}
 \end{equation}
 
-donde $\psi$ es una representación conveniente de los campos nucleónicos como un espinor de ocho componentes, $\psi_e$ es el campo del electrón, $\omega_{\mu\nu} = \partial_\mu \omega_\nu - \partial_\nu \omega_\mu$ y $\rhomeson_{\mu\nu} = \partial_\mu \rhomeson_\nu - \partial_\nu \rhomeson_\mu$ son los tensores antisimétricos de campo asociados a los mesones $\omega$ y $\rhomeson$ respectivamente, $m \approx 938.92 \text{MeV}$ es la masa de un nucleón considerada igual para protones y neutrones, y $m_i$ es la masa de la especie $i$. Los parámetros adimensionales de acoplamiento $g_{\sigma}$, $g_{\omega}$, $g_{\rho}$ cuantifican la intensidad de las interacciones nucleón-mesón, y los parámetros adimensionales $b$, $c$ regulan las autointeracciones del mesón sigma. En la construcción de este lagrangiano se acopla el campo escalar con la densidad escalar, el campo vectorial con la corriente bariónica, y el campo isovectorial con la 3-corriente de isospín. Esta última corriente contiene no solo una contribución por los nucleones, sino también una contribución por la corriente propia del campo $\rhomeson$ y otra por la interacción del mesón con su propia 3-corriente.
+donde $\psi$ es una representación conveniente de los campos nucleónicos como un espinor de ocho componentes, $\psi_e$ es el campo del electrón, $\omega_{\mu\nu} = \partial_\mu \omega_\nu - \partial_\nu \omega_\mu$ y $\rhomeson_{\mu\nu} = \partial_\mu \rhomeson_\nu - \partial_\nu \rhomeson_\mu$ son los tensores antisimétricos de campo asociados a los mesones $\omega$ y $\rhomeson$ respectivamente, $m \approx 938.92 \text{MeV}$ es la masa de un nucleón considerada igual para protones y neutrones, y $m_i$ es la masa de la especie $i$. Los parámetros adimensionales de acoplamiento $g_{\sigma}$, $g_{\omega}$, $g_{\rho}$ cuantifican la intensidad de las interacciones nucleón-mesón, y los parámetros adimensionales $b$, $c$ regulan la autointeracción del mesón sigma. En la construcción de este lagrangiano se acopla el campo escalar con la densidad escalar, el campo vectorial con la corriente bariónica, y el campo isovectorial con la 3-corriente de isospín. Esta última corriente contiene no solo una contribución por los nucleones, sino también una contribución por la corriente propia del campo $\rhomeson$ y otra por la interacción del mesón con su propia 3-corriente.
 
 
 Las ecuaciones de movimiento para los campos se obtienen mediante las ecuaciones de Euler-Lagrange (\ref{eq:euler_lagrange}). Para los campos mesónicos, se satisfacen:
@@ -214,14 +219,14 @@ Hasta el momento tenemos un conjunto de ecuaciones de movimiento diferenciales, 
 
 \begin{equation}
 	\begin{aligned}
-		m_\sigma^2 \sigma &= g_\sigma \left[\langle \bar{\psi} \psi \rangle - bm(g_\sigma\sigma)^2 - c(g_\sigma\sigma)^3\right], \\
-		m_\omega^2 \omega^\mu &= g_{\omega} \langle \bar{\psi} \gamma^\mu \psi \rangle = g_\omega \left[\langle \bar{\psi}_p \gamma^\mu \psi_p \rangle + \langle \bar{\psi}_n \gamma^\mu \psi_n \rangle \right], \\
-		m_\rho^2 \rho_3^\mu &= \half g_{\rho} \langle \bar{\psi} \gamma^\mu \tau_3 \psi \rangle = g_\rho \left[\half \langle \bar{\psi}_p \gamma^\mu \psi_p \rangle - \half \langle \bar{\psi}_n \gamma^\mu \psi_n \rangle \right],
+		m_\sigma^2 \sigma &= g_\sigma \left[\langle \bar{\psi}_p \psi_p \rangle + \langle \bar{\psi}_n \psi_n \rangle - bm(g_\sigma\sigma)^2 - c(g_\sigma\sigma)^3\right], \\
+		m_\omega^2 \omega^\mu &= g_\omega \left[\langle \bar{\psi}_p \gamma^\mu \psi_p \rangle + \langle \bar{\psi}_n \gamma^\mu \psi_n \rangle \right], \\
+		m_\rho^2 \rho_3^\mu &= g_\rho \left[\half \langle \bar{\psi}_p \gamma^\mu \psi_p \rangle - \half \langle \bar{\psi}_n \gamma^\mu \psi_n \rangle \right],
 		\label{eq:eom_meson_mf}
 	\end{aligned}
 \end{equation}
 
-donde las primeras dos componentes del mesón $\rhomeson^\mu$ son escritas en términos de los operadores de creación y aniquilación para mesones rho cargados $\rho_\pm^\mu = \frac{1}{\sqrt{2}}(\rho_1^\mu\pm i\rho_2^\mu)$, luego su valor esperado se anula en el estado base del sistema \cite{glendenningCompactStarsNuclear2000}, anulando el término fuente de la corriente propia del campo.
+donde $\psi_i$ representa el campo fermiónico para la especie $i = \{p, n\}$, y las primeras dos componentes del mesón $\rhomeson^\mu$ son escritas en términos de los operadores de creación y aniquilación para mesones rho cargados $\rho_\pm^\mu = \frac{1}{\sqrt{2}}(\rho_1^\mu\pm i\rho_2^\mu)$, luego su valor esperado se anula en el estado base del sistema \cite{glendenningCompactStarsNuclear2000}, anulando el término fuente de la corriente propia del campo.
 
 Para los campos fermiónicos se tienen ecuaciones sin dependencia de las coordenadas de espacio-tiempo, siendo estados propios de momento:
 
@@ -255,94 +260,22 @@ luego los valores propios de energía para los nucleones son:
 	\label{eq:particleenergy} 
 \end{equation}
 
-Para calcular los valores esperados de las corrientes en (\ref{eq:eom_meson_mf}), usaremos un método económico para ahorrarnos la construcción de los campos fermiónicos \cite{glendenningCompactStarsNuclear2000}. La forma general del valor esperado de un operador $\Gamma$ en el estado base de un sistema de muchos fermiones es:
-
-\begin{equation}
-	\langle \bar{\psi} \Gamma \psi \rangle = \sum_{\kappa}\int \frac{d^3p}{(2\pi)^3} (\bar{\psi} \Gamma \psi)_{\Vec{p},\kappa} \Theta(\epsilon_F - \epsilon(\Vec{p})_\kappa),
-	\label{eq:valor_esperado_general}
-\end{equation}
-
-donde $\kappa$ representa los grados de libertad internos (espín, isospín), $\epsilon_F$ es la energía de Fermi del sistema, y $\Theta(x)$ la función escalón de Heaviside. $(\bar{\psi} \Gamma \psi)_{\Vec{p},\kappa}$ es el valor esperado, en el espacio de fase, del operador $\Gamma$ en el estado de un solo fermión con momento $\Vec{p}$ y grado de libertad interno $\kappa$. Para hallar el integrando acudimos al hamiltoniano de Dirac, y a su valor esperado:
-
-\begin{equation}
-	\begin{gathered}
-		H_D^{I_3} = \gamma_0\left[\Vec{\gamma}\cdot\Vec{p} + \gamma^\mu(g_\omega \omega_\mu + g_\rho I_3\rho_{3\mu})+(m-g_\sigma\sigma)\right],\\
-		(\psi^\dagger H_D^{I_3} \psi)_{\Vec{p},\kappa} = \epsilon(\Vec{p})_{\kappa} = P_0(\Vec{p}) + g_\omega\omega_0+g_\rho I_3\rho_{30}.
-		\label{eq:hamiltonian}
-	\end{gathered}
-\end{equation}
-
-Notamos que el hamiltoniano depende del isospín $I_3$ pero no del espín, de modo que los estados de espín son degenerados con ocupación dos. Tomando la derivada del hamiltoniano respecto a cualquier variable $\xi$ del hamiltoniano (\ref{eq:hamiltonian}), y usando la regla de la cadena, obtenemos \cite{glendenningCompactStarsNuclear2000}:
-
-\begin{equation}
-	\begin{aligned}
-		\frac{\partial}{\partial \xi} (\psi^\dagger H_D^{I_3} \psi)_{\Vec{p},\kappa} = (\psi^\dagger \frac{\partial H_D^{I_3}}{\partial \xi} \psi)_{\Vec{p},\kappa} + \epsilon(\Vec{p})_\kappa \cancel{\frac{\partial}{\partial \xi} (\psi^\dagger \psi)_{\Vec{p},\kappa}}, \\
-	\end{aligned}
-	\label{eq:derivada_hamiltoniano}
-\end{equation}
-
-donde el último término se anula porque $\psi$ es una función propia. Tomando la derivada con respecto a $p^i$, se obtiene:
-
-\begin{equation*}
-	(\bar{\psi} \gamma^i \psi)_{\Vec{p},\kappa} = \frac{\partial \epsilon(\Vec{p})_\kappa}{\partial p^i},
-\end{equation*}
-
-y por (\ref{eq:valor_esperado_general}), la corriente de nucleones es:
-
-\begin{equation}
-	\begin{aligned}
-		\langle \bar{\psi} \gamma^i \psi \rangle &= 2\sum_{I_3}\int \frac{d^3p}{(2\pi)^3} \frac{\partial \epsilon(\Vec{p})_{I_3}}{\partial p^i} \Theta(\epsilon_F - \epsilon(\Vec{p})_{I_3}) \\
-												 &= 2\sum_{I_3}\int \frac{d^2p}{(2\pi)^3} \int dp^i \frac{\partial \epsilon(\Vec{p})_{I_3}}{\partial p^i} \Theta(\epsilon_F - \epsilon(\Vec{p})_{I_3}) \\
-												 &= 0,
-		\label{eq:corriente_barionica_espacial}
-	\end{aligned}		
-\end{equation}
-
-donde la integral se anula porque los valores de energía en las fronteras del volumen (de momento) son los mismos. La componente espacial de la corriente bariónica es nula, como era de esperarse en un sistema estático y uniforme, de modo que las componentes espaciales tanto del mesón $\omega$ como del mesón $\rho_3$ se anulan (ver ecuaciones (\ref{eq:eom_meson_mf})). Como tenemos solo componentes temporales de estos mesones, la energía de las partículas (\ref{eq:particleenergy}) depende únicamente de la magnitud del momento $\epsilon(\Vec{p}) = \epsilon(p)$, lo que implica que la superficie de Fermi es esférica en el espacio de momentos.
-
-Ahora, tomando la derivada (\ref{eq:derivada_hamiltoniano}) con respecto a $\omega_0$:
-
-\begin{equation*}
-	(\bar{\psi} \gamma^0 \psi)_{\Vec{p},\kappa} = 1,
-\end{equation*}
-
-luego por (\ref{eq:valor_esperado_general}), la densidad bariónica es:
-
-\begin{equation}
-	\begin{aligned}
-		\langle \bar{\psi} \gamma^0 \psi \rangle &= 2\sum_{I_3}\int \frac{4 \pi p^2 dp}{(2\pi)^3} \Theta(\epsilon_F - \epsilon(p)_{I_3}) \\
-												 &= \int_0^{p_{Fp}} \frac{p^2 dp}{\pi^2} + \int_0^{p_{Fn}} \frac{p^2 dp}{\pi^2} \\
-												 &= \frac{1}{3\pi^2}(p_{Fp}^3 + p_{Fn}^3) \equiv n_p + n_n = n_B,
-		\label{eq:densidad_barionica}
-	\end{aligned}
-\end{equation}
-
-donde $p_{Fp}$ y $p_{Fn}$ son los momentos de Fermi para protones y neutrones respectivamente, y $n_B$ es la densidad bariónica total. De modo análogo, dado que el valor esperado es lineal y en vista de la ecuación para el campo rho (\ref{eq:eom_meson_mf}), la componente temporal de la tercera componente de la corriente de isospín es:
-
-\begin{equation}
-		\langle \bar{\psi} \gamma^0 \tau_3 \psi \rangle = \half (n_p - n_n).
-		\label{eq:densidad_isospin}
-\end{equation}
-
-Finalmente, tomando la derivada (\ref{eq:derivada_hamiltoniano}) con respecto a $m^*$:
-
-\begin{equation*}
-	(\bar{\psi} \psi)_{\Vec{p},\kappa} = \frac{m^*}{\sqrt{p^2 + m^{*2}}},
-\end{equation*}
-
-y por (\ref{eq:valor_esperado_general}), la densidad escalar es:
-
-\begin{equation}
-	\begin{aligned}
-		\langle \bar{\psi} \psi \rangle &= 2\sum_{I_3}\int \frac{4 \pi p^2 dp}{(2\pi)^3} \frac{m^*}{\sqrt{p^2 + m^{*2}}} \Theta(\epsilon_F - \epsilon(p)_{I_3}) \\
-										&= \sum_N \frac{1}{\pi^2}\int_0^{p_{FN}} \frac{p^2 (m-g_\sigma\sigma) dp}{\sqrt{p^2 + (m-g_\sigma\sigma)^{2}}} \equiv n_s. \\
-		\label{eq:densidad_escalar}
-	\end{aligned}
-\end{equation}
-
 % Aunque todas las integrales anteriores son analíticas, la ecuación de movimiento para el campo escalar (\ref{eq:eom_meson_mf}) es una ecuación no lineal en $\sigma$ que debe resolverse autoconsistentemente con métodos numéricos. Además, resolviendo el sistema con $g_\sigma \sigma$, $g_\omega \omega_0$ y $g_\rho \rho_{30}$ como variables, el modelo tiene como parámetros libres unicamente los cocientes $g_\sigma/m_\sigma$, $g_\omega/m_\omega$ y $g_\rho/m_\rho$, junto con los parámetros de autointeracción escalar.
 
-Para hallar la ecuación de estado, calculamos el tensor de energía-momento canónico (\ref{eq:tensor_energia_momento}) en el marco de referencia del fluido en reposo e isotrópico, utilizando el lagrangiano (\ref{eq:lagrangiano}). Luego, hallamos el valor esperado de las componentes empleando el método de las ecuaciones (\ref{eq:valor_esperado_general} - \ref{eq:derivada_hamiltoniano}) y las identificamos con las cantidades termodinámicas de densidad de energía y presión para un fluido perfecto (\ref{eq:tensor_fluido_perfecto}). Las expresiones para densidad de energía y presión son:
+Ahora, los valores esperados de los operadores en (\ref{eq:eom_meson_mf}) se calculan con el método descrito en el Apéndice \ref{apendice:valores_esperados}. Luego, las ecuaciones de movimiento quedan de la siguiente forma:
+
+\begin{equation}
+	\begin{aligned}
+		m_\sigma^2 \sigma &= g_\sigma \sum_N \frac{1}{\pi^2}\int_0^{p_{FN}} \frac{p^2 (m-g_\sigma\sigma) dp}{\sqrt{p^2 + (m-g_\sigma\sigma)^{2}}} - g_\sigma bm(g_\sigma\sigma)^2 - g_\sigma c(g_\sigma\sigma)^3, \\
+		m_\omega^2 \omega_0 &= \frac{1}{3\pi^2} g_\omega(p_{Fp}^3 + p_{Fn}^3), \\
+		m_\rho^2 \rho_{30} &= \frac{1}{6\pi^2} g_\rho(p_{Fp}^3 - p_{Fn}^3),
+	\end{aligned}
+	\label{eq:eom_meson_mf_sustituidas}
+\end{equation}
+
+donde $N$ indica la suma sobre protones y neutrones. Observamos que las componentes espaciales de los campos vectoriales se anulan debido a la isotropía del sistema en su estado base. 
+
+Para hallar la ecuación de estado, calculamos el tensor de energía-momento canónico (\ref{eq:tensor_energia_momento}) en el marco de referencia del fluido en reposo e isotrópico, utilizando el lagrangiano (\ref{eq:lagrangiano}). Luego, hallamos el valor esperado de sus componentes empleando el mismo método del Apéndice \ref{apendice:valores_esperados} y las identificamos con las cantidades termodinámicas de densidad de energía y presión para un fluido perfecto (\ref{eq:tensor_fluido_perfecto}). Las expresiones para densidad de energía y presión son:
 
 \begin{gather}
 	\begin{aligned}
@@ -368,7 +301,7 @@ Ahora, con el fin de resolver numéricamente el sistema, nos interesa reescribir
 	\label{eq:variables_adimensionales}
 \end{equation}
 
-donde $i = \{\sigma, \omega, \rho\}$. Usando estas variables, la ecuación de movimiento para el campo escalar (\ref{eq:eom_meson_mf}) considerando la forma de la densidad escalar (\ref{eq:densidad_escalar}) se escribe como:
+donde $i = \{\sigma, \omega, \rho\}$. Usando estas variables, la ecuación de movimiento para el campo escalar (\ref{eq:eom_meson_mf_sustituidas}) se escribe como:
 
 \begin{equation}
 	(1 - \xsigma) - A_\sigma \left[ \frac{1}{\pi} \sum_N \int_0^{x_{FN}} \frac{\xsigma x^2 dx}{\sqrt{x^2 + \xsigma^2}} - b(1-\xsigma)^2 - c(1-\xsigma)^3 \right] = 0,
@@ -390,7 +323,7 @@ donde $x_{Fi} = p_{Fi}/m$ son los momentos de Fermi adimensionales. Las expresio
 	\end{aligned}
 \end{gather}
 
-Estas expresiones son funciones de la densidad de número de protones, neutrones y electrones. Es necesario imponer condiciones adicionales para cerrar el sistema como en el caso del gas ideal de la sección \ref{sec:gasnpe}. Imponemos las mismas condiciones de neutralidad local de carga (\ref{eq:neutralidad_carga}) y equilibrio beta (\ref{eq:equilibrio_beta}), así como la conservación del número de bariones $n_B = n_p+n_n$, obteniendo las ligaduras:
+Estas expresiones son funciones de la densidad de número de protones, neutrones y electrones. Si queremos describir la materia en el interior de estrellas de neutrones, debemos considerar ligaduras que nos permitirán cerrar el sistema de ecuaciones. Es necesario imponer las mismas condiciones de neutralidad local de carga (\ref{eq:neutralidad_carga}) y equilibrio beta (\ref{eq:equilibrio_beta}) discutidas para el gas ideal degenerado en la Sección \ref{sec:gasnpe}, así como la conservación del número de bariones $n_B = n_p+n_n$, obteniendo:
 
 \begin{equation}
 	\begin{gathered}
@@ -401,25 +334,25 @@ Estas expresiones son funciones de la densidad de número de protones, neutrones
 	\label{eq:ligaduras_adimensionales}
 \end{equation}
 
-De las expresiones adimensionalizadas (\ref{eq:eom_sigma_adimensional} - \ref{eq:ligaduras_adimensionales}) podemos entender el sistema físico descrito por el modelo. Primero, es importante notar que, si bien definimos ocho constantes inicialmente ($g_i$, $m_i$ con $i=\{\sigma, \omega, \rho\}$, $b$, $c$), las ecuaciones solo dependen de cinco combinaciones adimensionales de estas constantes: los cocientes $A_i$, y los parámetros de autointeracción escalar $b$ y $c$. Por lo tanto, el modelo tiene cinco parámetros libres que deben ser ajustados para reproducir datos experimentales o teóricos adicionales. En segundo lugar, podemos deducir que el campo escalar $\sigma$ actúa para reducir la masa efectiva de los nucleones disminuyendo la energía por partícula a mayores densidades, mientras que el campo vectorial $\omega_0$ aumenta la energía por partícula debido a su acoplamiento con la densidad bariónica total. Esto indica que el mesón $\sigma$ genera una interacción atractiva entre nucleones, mientras que el mesón $\omega$ genera una interacción repulsiva. Finalmente, el mesón $\rho$ actúa para ajustar la diferencia entre las densidades de protones y neutrones con un efecto ``repulsivo'' ante la asimetría del sistema.
+De las expresiones adimensionalizadas (\ref{eq:eom_sigma_adimensional} - \ref{eq:ligaduras_adimensionales}) podemos entender el sistema físico descrito por el modelo. Primero, es importante notar que, si bien definimos ocho constantes inicialmente ($g_i$, $m_i$ con $i=\{\sigma, \omega, \rho\}$, $b$, $c$), las ecuaciones solo dependen de cinco combinaciones adimensionales de estas constantes: los cocientes $A_i$, y los parámetros de autointeracción escalar $b$ y $c$. Por lo tanto, el modelo tiene cinco parámetros libres que deben ser ajustados para reproducir datos experimentales o teóricos adicionales. En segundo lugar, podemos deducir de las integrales en las ecuaciones para el campo escalar, la densidad de energía y la presión que el campo escalar $\sigma$ actúa para reducir la masa efectiva de los nucleones disminuyendo la energía por partícula a mayores densidades, mientras que el campo vectorial $\omega_0$ aumenta la energía por partícula debido a su acoplamiento con la densidad bariónica total. Esto indica que el mesón $\sigma$ genera una interacción atractiva entre nucleones, mientras que el mesón $\omega$ genera una interacción repulsiva. Finalmente, el mesón $\rho$ actúa para ajustar la diferencia entre las densidades de protones y neutrones con un efecto ``repulsivo'' ante la asimetría del sistema.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{Figuras/materia_estelar_base}
-	\caption[Ecuación de estado para el núcleo de estrellas de neutrones.]{Ecuación de estado (izquierda) y variables termodinámicas en función de la densidad de masa (derecha) para el núcleo de estrellas de neutrones empleando teoría relativista de campo medio. $\rho_0=m^4/2$ es el factor de adimensionalización. Se usaron los parámetros $\left(\frac{g_\sigma}{m_\sigma}\right)^2=12.684\,\text{fm}^2$, $\left(\frac{g_\omega}{m_\omega}\right)^2=7.148\,\text{fm}^2$, $\left(\frac{g_\rho}{m_\rho}\right)^2=4.410\,\text{fm}^2$, $b=5.610\times10^{-3}$, $c=-6.986\times10^{-3}$.}
+	\caption[Ecuación de estado para el núcleo de estrellas de neutrones.]{Ecuación de estado (izquierda) y variables termodinámicas en función de la densidad de masa (derecha) para el núcleo de estrellas de neutrones empleando teoría relativista de campo medio. $\rho_0=m^4/2$ es el factor de adimensionalización. Se usaron los parámetros $\left(\frac{g_\sigma}{m_\sigma}\right)^2=12.684\,\text{fm}^2$, $\left(\frac{g_\omega}{m_\omega}\right)^2=7.148\,\text{fm}^2$, $\left(\frac{g_\rho}{m_\rho}\right)^2=4.410\,\text{fm}^2$, $b=5.610\times10^{-3}$ y $c=-6.986\times10^{-3}$ como referencia.}
 	\label{fig:materiaestelarbase}
 \end{figure}
 
 
-Ahora que tenemos un sistema cerrado, podemos resolverlo numéricamente para cada valor de $n_B$, obteniendo la ecuación de estado $\tilde{\rho}(\tilde{P})$, como se muestra en la figura \ref{fig:materiaestelarbase}. Sin embargo, aún es necesario determinar los parámetros del modelo para que sea físicamente consistente. Para ello, acudimos a las propiedades empíricas de la materia nuclear en saturación, descritas a continuación.
+Dados los parámetros libres del modelo, tenemos un sistema cerrado que podemos resolver numéricamente para cada valor de $n_B$, obteniendo la ecuación de estado $\tilde{\rho}(\tilde{P})$, como se muestra en la figura \ref{fig:materiaestelarbase}. Sin embargo, aún es necesario restringir los parámetros que hacen al modelo físicamente consistente. Para ello, acudimos a las propiedades empíricas de la materia nuclear en saturación, descritas a continuación.
 
 
 \subsection{Materia en Saturación Nuclear}
 \label{sec:saturacion}
 
-Si suprimimos los electrones libres del modelo (\ref{eq:lagrangiano}) y consideramos materia nuclear simétrica ($n_p = n_n$), el sistema se reduce a un fluido de nucleones interactuando mediante los campos mesónicos. Este sistema debe reproducir las propiedades de la materia nuclear en saturación, caracterizada por cinco parámetros empíricos que añaden restricciones obligatorias para cualquier teoría microscópica válida \cite{kumarTheoreticalExperimentalConstraints2024}. Estos parámetros pueden determinarse experimentalmente mediante mediciones en laboratorios terrestres, siendo una herramienta de calibración para los modelos teóricos nucleares.
+Si suprimimos los electrones libres del modelo (\ref{eq:lagrangiano}) y consideramos materia nuclear simétrica ($n_p = n_n$), el sistema se reduce a un fluido de nucleones interactuando mediante los campos mesónicos. Este sistema debe reproducir las propiedades de la materia nuclear en saturación, caracterizada por parámetros empíricos que añaden restricciones obligatorias para cualquier teoría microscópica válida \cite{kumarTheoreticalExperimentalConstraints2024}. De estos parámetros, consideraremos cinco que pueden determinarse experimentalmente mediante mediciones en laboratorios terrestres, siendo una herramienta de calibración para los modelos teóricos nucleares.
 
-La densidad de saturación nuclear $n_0$ define la densidad a la cual la materia nuclear simétrica alcanza su estado de mínima energía de enlace por nucleón $\frac{B}{A}$. Tras aplicar un análisis bayesiano a una colección de ligaduras de la Teoría Funcional de la Densidad, que incluyen modelos relativistas de campo medio y de Skyrme, se obtienen valores \cite{drischlerBayesianMixtureModel2024}:
+La densidad de saturación nuclear, $n_0$, define la densidad a la cual la materia nuclear simétrica alcanza su estado de mínima energía de enlace por nucleón, $\frac{B}{A}$. Tras aplicar un análisis bayesiano a una colección de ligaduras de la Teoría Funcional de la Densidad, que incluyen modelos relativistas de campo medio y de Skyrme, se obtienen valores \cite{drischlerBayesianMixtureModel2024}:
 
 \begin{align}
 	&n_0 = 0.157 \pm 0.010 \, \text{fm}^{-3} \label{eq:densidad_saturacion}, \\
@@ -435,7 +368,7 @@ Este resultado empírico es consistente con estimaciones realizadas a partir de 
 	\label{fig:saturacionbase}
 \end{figure}
 
-El módulo de compresibilidad nuclear $K_0$ caracteriza la rigidez de la materia nuclear ante compresiones alrededor del punto de saturación. Este parámetro es determinante para la extrapolación de la ecuación de estado a densidades supranucleares, y es estimado mediante las resonancias monopolares en núcleos pesados. Considerando un modelo de cadena de núcleos para esta resonancia en $^{208}$Pb, se obtiene \cite{kumarTheoreticalExperimentalConstraints2024, khanConstrainingNuclearEquation2012}:
+El módulo de compresibilidad nuclear, $K_0$, caracteriza la rigidez de la materia nuclear ante compresiones alrededor del punto de saturación. Este parámetro es determinante para la extrapolación de la ecuación de estado a densidades supranucleares, y es estimado mediante las resonancias monopolares en núcleos pesados. Considerando un modelo de cadena de núcleos para esta resonancia en $^{208}$Pb, se obtiene \cite{kumarTheoreticalExperimentalConstraints2024, khanConstrainingNuclearEquation2012}:
 
 \begin{equation}
 	K_0 = 9n_0^2 \frac{\partial^2}{\partial n^2}\left(\frac{\rho}{n}\right)\bigg|_{n=n_0} = 230 \pm 40 \, \text{MeV}.
@@ -454,7 +387,7 @@ Esta cantidad está relacionada algebraicamente con cantidades de nuestro modelo
 
 donde $x_Fp=x_Fn=x_F$.
 
-La energía de simetría $a_\text{sym}$ cuantifica el costo energético de desviarse de la composición simétrica. Esta cantidad determina la composición de protones y neutrones en materia nuclear densa, afectando directamente las propiedades de las estrellas de neutrones. La pendiente de la energía de simetría $L_0$ describe la dependencia de la energía de simetría con la densidad de bariones alrededor de la densidad de saturación.
+La energía de simetría, $a_\text{sym}$, cuantifica el costo energético de desviarse de la composición simétrica. Esta cantidad determina la composición de protones y neutrones en materia nuclear densa, afectando directamente las propiedades de las estrellas de neutrones. La pendiente de la energía de simetría, $L_0$, describe la dependencia de la energía de simetría con la densidad de bariones alrededor de la densidad de saturación.
 
 Para estas dos cantidades, tras una revisión de 28 estimaciones tanto de experimentos terrestres como de observaciones astronómicas de estrellas de neutrones, se estiman valores representativos \cite{kumarTheoreticalExperimentalConstraints2024, liUnderstandingAstrophysicalEffects2019}:
 

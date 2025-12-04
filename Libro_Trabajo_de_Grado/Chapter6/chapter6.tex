@@ -1,5 +1,89 @@
 \chapter{Apéndices}
 
-% Anexos
+\section{Valores esperados de los operadores}
+\label{apendice:valores_esperados}
 
-% Agregar consentimiento informado usado, códigos?
+Para calcular los valores esperados de las corrientes en (\ref{eq:eom_meson_mf}), usaremos un método económico para ahorrarnos la construcción de los campos fermiónicos \cite{glendenningCompactStarsNuclear2000}. La forma general del valor esperado de un operador $\Gamma$ en el estado base de un sistema de muchos fermiones es:
+
+\begin{equation}
+	\langle \bar{\psi} \Gamma \psi \rangle = \sum_{\kappa}\int \frac{d^3p}{(2\pi)^3} (\bar{\psi} \Gamma \psi)_{\Vec{p},\kappa} \Theta(\epsilon_F - \epsilon(\Vec{p})_\kappa),
+	\label{eq:valor_esperado_general}
+\end{equation}
+
+donde $\kappa$ representa los grados de libertad internos (espín, isospín), $\epsilon_F$ es la energía de Fermi del sistema, y $\Theta(x)$ la función escalón de Heaviside. $(\bar{\psi} \Gamma \psi)_{\Vec{p},\kappa}$ es el valor esperado, en el espacio de fase, del operador $\Gamma$ en el estado de un solo fermión con momento $\Vec{p}$ y grado de libertad interno $\kappa$. Para hallar el integrando acudimos al hamiltoniano de Dirac, y a su valor esperado:
+
+\begin{equation}
+	\begin{gathered}
+		H_D^{I_3} = \gamma_0\left[\Vec{\gamma}\cdot\Vec{p} + \gamma^\mu(g_\omega \omega_\mu + g_\rho I_3\rho_{3\mu})+(m-g_\sigma\sigma)\right],\\
+		(\psi^\dagger H_D^{I_3} \psi)_{\Vec{p},\kappa} = \epsilon(\Vec{p})_{\kappa} = P_0(\Vec{p}) + g_\omega\omega_0+g_\rho I_3\rho_{30}.
+		\label{eq:hamiltonian}
+	\end{gathered}
+\end{equation}
+
+Notamos que el hamiltoniano depende del isospín $I_3$ pero no del espín, de modo que los estados de espín son degenerados con ocupación dos. Tomando la derivada del hamiltoniano respecto a cualquier variable $\xi$ del hamiltoniano (\ref{eq:hamiltonian}), y usando la regla de la cadena, obtenemos \cite{glendenningCompactStarsNuclear2000}:
+
+\begin{equation}
+	\begin{aligned}
+		\frac{\partial}{\partial \xi} (\psi^\dagger H_D^{I_3} \psi)_{\Vec{p},\kappa} = (\psi^\dagger \frac{\partial H_D^{I_3}}{\partial \xi} \psi)_{\Vec{p},\kappa} + \epsilon(\Vec{p})_\kappa \cancel{\frac{\partial}{\partial \xi} (\psi^\dagger \psi)_{\Vec{p},\kappa}}, \\
+	\end{aligned}
+	\label{eq:derivada_hamiltoniano}
+\end{equation}
+
+donde el último término se anula porque $\psi$ es una función propia. Tomando la derivada con respecto a $p^i$, se obtiene:
+
+\begin{equation*}
+	(\bar{\psi} \gamma^i \psi)_{\Vec{p},\kappa} = \frac{\partial \epsilon(\Vec{p})_\kappa}{\partial p^i},
+\end{equation*}
+
+y por (\ref{eq:valor_esperado_general}), la corriente de nucleones es:
+
+\begin{equation}
+	\begin{aligned}
+		\langle \bar{\psi} \gamma^i \psi \rangle &= 2\sum_{I_3}\int \frac{d^3p}{(2\pi)^3} \frac{\partial \epsilon(\Vec{p})_{I_3}}{\partial p^i} \Theta(\epsilon_F - \epsilon(\Vec{p})_{I_3}) \\
+												 &= 2\sum_{I_3}\int \frac{d^2p}{(2\pi)^3} \int dp^i \frac{\partial \epsilon(\Vec{p})_{I_3}}{\partial p^i} \Theta(\epsilon_F - \epsilon(\Vec{p})_{I_3}) \\
+												 &= 0,
+		\label{eq:corriente_barionica_espacial}
+	\end{aligned}		
+\end{equation}
+
+donde la integral se anula porque los valores de energía en las fronteras del volumen (de momento) son los mismos. La componente espacial de la corriente bariónica es nula, como era de esperarse en un sistema estático y uniforme, de modo que las componentes espaciales tanto del mesón $\omega$ como del mesón $\rho_3$ se anulan (ver ecuaciones (\ref{eq:eom_meson_mf})). Como tenemos solo componentes temporales de estos mesones, la energía de las partículas (\ref{eq:particleenergy}) depende únicamente de la magnitud del momento $\epsilon(\Vec{p}) = \epsilon(p)$, lo que implica que la superficie de Fermi es esférica en el espacio de momentos.
+
+Ahora, tomando la derivada (\ref{eq:derivada_hamiltoniano}) con respecto a $\omega_0$:
+
+\begin{equation*}
+	(\bar{\psi} \gamma^0 \psi)_{\Vec{p},\kappa} = 1,
+\end{equation*}
+
+luego por (\ref{eq:valor_esperado_general}), la densidad bariónica es:
+
+\begin{equation}
+	\begin{aligned}
+		\langle \bar{\psi} \gamma^0 \psi \rangle &= 2\sum_{I_3}\int \frac{4 \pi p^2 dp}{(2\pi)^3} \Theta(\epsilon_F - \epsilon(p)_{I_3}) \\
+												 &= \int_0^{p_{Fp}} \frac{p^2 dp}{\pi^2} + \int_0^{p_{Fn}} \frac{p^2 dp}{\pi^2} \\
+												 &= \frac{1}{3\pi^2}(p_{Fp}^3 + p_{Fn}^3) \equiv n_p + n_n = n_B,
+		\label{eq:densidad_barionica}
+	\end{aligned}
+\end{equation}
+
+donde $p_{Fp}$ y $p_{Fn}$ son los momentos de Fermi para protones y neutrones respectivamente, y $n_B$ es la densidad bariónica total. De modo análogo, dado que el valor esperado es lineal y en vista de la ecuación para el campo rho (\ref{eq:eom_meson_mf}), la componente temporal de la tercera componente de la corriente de isospín es:
+
+\begin{equation}
+		\langle \bar{\psi} \gamma^0 \tau_3 \psi \rangle = \half (n_p - n_n).
+		\label{eq:densidad_isospin}
+\end{equation}
+
+Finalmente, tomando la derivada (\ref{eq:derivada_hamiltoniano}) con respecto a $m^*$:
+
+\begin{equation*}
+	(\bar{\psi} \psi)_{\Vec{p},\kappa} = \frac{m^*}{\sqrt{p^2 + m^{*2}}},
+\end{equation*}
+
+y por (\ref{eq:valor_esperado_general}), la densidad escalar es:
+
+\begin{equation}
+	\begin{aligned}
+		\langle \bar{\psi} \psi \rangle &= 2\sum_{I_3}\int \frac{4 \pi p^2 dp}{(2\pi)^3} \frac{m^*}{\sqrt{p^2 + m^{*2}}} \Theta(\epsilon_F - \epsilon(p)_{I_3}) \\
+										&= \sum_N \frac{1}{\pi^2}\int_0^{p_{FN}} \frac{p^2 (m-g_\sigma\sigma) dp}{\sqrt{p^2 + (m-g_\sigma\sigma)^{2}}} \equiv n_s. \\
+		\label{eq:densidad_escalar}
+	\end{aligned}
+\end{equation}
