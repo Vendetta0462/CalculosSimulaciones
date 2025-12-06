@@ -87,3 +87,29 @@ y por (\ref{eq:valor_esperado_general}), la densidad escalar es:
 		\label{eq:densidad_escalar}
 	\end{aligned}
 \end{equation}
+
+\section{Condiciones de Aceptabilidad Física}
+\label{apendice:aceptabilidad}
+
+En Ospino et al. \cite{ospinoRelativisiticNonpascalianFluid2025} y Hernández et al. \cite{hernandezAcceptabilityConditionsRelativistic2021} se recopilan una serie de criterios teóricos que un modelo estelar debe satisfacer para ser considerado físicamente admisible en el contexto de las estrellas de neutrones. Estos criterios incluyen condiciones sobre la estabilidad mecánica, la causalidad, la monotonía de la densidad y presión, entre otros.
+
+Para verificar el cumplimiento de estas condiciones en el presente modelo, se evaluaron numéricamente para una configuración estelar generada con los parámetros en (\ref{eq:params_glendenning}) y una densidad central de $\rho_{m0} = 1 \times 10^{15} \, \text{g cm}^{-3}$. Los resultados se presentan en la figura \ref{fig:aceptabilidad_fisica}, donde se muestran la compacidad $2m(r)/r$, los gradientes de presión y densidad de energía, la segunda derivada de la densidad de energía y la perturbación en las fuerzas radiales en función del radio estelar.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{Figuras/aceptabilidad_fisica}
+    \caption[Verificación de condiciones de aceptabilidad física]{Verificación de condiciones de aceptabilidad física para una estrella con densidad central $\rho_{m0} = 1 \times 10^{15} \, \text{g cm}^{-3}$ y los parámetros en (\ref{eq:params_glendenning}). Se muestran la compacidad $2m(r)/r$ (panel superior izquierdo), los gradientes de presión y densidad de energía por -1 (panel superior derecho), la segunda derivada de la densidad de energía por -1 (panel inferior izquierdo) y la perturbación en las fuerzas radiales (panel inferior derecho).}
+    \label{fig:aceptabilidad_fisica}
+\end{figure}
+
+De la figura \ref{fig:aceptabilidad_fisica}, se observa que la condición \textbf{C1} se satisface, ya que $2m(r)/r < 1$ en todo el interior, garantizando que la métrica es positiva y regular. La condición \textbf{C2} de regularidad en el origen, que exige presión y densidad positivas y finitas en el centro, se satisface como se aprecia en la figura \ref{fig:materiaestelarbase} y por construcción de las condiciones de frontera de las ecuaciones TOV. La figura muestra que tanto la presión como la densidad de energía decrecen monotonamente ($\rho'<0$ y $P'<0$) desde el centro hacia la superficie, satisfaciendo la condición \textbf{C3}.
+
+Respecto a la estabilidad ante agrietamientos \textbf{C7}, el panel inferior derecho muestra la perturbación en las fuerzas radiales $\tilde{\text{R}}$. La condición de estabilidad requiere que $\tilde{\text{R}} > 0$ y $\tilde{\text{R}}$ no cambie de signo en la estrella ante perturbaciones de densidad positivas. La perturbación se define, en unidades geometrizadas, como:
+\begin{equation}
+    \tilde{\text{R}} = 2\frac{m+4\pi P r^3}{r (r - 2m)} + \frac{4\pi r^3(\rho + P)(1+8\pi P r^2)}{3(r-2m)^2},
+\end{equation}
+donde se siguen las definiciones de Abreu et al. \cite{abreuSoundSpeedsCracking2007}. Como se observa en la figura, la condición se cumple en todo el interior estelar.
+
+La condición de estabilidad convectiva \textbf{C8} requiere que la densidad de energía sea una función convexa del radio, o equivalentemente, que su segunda derivada sea negativa. En la figura se observa que esta condición se satisface en aproximadamente el 97\% de la estrella, hasta un radio de $12.25 \, \text{km}$. Cerca de la superficie la condición se viola, un comportamiento que también ha sido reportado \cite{ramos-salamancaPhysicalAcceptabilityConditions2021} para otros modelos relativistas de campo medio, como el propuesto por Lalazissis et al. \cite{lalazissisNewParametrizationLagrangian1997}.
+
+Adicionalmente, como se observó en las figuras \ref{fig:materiaestelarbase} y \ref{fig:causalidadmateriabase}, la condición dominante de energía $\rho \geq P$ y la condición de causalidad \textbf{C4}, $v_s \leq c$, se cumplen para este modelo. La condición de Harrison-Zeldovich-Novikov \textbf{C6} se satisface si $dM/d\rho_c > 0$, de modo que sólo consideramos válidas las configuraciones estelares que cumplen esta condición, aún cuando se muestran en las curvas de masa-radio configuraciones inestables para tener mayor visión del comportamiento del modelo. Por esta condición, la compacidad de la estrella de masa máxima se considera como la compacidad máxima en la sección \ref{sec:espacio_parametros}. Para el conjunto de parámetros en (\ref{eq:params_glendenning}), la densidad de masa central máxima permitida por esta condición es $\rho_{m0} = 1.5 \times 10^{15} \, \text{g cm}^{-3}$, correspondiente a una masa máxima de $M_\text{max} = 2.33 \, \masasol$. Finalmente, se ha demostrado que la condición en el índice adiabático \textbf{C5} es válida sólo en el límite Newtoniano \cite{moustakidisStabilityRelativisticStars2017a}, por lo que no se evalúa en este trabajo.

@@ -1,9 +1,8 @@
 \chapter{Resultados y discusión}
+\label{chap:resultados}
 % Resultados
 
-Este capítulo se estructura en dos partes complementarias. Primero, se realiza un análisis del comportamiento del modelo, examinando las soluciones autoconsistentes para el campo escalar (\ref{eq:eom_sigma_adimensional}) y los momentos de Fermi del neutrón y protón (\ref{eq:ligaduras_adimensionales}), la descomposición de la energía de enlace en sus contribuciones mesónicas y las condiciones de aceptabilidad física, basadas en los criterios recopilados por Ospino et al. \cite{ospinoRelativisiticNonpascalianFluid2025} y Hernández et al. \cite{hernandezAcceptabilityConditionsRelativistic2021}.
-
-La segunda parte aborda la caracterización sistemática del espacio de parámetros. El objetivo central es identificar los conjuntos de parámetros que satisfacen simultáneamente las restricciones nucleares y las observaciones astrofísicas actuales. Este estudio establece relaciones directas entre los parámetros microscópicos de la materia (\ref{eq:lagrangiano}) y las propiedades macroscópicas observables, permitiendo comprender cómo las interacciones nucleares determinan la estructura de las estrellas de neutrones. En particular, se busca determinar el conjunto de parámetros que maximiza la masa estelar, estableciendo así límites superiores que puedan ser confrontados con las observaciones de los objetos más masivos detectados hasta la fecha.
+Este capítulo se estructura en dos partes complementarias. Primero, se realiza un análisis del comportamiento del modelo, examinando las soluciones autoconsistentes para el campo escalar (\ref{eq:eom_sigma_adimensional}) y los momentos de Fermi del neutrón y protón (\ref{eq:ligaduras_adimensionales}), así como la descomposición de la energía de enlace en sus contribuciones mesónicas. La segunda parte aborda la caracterización sistemática del espacio de parámetros. El objetivo central es identificar los conjuntos de parámetros que satisfacen simultáneamente las restricciones nucleares y las observaciones astrofísicas actuales. Este estudio establece relaciones directas entre los parámetros microscópicos de la materia (\ref{eq:lagrangiano}) y las propiedades macroscópicas observables, permitiendo comprender cómo las interacciones nucleares determinan la estructura de las estrellas de neutrones. En particular, se busca determinar el conjunto de parámetros que maximiza la masa estelar, estableciendo así límites superiores que puedan ser confrontados con las observaciones de los objetos más masivos detectados hasta la fecha.
 
 \clearpage
 \section{Sobre el Modelo Nuclear}
@@ -47,33 +46,8 @@ En la figura \ref{fig:descomposicion_energia_enlace} se muestra la descomposici�
     \label{fig:descomposicion_energia_enlace}
 \end{figure}
 
-\subsection{Condiciones de Aceptabilidad Física}
-\label{sec:aceptabilidad}
-
-En Ospino et al. \cite{ospinoRelativisiticNonpascalianFluid2025} y Hernández et al. \cite{hernandezAcceptabilityConditionsRelativistic2021} se recopilan una serie de criterios teóricos que un modelo estelar debe satisfacer para ser considerado físicamente admisible en el contexto de las estrellas de neutrones. Estos criterios incluyen condiciones sobre la estabilidad mecánica, la causalidad, la monotonía de la densidad y presión, entre otros.
-
-Para verificar el cumplimiento de estas condiciones en el presente modelo, se evaluaron numéricamente para una configuración estelar generada con los parámetros de la figura \ref{fig:materiaestelarbase} y una densidad central de $\rho_{m0} = 1 \times 10^{15} \, \text{g cm}^{-3}$. Los resultados se presentan en la figura \ref{fig:aceptabilidad_fisica}, donde se muestran la compacidad $2m(r)/r$, los gradientes de presión y densidad de energía, la segunda derivada de la densidad de energía y la perturbación en las fuerzas radiales en función del radio estelar.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\linewidth]{Figuras/aceptabilidad_fisica}
-    \caption[Verificación de condiciones de aceptabilidad física]{Verificación de condiciones de aceptabilidad física para una estrella con densidad central $\rho_{m0} = 1 \times 10^{15} \, \text{g cm}^{-3}$ y los parámetros de la figura \ref{fig:materiaestelarbase}. Se muestran la compacidad $2m(r)/r$ (panel superior izquierdo), los gradientes de presión y densidad de energía por -1 (panel superior derecho), la segunda derivada de la densidad de energía por -1 (panel inferior izquierdo) y la perturbación en las fuerzas radiales (panel inferior derecho).}
-    \label{fig:aceptabilidad_fisica}
-\end{figure}
-
-De la figura \ref{fig:aceptabilidad_fisica}, se observa que la condición \textbf{C1} se satisface, ya que $2m(r)/r < 1$ en todo el interior, garantizando que la métrica es positiva y regular. La condición \textbf{C2} de regularidad en el origen, que exige presión y densidad positivas y finitas en el centro, se satisface como se aprecia en la figura \ref{fig:materiaestelarbase} y por construcción de las condiciones de frontera de las ecuaciones TOV. La figura muestra que tanto la presión como la densidad de energía decrecen monotonamente ($\rho'<0$ y $P'<0$) desde el centro hacia la superficie, satisfaciendo la condición \textbf{C3}.
-
-Respecto a la estabilidad ante agrietamientos \textbf{C7}, el panel inferior derecho muestra la perturbación en las fuerzas radiales $\tilde{\text{R}}$. La condición de estabilidad requiere que $\tilde{\text{R}} > 0$ y $\tilde{\text{R}}$ no cambie de signo en la estrella ante perturbaciones de densidad positivas. La perturbación se define, en unidades geometrizadas, como:
-\begin{equation}
-    \tilde{\text{R}} = 2\frac{m+4\pi P r^3}{r (r - 2m)} + \frac{4\pi r^3(\rho + P)(1+8\pi P r^2)}{3(r-2m)^2},
-\end{equation}
-donde se siguen las definiciones de Abreu et al. \cite{abreuSoundSpeedsCracking2007}. Como se observa en la figura, la condición se cumple en todo el interior estelar.
-
-La condición de estabilidad convectiva \textbf{C8} requiere que la densidad de energía sea una función convexa del radio, o equivalentemente, que su segunda derivada sea negativa. En la figura se observa que esta condición se satisface en aproximadamente el 97\% de la estrella, hasta un radio de $12.25 \, \text{km}$. Cerca de la superficie la condición se viola, un comportamiento que también ha sido reportado \cite{ramos-salamancaPhysicalAcceptabilityConditions2021} para otros modelos relativistas de campo medio, como el propuesto por Lalazissis et al. \cite{lalazissisNewParametrizationLagrangian1997}.
-
-Adicionalmente, como se observó en las figuras \ref{fig:materiaestelarbase} y \ref{fig:causalidadmateriabase}, la condición dominante de energía $\rho \geq P$ y la condición de causalidad $v_s \leq c$ \textbf{C4} se cumplen para este modelo. La condición de Harrison-Zeldovich-Novikov \textbf{C6} se satisface si $dM/d\rho_c > 0$, de modo que sólo consideramos válidas las configuraciones estelares que cumplen esta condición, aún cuando se muestran en las curvas de masa-radio configuraciones inestables para tener mayor visión del comportamiento del modelo. Para el conjunto de parámetros empleados en la figura \ref{fig:materiaestelarbase}, la densidad de masa central máxima permitida por esta condición es $\rho_{m0} = 1.5 \times 10^{15} \, \text{g cm}^{-3}$, correspondiente a una masa máxima de $M_\text{max} = 2.33 \, \masasol$. Finalmente, se ha demostrado que la condición en el índice adiabático \textbf{C5} es válida sólo en el límite Newtoniano \cite{moustakidisStabilityRelativisticStars2017a}, por lo que no se evalúa en este trabajo.
-
 \section{Estudio del Espacio de Parámetros}
+\label{sec:espacio_parametros}
 
 Como se estableció en el capítulo anterior (sección \ref{sec:modelo}), el modelo considerado para la ecuación de estado en el marco de la teoría relativista de campo medio contiene cinco parámetros libres: los tres acoplamientos mesón-nucleón $A_\sigma, A_\omega$ y $A_\rho$, junto con los parámetros de autointeracción del mesón escalar $b$ y $c$. Estos parámetros determinan completamente la ecuación de estado de la materia nuclear y, consecuentemente, las propiedades macroscópicas de las estrellas de neutrones a través de las ecuaciones de estructura TOV (\ref{eq:tov}). El ajuste de estos parámetros se realiza imponiendo que el modelo reproduzca las propiedades empíricas de la materia nuclear en saturación, descritas en la sección \ref{sec:saturacion}, y las observaciones astrofísicas, descritas en la sección \ref{sec:obsNS}.
 
@@ -131,7 +105,7 @@ Es necesario resaltar la independencia de $n_0$, $B/A$ y $K_0$ respecto a variac
 
 Por otro lado, la relación lineal entre los parámetros $b$ y $c$ con la compresibilidad $K_0$ no es tan clara como la de $A_\sigma$ y $A_\omega$, pero sigue siendo útil para ajustar esta propiedad nuclear. De igual forma, sus correlaciones con las demás propiedades nucleares y estelares son más débiles, aunque siguen siendo significativas para el ajuste del modelo. Finalmente, dado el interés en encontrar ecuaciones de estado que permitan estrellas de neutrones con masas máximas elevadas, según lo observado en la figura \ref{fig:correlacionesparams} parece conveniente aumentar simultáneamente los parámetros $A_\sigma$, $A_\omega$ y $c$, y disminuir $A_\rho$, siempre manteniendo las propiedades nucleares dentro de los rangos aceptables.
 
-Para estudiar el impacto de los parámetros del modelo en la ecuación de estado y las propiedades macroscópicas de las estrellas de neutrones, se presentan en las figuras \ref{fig:variacion_acoplamientos} y \ref{fig:variacion_autointeraccion} las ecuaciones de estado y las curvas masa-radio obtenidas al variar independientemente cada uno de los parámetros alrededor de los valores en (\ref{eq:params_glendenning}), manteniendo los demás parámetros fijos. Las ecuaciones de estado se presentan a partir de la densidad de saturación $n_0 = 0.157 \, \text{fm}^{-3}$ ($\approx 2.6\times 10^{14} \, \text{g cm}^{-3}$) y hasta $1.5 \, \text{fm}^{-3}$ ($\approx 2.5\times 10^{15} \, \text{g cm}^{-3}$), mostrando su efecto en la materia del núcleo dado que la ecuación de estado para la corteza, discutida en la sección \ref{sec:corteza}, es independiente de estos parámetros y es igual para todos los casos. Con estas visualizaciones, podemos corroborar cómo afecta cada parámetro a la rigidez de la ecuación de estado, a la masa y al radio de las estrellas de neutrones. 
+Para estudiar el impacto de los parámetros del modelo en la ecuación de estado y las propiedades macroscópicas de las estrellas de neutrones, se presentan en las figuras \ref{fig:variacion_acoplamientos} y \ref{fig:variacion_autointeraccion} las ecuaciones de estado y las curvas masa-radio obtenidas al variar independientemente cada uno de los parámetros alrededor de los valores en (\ref{eq:params_glendenning}), manteniendo los demás parámetros fijos. Las ecuaciones de estado se presentan para la materia del núcleo dado que la ecuación de estado para la corteza, discutida en la sección \ref{sec:corteza}, es independiente de estos parámetros y es igual para todos los casos. Con estas visualizaciones, podemos corroborar cómo afecta cada parámetro a la rigidez de la ecuación de estado, a la masa y al radio de las estrellas de neutrones. 
 
 En cuanto a la rigidez de la ecuación de estado, se observa que los parámetros $A_\sigma$ y $A_\omega$ aumentan apreciable y considerablemente la rigidez al incrementar sus valores respectivamente, mientras que el parámetro $A_\rho$ muestra un impacto casi despreciable. Por otro lado, los parámetros de autointeracción escalar $b$ y $c$ reducen la rigidez de la ecuación de estado, siendo el efecto de $c$ considerablemente más pronunciado que el de $b$. Respecto a la masa máxima, el parámetro $A_\omega$ es el que tiene mayor impacto al aumentarla, seguido por $c$ que la aumenta notoriamente y $A_\sigma$ que la aumenta ligeramente. En contraste, $A_\rho$ tiene un impacto despreciable en la masa máxima, mientras que $b$ la reduce ligeramente. Por último, con relación al radio de las estrellas de neutrones, $A_\omega$ produce el mayor aumento, seguido por aumentos considerables y notorios de $c$ y $b$ respectivamente, mientras que $A_\rho$ solo produce un ligero aumento. Por el contrario, $A_\sigma$ es el único parámetro que disminuye considerablemente el radio al aumentar su valor.
 
@@ -139,44 +113,15 @@ En este análisis se consideraron valores negativos para el parámetro $c$, sigu
 
 \begin{figure}[h]
     \centering
-    \begin{subfigure}{0.75\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{Figuras/variacion_params_sigma}
-        \caption{}
-        \label{fig:variacion_sigma}
-    \end{subfigure}
-    \begin{subfigure}{0.75\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{Figuras/variacion_params_omega}
-        \caption{}
-        \label{fig:variacion_omega}
-    \end{subfigure}
-    
-    \begin{subfigure}{0.75\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{Figuras/variacion_params_rho}
-        \caption{}
-        \label{fig:variacion_rho}
-    \end{subfigure}
-    \caption[Ecuaciones de estado y curvas masa-radio al variar los parámetros de acoplamiento]{Ecuaciones de estado (izquierda) y curvas masa-radio (derecha) obtenidas al variar los parámetros de acoplamiento mesón-nucleón alrededor de los valores en (\ref{eq:params_glendenning}), manteniendo los demás parámetros fijos. (a) Variación de $A_\sigma$. (b) Variación de $A_\omega$. (c) Variación de $A_\rho$.}
+    \includegraphics[width=\linewidth]{Figuras/variacion_params_A_i}
+    \caption[Ecuaciones de estado y curvas masa-radio al variar los parámetros de acoplamiento]{Ecuaciones de estado en el rango de $n_0 = 0.157 \, \text{fm}^{-3}$ ($\approx 2.6\times 10^{14} \, \text{g cm}^{-3}$) hasta $1.5 \, \text{fm}^{-3}$ ($\approx 2.5\times 10^{15} \, \text{g cm}^{-3}$) (fila superior) y curvas masa-radio (fila inferior) obtenidas al variar los parámetros de acoplamiento mesón-nucleón alrededor de los valores en (\ref{eq:params_glendenning}), manteniendo los demás parámetros fijos. De izquierda a derecha se muestran las variaciones de $A_\sigma$, $A_\omega$ y $A_\rho$.}
     \label{fig:variacion_acoplamientos}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \begin{subfigure}{0.75\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{Figuras/variacion_params_b}
-        \caption{}
-        \label{fig:variacion_b}
-    \end{subfigure}
-    \begin{subfigure}{0.75\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{Figuras/variacion_params_c}
-        \caption{}
-        \label{fig:variacion_c}
-    \end{subfigure}
-    \caption[Ecuaciones de estado y curvas masa-radio al variar los parámetros de autointeracción escalar]{Ecuaciones de estado (izquierda) y curvas masa-radio (derecha) obtenidas al variar los parámetros de autointeracción del mesón escalar alrededor de los valores en (\ref{eq:params_glendenning}), manteniendo los demás parámetros fijos. (a) Variación de $b$. (b) Variación de $c$.}
+    \includegraphics[width=0.7\linewidth]{Figuras/variacion_params_b_c}
+    \caption[Ecuaciones de estado y curvas masa-radio al variar los parámetros de autointeracción escalar]{Ecuaciones de estado en el rango de $n_0 = 0.157 \, \text{fm}^{-3}$ ($\approx 2.6\times 10^{14} \, \text{g cm}^{-3}$) hasta $1.5 \, \text{fm}^{-3}$ ($\approx 2.5\times 10^{15} \, \text{g cm}^{-3}$) (fila superior) y curvas masa-radio (fila inferior) obtenidas al variar los parámetros de autointeracción del mesón escalar alrededor de los valores en (\ref{eq:params_glendenning}), manteniendo los demás parámetros fijos. De izquierda a derecha se muestran las variaciones de $b$ y $c$.}
     \label{fig:variacion_autointeraccion}
 \end{figure}
 \clearpage
@@ -335,14 +280,12 @@ Las regiones de parámetros mostradas en las figuras \ref{fig:region_nuclear}, \
 
 % Introducimos y discutimos la comparación de las EoS y M-R obtenidas para la configuración de mayor masa máxima en cada región válida del espacio de parámetros.
 
-Es interesante comparar las ecuaciones de estado y las curvas masa-radio obtenidas para la configuración de mayor masa máxima en cada región válida del espacio de parámetros. Esta comparación permite evaluar cómo las diferentes elecciones de parámetros afectan la rigidez de la ecuación de estado y las propiedades macroscópicas de las estrellas de neutrones. En la figura \ref{fig:comparacion_regiones_eos}, se presentan las ecuaciones de estado y las curvas masa-radio correspondientes a las configuraciones de mayor masa máxima en cada una de las regiones válidas discutidas anteriormente. Vale destacar que se comprobó que todas las ecuaciones de estado cumplen con el límite de velocidad de la luz, asegurando la causalidad del modelo en todas las configuraciones consideradas. Además, las ecuaciones de estado se presentan a partir de la densidad de saturación $n_0 = 0.157 \, \text{fm}^{-3}$ ($\approx 2.6\times 10^{14} \, \text{g cm}^{-3}$) y hasta $4.0 \, \text{fm}^{-3}$ ($\approx 6.7\times 10^{15} \, \text{g cm}^{-3}$), mostrando únicamente la materia del núcleo debido a que la ecuación de estado para la corteza, discutida en la sección \ref{sec:corteza}, es independiente de los parámetros del modelo y es igual para todas las regiones.
-
-Las ecuaciones de estado y las curvas masa-radio varían notablemente según la elección de parámetros, donde una mayor rigidez se correlaciona con mayores masas máximas y radios canónicos. Resaltamos el hecho de que todas las configuraciones presentadas satisfacen las restricciones nucleares y son consistentes con las observaciones astrofísicas actuales, demostrando la versatilidad del modelo relativista de campo medio.
+Es interesante comparar las ecuaciones de estado y las curvas masa-radio obtenidas para la configuración de mayor masa máxima en cada región válida del espacio de parámetros. Esta comparación permite evaluar cómo las diferentes elecciones de parámetros afectan la rigidez de la ecuación de estado y las propiedades macroscópicas de las estrellas de neutrones. En la figura \ref{fig:comparacion_regiones_eos}, se presentan las ecuaciones de estado y las curvas masa-radio correspondientes a las configuraciones de mayor masa máxima en cada una de las regiones válidas discutidas anteriormente. Vale destacar que se comprobó que todas las ecuaciones de estado cumplen con el límite de velocidad de la luz, asegurando la causalidad del modelo en todas las configuraciones consideradas. Las ecuaciones de estado y las curvas masa-radio varían notablemente según la elección de parámetros, donde una mayor rigidez se correlaciona con mayores masas máximas y radios canónicos. Resaltamos el hecho de que todas las configuraciones presentadas satisfacen las restricciones nucleares y son consistentes con las observaciones astrofísicas actuales, demostrando la versatilidad del modelo relativista de campo medio.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.95\linewidth]{Figuras/comparacion_regiones_validas_eos}
-    \caption[Comparación de ecuaciones de estado y curvas masa-radio de diferentes regiones]{Comparación de las ecuaciones de estado (izquierda) y las curvas masa-radio (derecha) obtenidas para la configuración de mayor masa máxima en cada región válida del espacio de parámetros, mostradas en la figura \ref{fig:comparacion_regiones}.}
+    \caption[Comparación de ecuaciones de estado y curvas masa-radio de diferentes regiones]{Comparación de las ecuaciones de estado en el rango de $n_0 = 0.157 \, \text{fm}^{-3}$ ($\approx 2.6\times 10^{14} \, \text{g cm}^{-3}$) hasta $4.0 \, \text{fm}^{-3}$ ($\approx 6.7\times 10^{15} \, \text{g cm}^{-3}$) (izquierda) y las curvas masa-radio (derecha) obtenidas para la configuración de mayor masa máxima en cada región válida del espacio de parámetros, mostradas en la figura \ref{fig:comparacion_regiones}.}
     \label{fig:comparacion_regiones_eos}
 \end{figure}
 
@@ -356,3 +299,5 @@ Adicionalmente, es pertinente analizar el comportamiento microscópico de la mat
 \end{figure}
 
 Al comparar la fracción de neutrones obtenidas con las predichas por el gas ideal degenerado de neutrones, protones y electrones (figura \ref{fig:gas_npe_fraccion}), discutido en la sección \ref{sec:gasnpe}, se observa que las fracciones obtenidas con estas configuraciones son considerablemente menores y disminuyen más rápidamente en el mismo rango de densidades. Esto muestra el impacto significativo de las interacciones nucleares incluidas en el modelo relativista de campo medio, que afectan la composición de la materia nuclear en estrellas de neutrones en comparación con un gas ideal no interactuante. En particular, la inclusión de la interacción isovectorial a través del mesón $\rho$ regula la diferencia entre las fracciones de neutrones y protones, lo que resulta en una composición más equilibrada en comparación con el gas ideal.
+
+Finalmente, se realizó una comprobación de los criterios de aceptabilidad física para el caso particular de los parámetros en (\ref{eq:params_glendenning}) que puede consultarse en el Apéndice \ref{apendice:aceptabilidad}. Como era de esperarse por su construcción covariante, una estrella de neutrones obtenida con este conjunto de parámetros cumple con todos los criterios de aceptabilidad física establecidos en la literatura \cite{ospinoRelativisiticNonpascalianFluid2025, hernandezAcceptabilityConditionsRelativistic2021}, salvo la condición de estabilidad ante convección que satisface en el 97\% de la estrella, por lo que se considera aceptable. Se espera que las demás configuraciones encontradas en este estudio también cumplan con estos criterios, dado que sus ecuaciones de estado son similares en rigidez y comportamiento al conjunto de parámetros de referencia. No obstante, una verificación exhaustiva de estos criterios para todas las configuraciones obtenidas queda fuera del alcance del presente trabajo y se deja como una posible actividad futura.
