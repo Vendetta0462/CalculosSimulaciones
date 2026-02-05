@@ -389,6 +389,114 @@ def plot_multiple_parameters(base_params, variations, n_range=None, rhos_central
     
     return fig
 
+def plot_thesis_figures(base_params, n_range=None, rhos_central=None, 
+                        rf=30.0, dr=3e-5, dens_min=4e-2, dens_max=1.0,
+                        colormap=plt.cm.copper_r):
+    """
+    Generate two figures for thesis:
+    1. 3x2 grid for A_sigma, A_omega, A_rho
+    2. 2x2 grid for b, c
+    """
+    # Configuration for Figure 1
+    # Indices: 0 (A_sigma), 1 (A_omega), 2 (A_rho)
+    config1 = [
+        (0, r'$A_\sigma$', np.linspace(250, 300, 5)),
+        (1, r'$A_\omega$', np.linspace(155, 205, 5)),
+        (2, r'$A_\rho$',   np.linspace(60, 120, 5))
+    ]
+    
+    # Configuration for Figure 2
+    # Indices: 3 (b), 4 (c)
+    config2 = [
+        (3, r'$b$', np.linspace(5e-3, 6.5e-3, 5)),
+        (4, r'$c$', np.linspace(-7e-3, 7e-3, 5))
+    ]
+    
+    # Helper to plot a column
+    def plot_column(ax_eos, ax_mr, param_index, param_name, param_values):
+        colors = colormap(np.linspace(0.3, 1, len(param_values)))
+        linestyles = ['-', '--', '-.', ':', (0, (3, 1, 1, 1))]
+        
+        for i, param_val in enumerate(param_values):
+            params = base_params.copy()
+            params[param_index] = param_val
+            
+            print(f"Computing {param_name} = {param_val:.4e}")
+            
+            dens_sirve, rho_P, pres, masses, radios, compacs = compute_eos_and_mr(
+                params, n_range=n_range, rhos_central=rhos_central, rf=rf, dr=dr
+            )
+            
+            # EoS Plotting
+            mask_dens = (dens_sirve >= dens_min) & (dens_sirve <= dens_max)
+            pres_filtered = pres[mask_dens]
+            if len(pres_filtered) > 1:
+                pres_interp = np.linspace(pres_filtered.min(), pres_filtered.max(), 300)
+                ener_interp = rho_P(pres_interp)
+                
+                ener_MeV_fm3 = ener_interp * (m_nuc**4/2) / MeV_to_fm11
+                pres_MeV_fm3 = pres_interp * (m_nuc**4/2) / MeV_to_fm11
+                
+                ls = linestyles[i % len(linestyles)]
+                
+                # Format label based on parameter type
+                if param_index in [0, 1, 2]:
+                    label = f'{param_name}={param_val:.1f}'
+                else:
+                    label = f'{param_name}={param_val:.3e}'
+                
+                ax_eos.plot(ener_MeV_fm3, pres_MeV_fm3, color=colors[i], linestyle=ls, linewidth=1.7, label=label)
+            
+            # M-R Plotting
+            mask_radius = radios < 20
+            ax_mr.plot(radios[mask_radius], masses[mask_radius], color=colors[i], linestyle=ls, linewidth=1.7)
+
+        # Formatting EoS
+        ax_eos.set_xlabel(r'Densidad de energía (MeV/fm$^3$)', fontsize=12)
+        ax_eos.set_ylabel(r'Presión (MeV/fm$^3$)', fontsize=12)
+        ax_eos.set_xscale('log')
+        ax_eos.set_yscale('log')
+        ax_eos.legend(fontsize=10, loc='best')
+        ax_eos.grid(True, alpha=0.3)
+        
+        # Causal limit
+        all_lines = ax_eos.get_lines()
+        if all_lines:
+            all_xdata = np.concatenate([line.get_xdata() for line in all_lines])
+            x_min, x_max = np.min(all_xdata), np.max(all_xdata)
+            # Ensure y_min is reasonable
+            all_ydata = np.concatenate([line.get_ydata() for line in all_lines])
+            y_min = np.min(all_ydata)
+            ax_eos.set_xlim(x_min, x_max)
+            ax_eos.set_ylim(bottom=y_min, top=x_max)
+            
+            causal_x = np.logspace(np.log10(x_min), np.log10(x_max), 100)
+            ax_eos.plot(causal_x, causal_x, 'r-', alpha=0.5, linewidth=1.5)
+            ax_eos.text(0.7, 0.95, r'$P = \rho$', transform=ax_eos.transAxes, fontsize=12,
+                        rotation=20, verticalalignment='top')
+        
+        # Formatting M-R
+        ax_mr.set_xlabel('Radio (km)', fontsize=12)
+        ax_mr.set_ylabel(r'Masa (M$_\odot$)', fontsize=12)
+        ax_mr.grid(True, alpha=0.3)
+        ax_mr.autoscale(enable=True, axis='both', tight=True)
+        ylims = ax_mr.get_ylim()
+        ax_mr.set_ylim(ylims[0], ylims[1] + 0.05 * (ylims[1] - ylims[0]))
+
+    # Generate Figure 1 (A_sigma, A_omega, A_rho)
+    fig1, axs1 = plt.subplots(2, 3, figsize=(16, 10))
+    for col, (idx, name, vals) in enumerate(config1):
+        plot_column(axs1[0, col], axs1[1, col], idx, name, vals)
+    fig1.tight_layout()
+    
+    # Generate Figure 2 (b, c)
+    fig2, axs2 = plt.subplots(2, 2, figsize=(10, 10))
+    for col, (idx, name, vals) in enumerate(config2):
+        plot_column(axs2[0, col], axs2[1, col], idx, name, vals)
+    fig2.tight_layout()
+    
+    return fig1, fig2
+
 # Example usage
 if __name__ == "__main__":
     from time import time
@@ -406,7 +514,7 @@ if __name__ == "__main__":
     
     # Parametros de integración
     rf = 30.0
-    dr = 2e-5
+    dr = 3e-5
     # dr = 1e-4
     # dr = 1e-3
     
@@ -417,41 +525,13 @@ if __name__ == "__main__":
     # dens_max_plot = 1.0
     dens_max_plot = 1.5
     
-    print("Base parameters:")
-    param_names = ['A_sigma', 'A_omega', 'A_rho', 'b', 'c']
-    for name, val in zip(param_names, base_params):
-        print(f"  {name} = {val:.6e}")
-    
-    # Example 1: Vary One Parameter
-    print("\n=== Example 1: Varying One Parameter ===")
+    print("Generating Thesis Figures...")
     t0 = time()
-    # A_sigma_values = np.linspace(12.0*m_nuc**2, 13.5*m_nuc**2, 5)
-    param_values = np.linspace(250, 300, 5)
-    index = 0
-    fig1 = plot_parameter_variation(base_params, param_index=index, param_values=param_values,
-                                    n_range=n_range, rhos_central=rhos_central,
-                                    dens_min=dens_min_plot, dens_max=dens_max_plot,
-                                    rf=rf, dr=dr)
+    
+    fig1, fig2 = plot_thesis_figures(base_params, n_range=n_range, rhos_central=rhos_central,
+                                     rf=rf, dr=dr, dens_min=dens_min_plot, dens_max=dens_max_plot)
+    
     t1 = time()
-    print(f"Time: {t1-t0:.2f} s")
-    
-    # # Example 2: Vary A_rho
-    # print("\n=== Example 2: Varying A_rho ===")
-    # t0 = time()
-    # A_rho_values = np.linspace(3.5*m_nuc**2, 5.5*m_nuc**2, 5)
-    # fig2 = plot_parameter_variation(base_params, param_index=2, param_values=A_rho_values)
-    # t1 = time()
-    # print(f"Time: {t1-t0:.2f} s")
-    
-    # # Example 3: Multiple parameters
-    # print("\n=== Example 3: Multiple parameters ===")
-    # t0 = time()
-    # variations = {
-    #     0: np.linspace(12.0*m_nuc**2, 13.5*m_nuc**2, 4),  # A_sigma
-    #     2: np.linspace(3.5*m_nuc**2, 5.5*m_nuc**2, 4),    # A_rho
-    # }
-    # fig3 = plot_multiple_parameters(base_params, variations, figsize=(16, 8))
-    # t1 = time()
-    # print(f"Time: {t1-t0:.2f} s")
+    print(f"Total Time: {t1-t0:.2f} s")
     
     plt.show()

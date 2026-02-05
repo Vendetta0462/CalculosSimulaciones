@@ -23,10 +23,10 @@ BASE_VALUES = {
 
 # Rangos razonables para los parámetros del modelo (basados en literatura)
 PARAMETER_BOUNDS = {
-    'A_sigma': (5.0, 20.0),     # en unidades de m_nuc^2
-    'A_omega': (1.0, 15.0),     # en unidades de m_nuc^2
+    'A_sigma': (6.0, 15.0),     # en unidades de m_nuc^2
+    'A_omega': (4.0, 10.0),     # en unidades de m_nuc^2
     'A_rho': (0.0, 10.0),       # en unidades de m_nuc^2
-    'b': (-0.01, 0.01),         # adimensional
+    'b': (4.0e-3, 0.01),         # adimensional
     'c': (-0.01, 0.01)          # adimensional
 }
 

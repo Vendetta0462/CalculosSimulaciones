@@ -37,7 +37,8 @@ def evaluar_metodos():
                 props,
                 metodo=metodo,
                 verbose=False,
-                fixed_params=fixed_params
+                fixed_params=fixed_params,
+                tol=1e-8
             )
             elapsed = time.perf_counter() - start
             chi2 = res.get('chi2_final', None)
