@@ -1,0 +1,235 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% --------------------------------------------------------
+% RMxAA Rho
+% LaTeX Template
+% Version 4.7 (10/08/2026)
+%
+% Authors: 
+% Carlos Román-Zúñiga (croman@astro.unam.mx)
+% Irene Cruz-González )icruzgonzalez@astro.unam.mx)
+% Contributors:
+% Guillermo Jimenez (memo.notess1@gmail.com)
+% Eduardo Gracidas (eduardo.gracidas29@gmail.com)
+% 
+% License:
+% XXXXXXXXXX
+% --------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% --------------------------------------------------------
+%                     ACKNOWLEDGMENTS
+% This template has been developed based on the original rho 
+% LaTeX class work, created by Luis Guillermo Jimenez Lopez 
+% and Eduardo Gracidas Reyes. Available in the Overleaf's 
+% template gallery.
+% --------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The following lines must be included in all contributions
+%
+\documentclass[10pt,letter,twoside]{rmat-rho}
+\RMxAAtemplatetype{\RMxAT} % Select your article type
+% {\RMxAA} article template
+% {\RMxAC} conference template
+\newcommand\rmaatex{RMxAT~\LaTeX}
+\newcommand{\CS}[1]{\texttt{\textbackslash #1}}
+
+%----------------------------------------------------------
+% JOURNAL/HEADER INFORMATION
+%----------------------------------------------------------
+
+\vol{01}
+% Counter page
+\setcounter{page}{1000}
+\pages{100-106}
+\thisyear{2026}
+
+%\doi{\href{https://www.astroscu.unam.mx/rmaa/RMxAA..XX-X}{\textcolor{blue}{https://www.astroscu.unam.mx/rmaa/RMxAA..XX-X}}}
+\doi{\href{https://doi.org/10.22201/ia.XXXXXXXXXp.20XX.XX.XX.XX}{https://doi.org/10.22201/ia.XXXXXXXXp.20XX.XX.XX.XX}}
+%\doi{ccccccccc}
+\newenvironment{Example}
+{\begin{list}{}{\setlength{\leftmargin}{10pt}\setlength{\rightmargin}{10pt}}%
+  \item[]\itshape}
+  {\end{list}}
+
+%\usepackage{background}
+\usepackage{lipsum}
+\definecolor{textcolor}{HTML}{F9C051}
+
+% From here on the RMxAC extended article, shortpaper or only abstract information should be included by the author(s)
+%
+%----------------------------------------------------------
+% TITLE
+%----------------------------------------------------------
+%\journalname{\Large Revista Mexicana de Astronomía y Astrofísica 62, 1-10 (2026) \hfill {\includegraphics[width=1.2in, height=0.5in]{LogoRMxACamarillo.png}} \\}
+
+\title{Neutron Star Equations of State Through Relativistic Mean Field Theory}
+
+%----------------------------------------------------------
+% AUTHORS AND AFFILIATIONS
+%---------------------------------------------------------
+
+\author[1]{N. Mantilla-Molina \orcidlink{0000-0003-0757-8801}}
+\author[2]{L. M. Becerra \orcidlink{0000-0002-3262-5545}}
+\author[3]{J. F. Rodriguez-Ruiz \orcidlink{0000-0003-3627-5084}}
+\author[1]{L. A. Núñez \orcidlink{0000-0003-4575-5899}}
+%\author[2,4]{M.~Y.~Posdoc}
+
+%----------------------------------------------------------
+
+\affil[1]{Escuela de Física, Universidad Industrial de Santander, Bucaramanga, 680002, Santander, Colombia}
+\affil[2]{Centro Multidisciplinario de Física, Universidad Mayor, Santiago de Chile, 8580745, Chile}
+\affil[3]{Departamento de Física, Universidad Antonio Nariñoo, Bogotá D.C. 110231, Colombia}
+
+%\affil[4]{One more affiliation you may need}
+%\affil[$\dagger$]{Posgrado en Astrofísica, UNAM}
+%----------------------------------------------------------
+
+\keywords{Equation of State, Neutron Stars, Relativistic Mean Field Theory, Nuclear Matter, Strong Interaction}
+
+%\pclave{palabra clave 1, palabra clave 2, palabra clave 3}
+\received{\today}
+%\revised{April 16, 2024}
+\accepted{\today}
+%\published{May 21, 2024}
+%\doi{\url{https://www.astroscu.unam.mx/rmaa/RMxAA..XX-X}}
+%----------------------------------------------------------
+% DATES
+%----------------------------------------------------------
+
+%\dates{This manuscript was compiled on June 25th, 2024}
+
+%----------------------------------------------------------
+% FOOTER INFORMATION
+%----------------------------------------------------------
+% \leadauthor{A. Bright-Student et al.}
+\leadauthor{N. Mantilla-Molina et al.}
+
+%----------------------------------------------------------
+% ARTICLE INFORMATION
+%----------------------------------------------------------
+% Correspondig author email
+%---
+% \corres{studentemail@astro.unam.mx}
+\corres{nicolas2210707@correo.uis.edu.co}
+%\corres{Irene Cruz-González}
+%\email{icruzgonzalez@astro.unam.mx}
+%---
+
+\received{\today}
+%\revised{April 16, 2024}
+\accepted{\today}
+%\published{May 21, 2024}
+
+%\license{Rho LaTeX Class \ccLogo\ This document is licensed under Creative Commons CC BY 4.0.}
+
+% Include d Abstract and Resumen
+%\setbool{thesislevel}{true} 
+
+\setbool{rho-abstract}{false} % Set false to hide the abstract
+\setbool{rho-resumen}{true} % Set false to hide the abstract
+%\thesislevel{PhD}
+%----------------------------------------------------------
+% ABSTRACT
+%----------------------------------------------------------
+
+%\begin{thesislevel}
+% prueba
+%\end{thesislevel}
+
+% \begin{resumen}
+% Bienvenidos a los nuevos macros de la \rmaatex\  (v4.7 10/08/2026) para preparar contribuciones para ser publicados en la {\bf Revista Mexicana de Astronomía y Astrofísica Serie de Carrera Temprana (RMxAT)}. Utiliza la {\it LaTeX class}  {\bf rmat-rho.cls} desarrollada para la RMxAT. Hay dos tipos de macros de la Serie de Carrera Temprana:  RMxAT\_thesis y RMxAT\_memorias.% Archivos con ejemplos “RMxAT\_extended", "RMxAT\_shortpaper” or “RMxAT\_abstract ”, dependiendo del caso. 
+
+% El resumen en extenso de la tesis deberá ser presentado en inglés para que tenga una difusión global. Se supone que autor está familiarizado con elementos esenciales de LaTeX. 
+% %\\Este archivo {\it rmac\_extended\_example.tex} es el ejemplo de una contribución  {\bf en extenso}, destinado a las contribuciones orales invitadas y/o en extenso, que serán enviadas a los Editores Especiales del volumen correspondiente para ser publicadas en la RMxAC.
+
+% Para las tesis doctorales la extensión \textbf{máxima} del resumen es de \textbf{5} cuartillas. Para Maestría, será de \textbf{4} a lo máximo. Para Licenciatura el límite es de \textbf{3} cuartillas. En todos los casos ya incluyendo las figuras. Se recomienda de igual forma consultar los lineamientos de la revista para el envio de los documentos.
+
+% La RMxAT publicará también memorias de reuniones de astrónomos jóvenes utilizando el macro RMxAT\_memorias. Un ejemplo de este tipo de eventos es la Reunión de Estudiantes de Astronomía (REA) que se realiza anualmente en México. Sin embargo, eventos similares en otras partes de Iberoamérica pueden ser consideradas, previa consulta con la Jefatura Editorial de la RMxAT.
+% \end{resumen}
+
+\begin{resumen}
+    	En este trabajo se estudió la ecuación de estado de la materia nuclear en condiciones de alta densidad, que describe la materia al interior de estrellas de neutrones, utilizando la Teoría Relativista de Campo Medio. El objetivo principal fue construir ecuaciones de estado para estrellas de neutrones que satisfagan las restricciones nucleares y astrofísicas actuales, y examinar la viabilidad de estrellas de neutrones masivas que puedan reproducir las observaciones más recientes. Se exploró el espacio de parámetros del modelo relativista de campo medio, analizando las correlaciones entre los acoplamientos de los campos mesónicos ($\sigma$, $\omega$, $\rho$) junto con los parámetros de autointeracción escalar, y las propiedades macroscópicas estelares obtenidas mediante la integración de las ecuaciones de Tolman-Oppenheimer-Volkoff. Los resultados mostraron una jerarquía en la influencia de los parámetros: los acoplamientos isoescalares $A_\sigma$, $A_\omega$ y los términos de autointeracción $b$ y $c$ gobiernan la rigidez de la ecuación de estado y la masa máxima, mientras que el acoplamiento isovectorial $A_\rho$ afecta el radio de la estrella y la energía de simetría, sin alterar las propiedades de saturación ni el límite de masa máxima. El modelo construido permitió encontrar configuraciones que satisfacen simultáneamente las restricciones nucleares y astrofísicas. Finalmente, se obtuvieron estrellas con masas máximas de hasta $2.79\,\mathrm{M}_\odot$, compatibles con el componente secundario de GW190814, y radios para estrellas canónicas ($1.4\,\mathrm{M}_\odot$) consistentes con las observaciones de NICER.
+\end{resumen}
+    
+
+
+
+%----------------------------------------------------------
+
+%\thesislevel{This is a PhD thesis realized for the Astrophysics graduate program at Universidad Nacional Autónoma de México}
+
+\thesislevel{BSc}
+\studiesprogram{Física}
+\thesisinstitution{Universidad Industrial de Santander}
+\supervisors{L. M. Becerra (Universidad Mayor, Chile), J. F. Rodriguez-Ruiz (UAN, Colombia) and L. A. Núñez (UIS, Colombia)}
+
+\begin{document}
+
+\maketitle
+\pagestyle{fancy}
+\thispagestyle{firststyle}
+
+
+
+%------------------------My Body----------------------------
+
+\section{Introduction}
+
+\RMxAAstart{N}eutron stars (NSs) reach densities several times the nuclear saturation density $n_0$, under conditions that cannot be reproduced in terrestrial laboratories. The pressure--energy density relation in this regime, the equation of state (EOS) of dense matter, is the microphysical input that fixes macroscopic NS properties (mass, radius) through the Tolman--Oppenheimer--Volkoff (TOV) structure equations \citep{oppenheimerMassiveNeutronCores1939}, providing a direct link between nuclear physics and astrophysical observation.
+
+Relativistic mean-field theory (RMF) describes nucleons interacting through effective meson exchange within a covariant, causal framework \citep{waleckaTheoryHighlyCondensed1974, glendenningCompactStarsNuclear2000}. Calibrating its couplings to empirical nuclear-matter properties alone does not yield a unique EOS, since different parameter sets equally consistent with nuclear data predict different maximum masses and radii. Multi-messenger data, like precise pulsar-timing masses, NICER mass--radius measurements, and gravitational-wave events such as GW190814, provide independent constraints that can deal with part of this degeneracy \citep{ascenziNeutronstarMeasurementsMultimessenger2024}. Here we systematically explore the RMF parameter space to identify the sets that simultaneously satisfy nuclear saturation properties and current mass/radius observations, and to determine the resulting maximum NS mass. The full derivation, additional results, and appendices are presented in spanish in the original thesis \citep{mantillamolinaBScThesis2026}.
+
+\section{Model and Methods}
+
+\subsection{Equation of State}
+
+We describe the NS core as $npe$ matter derived from a Lagrangian in which nucleons interact via a scalar meson $\sigma$ (attractive, with quartic self-interactions $b,c$), a vector meson $\omega$ (repulsive), and an isovector meson $\rho$ (isospin symmetry), following the standard non-linear Walecka model \citep{waleckaTheoryHighlyCondensed1974, glendenningCompactStarsNuclear2000}. In the mean-field approximation the meson fields are replaced by their ground-state expectation values, and the resulting algebraic equations are solved self-consistently under charge neutrality and $\beta$-equilibrium. The model has five free parameters: the coupling ratios $A_i \equiv (g_i/m_i)^2\,m^2$ ($i=\sigma,\omega,\rho$; $m$ the nucleon mass) and the self-interaction coefficients $b$ and $c$. The core EOS is matched at sub-saturation densities to the standard BPS/BBP crust through a monotonic interpolation, ensuring causality ($c_s^2<1$) throughout the star.
+
+\subsection{Structure Equations and Parameter Exploration}
+
+For each EOS the stellar structure follows from the TOV equations,
+\begin{align}
+	\frac{dm}{dr} &= 4\pi r^2 \rho, \label{eq:mass}\\
+	\frac{dP}{dr} &= -\frac{(\rho+P)(m+4\pi r^3 P)}{r(r-2m)}, \label{eq:tov}
+\end{align}
+integrated outward from a central density $\rho(0)=\rho_c$ to the surface $P(R)=0$, in geometrized units \citep{oppenheimerMassiveNeutronCores1939}.
+
+The five parameters are constrained through a systematic scan: for fixed $b,c$ we search the $A_\sigma$--$A_\omega$ plane for the region reproducing the empirical saturation density n$_0$ and binding energy per nucleon $B/A$, verify that the compressibility modulus K$_0$ falls within its empirical range, and adjust $A_\rho$ to satisfy the symmetry energy a$_\text{sym}$ and its slope L$_0$ \citep{kumarTheoreticalExperimentalConstraints2024, drischlerBayesianMixtureModel2024}. Repeating this scan over a grid of $(b,c)$ yields a family of nuclear-consistent EOS, for which we compute the maximum mass M$_\text{max}$, the canonical radius R$_{1.4}$, and the maximum compactness C$_\text{max}=\text{M}_\text{max}/\text{R}_{(\text{M}_\text{max})}$.
+
+\section{Results and Discussion}
+
+Figure~\ref{fig:correlations} shows the sensitivity of each nuclear and stellar property to the five parameters. As expected from their physical roles, $A_\sigma$ and $A_\omega$ dominate the saturation and stellar properties, while $A_\rho$ is essentially decoupled from symmetric-matter quantities (n$_0$, $B/A$, K$_0$) and acts on a$_\text{sym}$, L$_0$, and the stellar mass-radius. The self-interaction terms $b$ and $c$ have the weakest effect in regulating K$_0$, and $b$ has the smallest impact on M$_\text{max}$.
+
+The nuclear-consistent parameter sets found span M$_\text{max}\simeq2.0$--$2.79\,\mathrm{M}_\odot$, R$_{1.4}\simeq12.5$--$13.7$~km, and C$_\text{max}\simeq0.28$--$0.32$, confirming that nuclear saturation data alone do not select a unique EOS. Figure~\ref{fig:eos-mr} compares the EOS and mass--radius curves for the maximum-mass configuration of several valid regions: all remain causal, and stiffer EOS give simultaneously larger M$_\text{max}$ and R$_{1.4}$. For reference, a free degenerate $npe$ gas without strong interactions supports only M$_\text{max}\approx0.7\,\mathrm{M}_\odot$, illustrating how essential the nuclear force is for reaching NS masses above $2\,\mathrm{M}_\odot$.
+
+Nuclear interactions also reshape the microscopic composition of the star: the free $npe$ gas keeps a neutron fraction n$_n/\text{n}_B$ above $\sim94\%$ up to $10^{16}\,\mathrm{g\,cm^{-3}}$, whereas every RMF configuration found here predicts a lower and more quickly varying n$_n/\text{n}_B$, reflecting the regulatory role of $A_\rho$ on the proton-neutron asymmetry. Comparing the maximum-mass configuration of each valid region, the stiffer (higher M$_\text{max}$) sets are less neutron-rich at intermediate densities, but this ordering reverses above n$_B\simeq0.4$--$0.7\,\text{fm}^{-3}$, where the stiffest configurations become the most neutron-rich, linking the star's mass-supporting capacity to its isospin content. For the reference configuration of \citet{glendenningCompactStarsNuclear2000} we further verified the physical acceptability \citep{ospinoRelativisiticNonpascalianFluid2025} of the resulting interior: causality, the dominant energy condition, and stability against cracking hold throughout the star, with convective stability satisfied in $\sim97\%$ of its volume, a mild violation near the surface common to non-linear RMF models.
+
+The highest-mass region found reaches M$_\text{max}=2.79\,\mathrm{M}_\odot$ with C$_\text{max}=0.316$, below the C$_\text{max}\lesssim0.33$ causal bound  \citep{annalaMultimessengerConstraintsUltradense2022}, and exceeds the masses of the heaviest pulsars known, PSR~J0740+6620 ($2.08\pm0.07\,\mathrm{M}_\odot$) \citep{fonsecaRefinedMassGeometric2021} and PSR~J0952-0607 ($2.35\pm0.17\,\mathrm{M}_\odot$) \citep{romaniPSRJ09520607Fastest2022}, as well as the secondary component of GW190814 ($2.59\,\mathrm{M}_\odot$) \citep{theligoscientificcollaborationGW190814GravitationalWaves2020}, supporting its interpretation as a NS rather than a light black hole. Its canonical radius, R$_{1.4}\simeq12.8$--$13.7$~km, agrees with NICER measurements of PSR~J0030+0451 \citep{millerPSRJ0030+0451Mass2019}, PSR~J0437-4715 \citep{choudhuryNICERViewNearest2024b}, PSR~J0740+6620 \citep{millerRadiusPSRJ0740+66202021}, and the tidal-deformability estimate for the GW190814 secondary \citep{biswasGW190814PropertiesSecondary2021}.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.95\linewidth]{figures/correlaciones_params}
+	\caption{Pearson correlation coefficients between local variations of the five free parameters ($A_\sigma$, $A_\omega$, $A_\rho$, $b$, $c$) and the resulting nuclear and stellar properties, around the reference parameter set of \citet{glendenningCompactStarsNuclear2000}. Values near $+1$ ($-1$) indicate a strong positive (negative) linear correlation.}
+	\label{fig:correlations}
+\end{figure}
+
+\begin{figure*}[t]
+	\centering
+	\includegraphics[width=0.85\textwidth]{figures/comparacion_regiones_validas_eos}
+	\caption{Equation of state (left) and mass--radius relation (right) for the maximum-mass configuration of each nuclear-consistent parameter region identified in this work. All configurations satisfy causality and the empirical nuclear constraints; stiffer equations of state yield larger maximum masses and canonical radii.}
+	\label{fig:eos-mr}
+\end{figure*}
+
+\section{Conclusions}
+
+A relativistic mean-field EOS with non-linear scalar self-interactions can simultaneously satisfy empirical nuclear saturation constraints and current astrophysical mass and radius measurements, reaching maximum masses up to $2.79\,\mathrm{M}_\odot$ while remaining causal and physically allowed. The parameter exploration shows that $A_\sigma$ and $A_\omega$ control the overall stiffness and maximum mass, whereas $A_\rho$ regulates the symmetry energy and stellar radius nearly independently, providing practical guidance for future parameter fitting. The wide range of viable (M$_\text{max},$R$_{1.4}$) pairs remaining after imposing nuclear constraints confirms that laboratory data alone cannot fix the dense-matter EOS, highlighting the value of combining them with pulsar-timing, X-ray, and gravitational-wave observations. Natural extensions of this work include hyperonic and other exotic degrees of freedom, finite-temperature effects, and Bayesian parameter inference.
+
+
+%----------------------------------------------------------
+
+%-------------References bib file------------------------
+
+\bibliography{RMxAT}
+
+%----------------------------------------------------------
+
+\end{document}
